@@ -7,7 +7,7 @@ const COLORS = {
   primaryBlue: '#0069ca',
   secondarySeafoam: '#80d2c8',
   gray: '#657788',
-  primaryDark: '#172a3a', // Dark Blue
+  primaryDark: '#4A4848', // Dark Blue
   primaryDark2: '#2e5987', // Dark Blue level 2
   background: '#d7fdff', // Light Light Blue
   accentOrange: '#f2594b',
