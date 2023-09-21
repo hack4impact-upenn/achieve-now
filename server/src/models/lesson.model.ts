@@ -10,11 +10,11 @@ const LessonSchema = new mongoose.Schema({
     required: true,
   },
   parent_resources: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
   },
   coach_resources: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
   },
 });

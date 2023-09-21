@@ -24,6 +24,7 @@ const removeSensitiveDataQueryKeepPassword = [
  * @param lastName - string representing the last name of the user
  * @param email - string representing the email of the user
  * @param password - string representing the password of the user
+ * @param role - string representing the role of the user
  * @returns The created {@link User}
  */
 const createUser = async (
@@ -31,6 +32,7 @@ const createUser = async (
   lastName: string,
   email: string,
   password: string,
+  role: string,
 ) => {
   const hashedPassword = await hash(password, passwordHashSaltRounds);
   if (!hashedPassword) {
@@ -42,6 +44,7 @@ const createUser = async (
     email,
     password: hashedPassword,
     admin: false,
+    role,
   });
   const user = await newUser.save();
   return user;
@@ -121,12 +124,13 @@ const getAllUsersFromDB = async () => {
 
 /**
  * A function that upgrades a certain user to an admin.
- * @param id The id of the user to upgrade.
+ * @param id The id of the user to change the role of.
+ * @param role The new role of the user.
  * @returns The upgraded {@link User}
  */
-const upgradeUserToAdmin = async (id: string) => {
+const changeUserRole = async (id: string, role: string) => {
   const user = await User.findByIdAndUpdate(id, [
-    { $set: { admin: { $eq: [false, '$admin'] } } },
+    { $set: { role: { $eq: [role, '$role'] } } },
   ]).exec();
   return user;
 };
@@ -150,6 +154,6 @@ export {
   getUserByEmailWithPassword,
   getUserByResetPasswordToken,
   getAllUsersFromDB,
-  upgradeUserToAdmin,
+  changeUserRole,
   deleteUserById,
 };

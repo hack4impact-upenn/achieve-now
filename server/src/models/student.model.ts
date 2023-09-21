@@ -6,27 +6,29 @@ const StudentSchema = new mongoose.Schema({
     required: true,
   },
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   school_id: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'School' }],
     required: true,
   },
   coach_id: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     required: true,
   },
   lesson_level: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lesson',
     required: true,
   },
   parent_additional_resources: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
   },
   coach_additional_resources: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
   },
   progress_stats: {
