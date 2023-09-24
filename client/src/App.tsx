@@ -23,6 +23,7 @@ import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import Header from './components/PageHeader';
+import TeacherDashboard from './TeacherDashboard';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/teacher" element={<TeacherDashboard />} />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                       path="/verify-account/:token"
