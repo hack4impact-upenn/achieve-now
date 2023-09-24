@@ -5,10 +5,10 @@ import { Typography, Grid } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
 import {
   logout as logoutAction,
-  toggleAdmin,
+  changeRole,
   selectUser,
 } from '../util/redux/userSlice';
-import { logout as logoutApi, selfUpgrade } from './api';
+import { logout as logoutApi, selfChange } from './api';
 import ScreenGrid from '../components/ScreenGrid';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 
@@ -52,7 +52,7 @@ function HomePage() {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const navigator = useNavigate();
-  const [admin, setAdmin] = useState(user.admin);
+  const [role, setRole] = useState(user.role);
   const logoutDispatch = () => dispatch(logoutAction());
   const handleLogout = async () => {
     if (await logoutApi()) {
@@ -61,24 +61,24 @@ function HomePage() {
     }
   };
 
-  const handleSelfPromote = async () => {
-    const newAdminStatus = await selfUpgrade(user.email as string);
-    if (newAdminStatus) {
-      dispatch(toggleAdmin());
-      setAdmin(true);
-    }
-  };
+  // const handleSelfChange = async (newRole: string) => {
+  //   const res = await selfChange(user.email as string, newRole);
+  //   if (res) {
+  //     dispatch(changeRole(newRole));
+  //     setRole(newRole);
+  //   }
+  // };
 
   const message = `Welcome to the Boilerplate, ${user.firstName} ${user.lastName}!`;
   return (
     <ScreenGrid>
       <Typography variant="h2">{message}</Typography>
       <Grid item container justifyContent="center">
-        <PromoteButton
+        {/* <PromoteButton
           admin={admin}
           handleSelfPromote={handleSelfPromote}
           navigator={navigator}
-        />
+        /> */}
       </Grid>
       <Grid item container justifyContent="center">
         <Button onClick={handleLogout}>Logout</Button>

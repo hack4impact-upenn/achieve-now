@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import DeleteUserButton from './DeleteUserButton';
-import PromoteUserButton from './PromoteUserButton';
+// import PromoteUserButton from './PromoteUserButton';
 import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
@@ -105,11 +105,12 @@ function UserTable() {
             email={user.email}
             removeRow={() => removeUser(user)}
           />,
-          <PromoteUserButton
-            admin={user.admin}
-            email={user.email}
-            updateAdmin={updateAdmin}
-          />,
+          <div />, // heavily modified to remove promote button
+          // <PromoteUserButton
+          //   admin={user.admin}
+          //   email={user.email}
+          //   updateAdmin={updateAdmin}
+          // />,
         ),
       )}
       columns={columns}

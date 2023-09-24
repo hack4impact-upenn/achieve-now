@@ -35,7 +35,7 @@ router.get('/adminstatus', isAuthenticated, isAdmin, approve);
  * Expects a JSON body with the following fields:
  * - email (string) - The email of the user to be promoted
  */
-router.put('/promote', isAuthenticated, isAdmin, changeRole);
+router.put('/change-role', isAuthenticated, isAdmin, changeRole);
 
 /**
  * A PUT route to upgrade a user's privilege
@@ -43,7 +43,7 @@ router.put('/promote', isAuthenticated, isAdmin, changeRole);
  * - email (string) - The email of the user to be promoted
  */
 // delete during deployment
-router.put('/autopromote', changeRole);
+router.put('/auto-change-role', changeRole);
 
 /**
  * A PUT route to delete a user. Checks first if the requestor
