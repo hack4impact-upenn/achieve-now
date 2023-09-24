@@ -16,10 +16,11 @@ async function deleteUser(email: string) {
 /**
  * Sends a request to the server to promote a user to admin
  * @param email - the email of the user to promote
+ * @param role - the role of the user to promote
  * @returns true if successful, false otherwise
  */
-async function upgradePrivilege(email: string) {
-  const res = await putData('admin/promote', { email });
+async function upgradePrivilege(email: string, role: string) {
+  const res = await putData('admin/promote', { email, role });
   if (res.error) return false;
   return true;
 }

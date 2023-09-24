@@ -12,6 +12,7 @@ import { postData } from '../../util/api';
 function InviteUserButton() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,7 @@ function InviteUserButton() {
 
   const handleInvite = async () => {
     setLoading(true);
-    postData('admin/invite', { email }).then((res) => {
+    postData('admin/invite', { email, role }).then((res) => {
       if (res.error) {
         setError(res.error.message);
       } else {
