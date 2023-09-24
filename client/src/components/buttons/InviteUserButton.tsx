@@ -5,8 +5,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import useAlert from '../../util/hooks/useAlert';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import AlertType from '../../util/types/alert';
+import useAlert from '../../util/hooks/useAlert';
 import { postData } from '../../util/api';
 
 function InviteUserButton() {
@@ -24,6 +28,8 @@ function InviteUserButton() {
 
   const handleClose = () => {
     setOpen(false);
+    setRole('');
+    setError('');
   };
 
   const handleInvite = async () => {
@@ -39,6 +45,11 @@ function InviteUserButton() {
     });
   };
 
+  const handleChange = (event: SelectChangeEvent) => {
+    setError('');
+    setRole(event.target.value);
+  };
+
   const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError('');
     setEmail(event.target.value);
@@ -52,11 +63,12 @@ function InviteUserButton() {
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <DialogContentText>
-            Please enter the email address of the user you would like to invite.
+            Please enter the email address and role of the user you would like
+            to invite.
           </DialogContentText>
           <TextField
             autoFocus
-            margin="dense"
+            sx={{ mt: 1 }}
             id="name"
             label="Email Address"
             type="email"
@@ -65,8 +77,21 @@ function InviteUserButton() {
             onChange={updateEmail}
           />
           <DialogContentText sx={{ color: 'red' }}>{error}</DialogContentText>
+          <FormControl variant="standard" sx={{ mt: 1 }} fullWidth>
+            <InputLabel id="role">Role</InputLabel>
+            <Select
+              value={role}
+              onChange={handleChange}
+              label="Role"
+              labelId="role"
+            >
+              <MenuItem value={1}>Family</MenuItem>
+              <MenuItem value={2}>Coach</MenuItem>
+              <MenuItem value={3}>Teacher</MenuItem>
+              <MenuItem value={4}>Admin</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
-
         <DialogActions>
           <Button disabled={loading} onClick={handleClose}>
             Cancel
