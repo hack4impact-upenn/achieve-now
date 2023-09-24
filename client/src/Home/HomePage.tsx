@@ -12,38 +12,34 @@ import { logout as logoutApi, selfChange } from './api';
 import ScreenGrid from '../components/ScreenGrid';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 
-interface PromoteButtonProps {
-  admin: boolean | null;
-  handleSelfPromote: () => void;
+interface ChooseRoleProps {
+  role: string | null;
+  handleSelfChange: () => void;
   navigator: NavigateFunction;
 }
 
 /**
  * A button which, when clicked, will promote the user to admin. If the user is already admin, the button will be a link to the admin dashboard.
  * @param admin - a boolean indicating whether the user is an admin
- * @param handleSelfPromote - a function which promotes the user to admin
+ * @param handleSelfChange - a function which changes the user's role
  * @param navigator - a function which navigates to a new page (passed in from parent function)
  */
-function PromoteButton({
-  admin,
-  handleSelfPromote,
-  navigator,
-}: PromoteButtonProps) {
-  if (admin === null) {
+function PromoteButton({ role, handleSelfChange, navigator }: ChooseRoleProps) {
+  if (role === null) {
     return null;
   }
-  return !admin ? (
-    <PrimaryButton variant="contained" onClick={handleSelfPromote}>
-      Promote self to admin
-    </PrimaryButton>
-  ) : (
-    <PrimaryButton
-      variant="contained"
-      onClick={() => navigator('/users', { replace: true })}
-    >
-      View all users
-    </PrimaryButton>
-  );
+  // return !admin ? (
+  //   <PrimaryButton variant="contained" onClick={handleSelfPromote}>
+  //     Promote self to admin
+  //   </PrimaryButton>
+  // ) : (
+  //   <PrimaryButton
+  //     variant="contained"
+  //     onClick={() => navigator('/users', { replace: true })}
+  //   >
+  //     View all users
+  //   </PrimaryButton>
+  // );
 }
 /**
  * The HomePage of the user dashboard. Displays a welcome message, a logout button and a button to promote the user to admin if they are not already an admin. If the user is an admin, the button will navigate them to the admin dashboard. This utilizes redux to access the current user's information.
