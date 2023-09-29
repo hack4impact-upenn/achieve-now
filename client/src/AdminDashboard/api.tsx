@@ -19,10 +19,10 @@ async function deleteUser(email: string) {
  * @param role - the role of the user to promote
  * @returns true if successful, false otherwise
  */
-async function upgradePrivilege(email: string, role: string) {
-  const res = await putData('admin/promote', { email, role });
+async function changeOtherRole(email: string, role: string) {
+  const res = await putData('admin/change-role', { email, role });
   if (res.error) return false;
   return true;
 }
 
-export { deleteUser, upgradePrivilege };
+export { deleteUser, changeOtherRole };

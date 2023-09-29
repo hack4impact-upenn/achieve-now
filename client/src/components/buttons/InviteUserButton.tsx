@@ -85,10 +85,10 @@ function InviteUserButton() {
               label="Role"
               labelId="role"
             >
-              <MenuItem value={1}>Family</MenuItem>
-              <MenuItem value={2}>Coach</MenuItem>
-              <MenuItem value={3}>Teacher</MenuItem>
-              <MenuItem value={4}>Admin</MenuItem>
+              <MenuItem value="family">Family</MenuItem>
+              <MenuItem value="coach">Coach</MenuItem>
+              <MenuItem value="teacher">Teacher</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
