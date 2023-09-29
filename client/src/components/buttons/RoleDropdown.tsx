@@ -9,9 +9,10 @@ import { selfChange } from '../../Home/api';
 interface RoleDropdownProps {
   currRole: string;
   email: string;
+  updateFE?: (email: string, role: string) => void;
 }
 
-function RoleDropdown({ currRole, email }: RoleDropdownProps) {
+function RoleDropdown({ currRole, email, updateFE }: RoleDropdownProps) {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const [role, setRole] = useState(currRole);
@@ -30,9 +31,15 @@ function RoleDropdown({ currRole, email }: RoleDropdownProps) {
           }),
         );
         setRole(newRole);
+        if (updateFE) {
+          updateFE(email, newRole);
+        }
       }
     } else if (await changeOtherRole(email, newRole)) {
       setRole(newRole);
+      if (updateFE) {
+        updateFE(email, newRole);
+      }
     }
     setLoading(false);
   }

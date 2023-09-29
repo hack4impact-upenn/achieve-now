@@ -129,9 +129,7 @@ const getAllUsersFromDB = async () => {
  * @returns The upgraded {@link User}
  */
 const changeUserRole = async (id: string, role: string) => {
-  const user = await User.findByIdAndUpdate(id, [
-    { $set: { role: { $eq: [role, '$role'] } } },
-  ]).exec();
+  const user = await User.findByIdAndUpdate(id, { role }).exec();
   return user;
 };
 

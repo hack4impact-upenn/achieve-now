@@ -11,13 +11,14 @@ import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import IUser from '../util/types/user';
+import RoleDropdown from '../components/buttons/RoleDropdown';
 
 interface AdminDashboardRow {
   key: string;
   first: string;
   last: string;
   email: string;
-  promote: React.ReactElement;
+  changeRole: React.ReactElement;
   remove: React.ReactElement;
 }
 
@@ -31,15 +32,15 @@ function UserTable() {
     { id: 'first', label: 'First Name' },
     { id: 'last', label: 'Last Name' },
     { id: 'email', label: 'Email' },
-    { id: 'promote', label: 'Promote to Admin' },
+    { id: 'changeRole', label: 'Change Role' },
     { id: 'remove', label: 'Remove User' },
   ];
 
   // Used to create the data type to create a row in the table
   function createAdminDashboardRow(
     user: IUser,
-    promote: React.ReactElement,
     remove: React.ReactElement,
+    changeRole: React.ReactElement,
   ): AdminDashboardRow {
     const { _id, firstName, lastName, email } = user;
     return {
@@ -47,7 +48,7 @@ function UserTable() {
       first: firstName,
       last: lastName,
       email,
-      promote,
+      changeRole,
       remove,
     };
   }
@@ -73,15 +74,15 @@ function UserTable() {
       ),
     );
   };
-  // update state of userlist to promote a user on the frontend representation
-  const updateAdmin = (email: string) => {
+  // update state of userlist to change user role on the frontend representation
+  const updateRole = (email: string, newRole: string) => {
     setUserList(
       userList.map((entry) => {
         if (entry.email !== email) {
           return entry;
         }
         const newEntry = entry;
-        newEntry.admin = true;
+        newEntry.role = newRole;
         return newEntry;
       }),
     );
@@ -101,16 +102,11 @@ function UserTable() {
         createAdminDashboardRow(
           user,
           <DeleteUserButton
-            admin={user.admin}
+            role={user.role}
             email={user.email}
             removeRow={() => removeUser(user)}
           />,
-          <div />, // heavily modified to remove promote button
-          // <PromoteUserButton
-          //   admin={user.admin}
-          //   email={user.email}
-          //   updateAdmin={updateAdmin}
-          // />,
+          <RoleDropdown currRole={user.role} email={user.email} />,
         ),
       )}
       columns={columns}
