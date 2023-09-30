@@ -6,27 +6,34 @@ const StudentSchema = new mongoose.Schema({
     required: true,
   },
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   school_id: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'School' }],
     required: true,
   },
   coach_id: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    required: true,
+  },
+  block_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Block',
     required: true,
   },
   lesson_level: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lesson',
     required: true,
   },
   parent_additional_resources: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
   },
   coach_additional_resources: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
   },
   progress_stats: {
@@ -37,6 +44,29 @@ const StudentSchema = new mongoose.Schema({
     },
     required: true,
   },
+  parent_name: {
+    type: String,
+    required: true,
+  },
+  parent_commmunication_days: {
+    type: String,
+    enum: ['weekends', 'weekdays', 'any'],
+    required: false,
+  },
+  parent_communication_times: {
+    type: String,
+    enum: ['morning', 'afternoon', 'evening'],
+    required: false,
+  },
+  media_waiver: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  work_habits: {
+    type: String,
+    required: false,
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -44,10 +74,16 @@ interface IStudent extends mongoose.Document {
   user_id: string;
   school_id: [string];
   coach_id: [string];
+  block_id: string;
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];
   progress_stats: Map<string, Map<string, number>>;
+  parent_name: string;
+  parent_commmunication_days: string;
+  parent_communication_times: string;
+  media_waiver: boolean;
+  work_habits: string;
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);

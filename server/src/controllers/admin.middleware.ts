@@ -22,7 +22,7 @@ const isAdmin = (
     return;
   }
   // Check if the user is an admin
-  if (user.admin) {
+  if (user.role === 'admin') {
     next();
   } else {
     next(ApiError.unauthorized('Need admin status.'));

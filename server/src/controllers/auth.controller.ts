@@ -101,13 +101,14 @@ const logout = async (
 
 /**
  * A controller function to register a user in the database.
+ * TODO: will be deleted in the future, but will error -- should we add role now?
  */
 const register = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, role } = req.body;
   if (!firstName || !lastName || !email || !password) {
     next(
       ApiError.missingFields(['firstName', 'lastName', 'email', 'password']),
@@ -154,6 +155,7 @@ const register = async (
       lastName,
       lowercaseEmail,
       password,
+      role,
     );
     // Don't need verification email if testing
     if (process.env.NODE_ENV === 'test') {
@@ -361,6 +363,7 @@ const registerInvite = async (
       lastName,
       lowercaseEmail,
       password,
+      invite.role,
     );
     user!.verified = true;
     await user?.save();
