@@ -14,6 +14,10 @@ const StudentSchema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'School' }],
     required: true,
   },
+  teacher_id: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    required: true,
+  },
   coach_id: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     required: true,
@@ -73,6 +77,7 @@ interface IStudent extends mongoose.Document {
   _id: string;
   user_id: string;
   school_id: [string];
+  teacher_id: [string];
   coach_id: [string];
   block_id: string;
   lesson_level: string;
