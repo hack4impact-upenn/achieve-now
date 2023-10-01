@@ -43,10 +43,15 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     required: false,
   },
-  admin: {
+  active: {
     type: Boolean,
     required: true,
-    default: false,
+    default: true,
+  },
+  role: {
+    type: String,
+    enum: ['parent', 'coach', 'teacher', 'admin'],
+    required: true,
   },
 });
 
@@ -60,7 +65,8 @@ interface IUser extends mongoose.Document {
   verificationToken: string | null | undefined;
   resetPasswordToken: string | null | undefined;
   resetPasswordTokenExpiryDate: Date | null | undefined;
-  admin: boolean;
+  active: boolean;
+  role: string;
 }
 
 const User = mongoose.model<IUser>('User', UserSchema);

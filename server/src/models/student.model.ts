@@ -35,10 +35,12 @@ const StudentSchema = new mongoose.Schema({
   parent_additional_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
+    default: [],
   },
   coach_additional_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
+    default: [],
   },
   progress_stats: {
     type: Map,
@@ -47,6 +49,30 @@ const StudentSchema = new mongoose.Schema({
       of: Number,
     },
     required: true,
+    default: {},
+  },
+  parent_name: {
+    type: String,
+    required: true,
+  },
+  parent_commmunication_days: {
+    type: String,
+    enum: ['weekends', 'weekdays', 'any'],
+    required: false,
+  },
+  parent_communication_times: {
+    type: String,
+    enum: ['morning', 'afternoon', 'evening'],
+    required: false,
+  },
+  media_waiver: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  work_habits: {
+    type: String,
+    required: false,
   },
   parent_name: {
     type: String,

@@ -10,7 +10,7 @@ const SchoolSchema = new mongoose.Schema({
     required: true,
   },
   teachers: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     required: true,
   },
   info: {
