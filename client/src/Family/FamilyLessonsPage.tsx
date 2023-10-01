@@ -10,6 +10,10 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+/* eslint-disable import/no-extraneous-dependencies */
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+/* eslint-disable import/no-extraneous-dependencies */
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 
@@ -117,7 +121,12 @@ function FamilyLessonsPage() {
           <Grid container spacing={3} sx={{ marginTop: theme.spacing(1) }}>
             {cardsWithImages.map((card) => (
               <Grid item xs={12} sm={6} md={4}>
-                <Card>
+                <Card
+                  sx={{
+                    backgroundColor: 'white',
+                    border: '1px solid black',
+                  }}
+                >
                   {card.image ? (
                     <CardMedia
                       component="img"
@@ -126,10 +135,22 @@ function FamilyLessonsPage() {
                       title={card.title}
                     />
                   ) : null}
+                  <Box sx={{ borderBottom: '1px solid black' }} />
                   <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {card.title}
-                    </Typography>
+                    <Box display="flex" alignItems="center">
+                      <PlayCircleOutlineIcon />
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{
+                          marginLeft: theme.spacing(1),
+                          marginRight: theme.spacing(1),
+                        }}
+                      >
+                        {card.title}
+                      </Typography>
+                    </Box>
                     {card.link && (
                       <Typography variant="body2" color="text.secondary">
                         <a
@@ -168,8 +189,28 @@ function FamilyLessonsPage() {
               .fill(null)
               .map(() => (
                 <Grid item xs={12} sm={6} md={4}>
-                  <Card>
-                    <CardContent>Material</CardContent>
+                  <Card
+                    sx={{
+                      backgroundColor: 'white',
+                      border: '1px solid black',
+                    }}
+                  >
+                    <CardContent>
+                      <Box display="flex" alignItems="center">
+                        <InsertLinkIcon />
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                          sx={{
+                            marginLeft: theme.spacing(1),
+                            marginRight: theme.spacing(1),
+                          }}
+                        >
+                          Material
+                        </Typography>
+                      </Box>
+                    </CardContent>
                   </Card>
                 </Grid>
               ))}
