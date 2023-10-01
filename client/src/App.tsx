@@ -66,7 +66,7 @@ function App() {
                   </Route>
                   {/* TODO: make the route protected */}
                   <Route
-                    path="/student-profile"
+                    path="/student-info"
                     element={<StudentProfilePage studentId="12345" />}
                   />
 

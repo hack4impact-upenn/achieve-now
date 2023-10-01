@@ -24,7 +24,7 @@ const getPageThumbnailUrl = async (url: string) => {
   const doc = parser.parseFromString(html);
   const metaElements = doc.getElementsByTagName('meta');
   let thumbnailUrl = '';
-  metaElements?.forEach((e) => {
+  metaElements?.forEach((e: any) => {
     const property = e.getAttribute('property');
     if (property === 'og:image') {
       const content = e.getAttribute('content');
@@ -35,7 +35,7 @@ const getPageThumbnailUrl = async (url: string) => {
 };
 
 /**
- * HTTP handler for retrieving a thumbnail from a url 
+ * HTTP handler for retrieving a thumbnail from a url
  */
 const retrieveThumbnail: RequestHandler = async (req, res) => {
   const { url } = req.body;
