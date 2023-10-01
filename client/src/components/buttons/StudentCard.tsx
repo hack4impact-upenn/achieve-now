@@ -2,15 +2,24 @@
 import { CardActionArea, CardContent, Typography, Card } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../../util/api';
 
 type StudentCardProps = {
-  studentName: string;
+  studentID: string;
   lesson: string;
 };
 
-function StudentCard({ studentName, lesson }: StudentCardProps) {
+function StudentCard({ studentID, lesson }: StudentCardProps) {
   const navigate = useNavigate();
-  const label = studentName;
+  console.log(studentID);
+  const user = useData(`user/${studentID}`);
+  console.log(user);
+  let label = 'Name';
+  if (user) {
+    const info = user.data;
+    const name = `${info.firstName} ${info.lastName}`;
+    label = name;
+  }
 
   function handleClick() {
     // const s = `/city-dashboard/${cityName}`;
