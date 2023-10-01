@@ -19,6 +19,7 @@ import {
   getInviteByToken,
   updateInvite,
 } from '../services/invite.service';
+import { getAllBlocksfromDB } from '../services/block.service';
 import { IInvite } from '../models/invite.model';
 import { emailInviteLink } from '../services/mail.service';
 
@@ -174,4 +175,24 @@ const inviteUser = async (
   }
 };
 
-export { getAllUsers, changeRole, deleteUser, verifyToken, inviteUser };
+/**
+ * Get all blocks from the database. Upon success, send the a list of all blocks in the res body with 200 OK status code.
+ */
+const getAllBlocks = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return (
+    getAllBlocksfromDB()
+      .then((blockList) => {
+        res.status(StatusCode.OK).send(blockList);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve all blocks'));
+      })
+  );
+};
+
+export { getAllUsers, changeRole, deleteUser, verifyToken, inviteUser, getAllBlocks };

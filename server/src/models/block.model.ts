@@ -36,4 +36,6 @@ interface IBlock extends mongoose.Document {
   zoom: string;
 }
 
-export default mongoose.model<IBlock>('Block', BlockSchema);
+const Block = mongoose.model<IBlock>('Block', BlockSchema);
+
+export { IBlock, Block };

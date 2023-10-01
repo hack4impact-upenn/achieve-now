@@ -10,6 +10,7 @@ import {
   deleteUser,
   inviteUser,
   verifyToken,
+  getAllBlocks
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';
@@ -66,5 +67,10 @@ router.post('/invite', isAuthenticated, isAdmin, inviteUser);
  * A GET route to verify the user invite is valid
  */
 router.get('/invite/:token', verifyToken);
+
+/**
+ * A GET route to get all blocks
+ */
+router.get('/blocks', getAllBlocks);
 
 export default router;
