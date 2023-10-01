@@ -1,26 +1,20 @@
 import React from 'react';
-import { Typography, Grid } from '@mui/material';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
+import { Typography, Box, Container } from '@mui/material';
 import Header from '../components/PageHeader';
 
-const student = {
-  name: 'Anna Bay',
-  school: 'Castro Valley Elementary School',
-  teacher: 'Mrs. Johnson',
-  phoneNumber: '510-888-3333',
-  email: 'email@gmail.com',
-  guardianName: 'Marina Bay',
-  guardianCommunicationDays: 'Weekdays',
-  guardianCommunicationTimes: 'Mornings',
-  waiver: true,
-};
+function StudentProfilePage({ studentId }: { studentId: string }) {
+  const student = {
+    name: 'Anna Bay',
+    school: 'Castro Valley Elementary School',
+    teacher: 'Mrs. Johnson',
+    phoneNumber: '510-888-3333',
+    email: 'email@gmail.com',
+    guardianName: 'Marina Bay',
+    guardianCommunicationDays: 'Weekdays',
+    guardianCommunicationTimes: 'Mornings',
+    waiver: true,
+  };
 
-function StudentProfilePage() {
   return (
     <>
       <Header />
