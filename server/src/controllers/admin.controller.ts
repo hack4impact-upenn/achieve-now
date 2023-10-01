@@ -195,4 +195,11 @@ const getAllBlocks = async (
   );
 };
 
-export { getAllUsers, changeRole, deleteUser, verifyToken, inviteUser, getAllBlocks };
+export {
+  getAllUsers,
+  changeRole,
+  deleteUser,
+  verifyToken,
+  inviteUser,
+  getAllBlocks,
+};

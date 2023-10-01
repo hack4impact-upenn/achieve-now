@@ -10,7 +10,7 @@ import {
   deleteUser,
   inviteUser,
   verifyToken,
-  getAllBlocks
+  getAllBlocks,
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';

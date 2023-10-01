@@ -10,7 +10,6 @@ import { Router } from 'express';
 import adminRouter from './admin.route';
 import authRouter from './auth.route';
 import thumbnailRouter from './thumbnail.route';
-import blockRouter from './block.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -24,10 +23,6 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
     prefix: '/api/thumbnail',
     router: thumbnailRouter,
-  },
-  {
-    prefix: '/api/block',
-    router: blockRouter,
   },
 ];
 
