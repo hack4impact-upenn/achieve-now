@@ -26,6 +26,11 @@ const BlockSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  students: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    required: true,
+    default: [],
+  },
 });
 
 interface IBlock extends mongoose.Document {
@@ -34,6 +39,7 @@ interface IBlock extends mongoose.Document {
   time: string;
   block: number;
   zoom: string;
+  students: [string];
 }
 
 export default mongoose.model<IBlock>('Block', BlockSchema);

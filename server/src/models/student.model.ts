@@ -18,11 +18,6 @@ const StudentSchema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     required: true,
   },
-  block_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Block',
-    required: true,
-  },
   lesson_level: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson',
@@ -31,10 +26,12 @@ const StudentSchema = new mongoose.Schema({
   parent_additional_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
+    default: [],
   },
   coach_additional_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
     required: true,
+    default: [],
   },
   progress_stats: {
     type: Map,
@@ -43,6 +40,7 @@ const StudentSchema = new mongoose.Schema({
       of: Number,
     },
     required: true,
+    default: {},
   },
   parent_name: {
     type: String,
