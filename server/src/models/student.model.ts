@@ -74,29 +74,6 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  parent_name: {
-    type: String,
-    required: true,
-  },
-  parent_commmunication_days: {
-    type: String,
-    enum: ['weekends', 'weekdays', 'any'],
-    required: false,
-  },
-  parent_communication_times: {
-    type: String,
-    enum: ['morning', 'afternoon', 'evening'],
-    required: false,
-  },
-  media_waiver: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  work_habits: {
-    type: String,
-    required: false,
-  },
 });
 
 interface IStudent extends mongoose.Document {
