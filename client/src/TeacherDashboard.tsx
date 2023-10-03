@@ -48,39 +48,40 @@ function SplitGrid() {
   console.log(studentData);
 
   return (
-    <Box display="flex" flexDirection="column" width="100%" height="100vh">
+    <Box>
       <PageHeader />
+      <Box display="flex" flexDirection="column" width="100%" height="100vh">
+        <Box display="flex" flexGrow={5}>
+          <Paper
+            sx={{
+              width: '30%',
+              overflowY: 'auto',
+              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
+              bgcolor: 'white',
+              p: 2,
+            }}
+            elevation={0}
+            square
+          >
+            <h2>Students</h2>
+            {createData(studentData)}
+          </Paper>
 
-      <Box display="flex" flexGrow={5}>
-        <Paper
-          sx={{
-            width: '30%',
-            overflowY: 'auto',
-            maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
-            bgcolor: 'white',
-            p: 2,
-          }}
-          elevation={0}
-          square
-        >
-          <h2>Students</h2>
-          {createData(studentData)}
-        </Paper>
-
-        <Paper
-          sx={{
-            width: '70%',
-            overflowY: 'auto',
-            maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
-            bgcolor: '#EDEDED',
-            p: 2,
-            paddingX: 4,
-          }}
-          elevation={0}
-          square
-        >
-          <h2>Class Progress</h2>
-        </Paper>
+          <Paper
+            sx={{
+              width: '70%',
+              overflowY: 'auto',
+              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
+              bgcolor: '#EDEDED',
+              p: 2,
+              paddingX: 4,
+            }}
+            elevation={0}
+            square
+          >
+            <h2>Class Progress</h2>
+          </Paper>
+        </Box>
       </Box>
     </Box>
   );
