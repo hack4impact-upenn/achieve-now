@@ -25,9 +25,10 @@ const getStudentsFromTeacherId = async (
     next(ApiError.internal('Request must include a valid teacher_id param'));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function hasTeacher(student: IStudent) {
     const teachers = student.teacher_id;
-    for (let i = 0; i < teachers.length; i++) {
+    for (let i = 0; i < teachers.length; i += 1) {
       const teacher = teachers[i];
       if (teacher === id) {
         return true;
@@ -40,7 +41,7 @@ const getStudentsFromTeacherId = async (
     getAllStudentsFromDB()
       .then((studentList) => {
         console.log('made it');
-        //console.log(studentList.filter((student) => hasTeacher(student)));
+        // console.log(studentList.filter((student) => hasTeacher(student)));
         return studentList;
       })
       .then((filteredList) => {
