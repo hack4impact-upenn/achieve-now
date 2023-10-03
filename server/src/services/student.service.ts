@@ -3,6 +3,20 @@
  */
 import { Student } from '../models/student.model';
 
+const passwordHashSaltRounds = 10;
+const removeSensitiveDataQuery = [
+  '-password',
+  '-verificationToken',
+  '-resetPasswordToken',
+  '-resetPasswordTokenExpiryDate',
+];
+
+const removeSensitiveDataQueryKeepPassword = [
+  '-verificationToken',
+  '-resetPasswordToken',
+  '-resetPasswordTokenExpiryDate',
+];
+
 /**
  * @returns All the {@link Student}s in the database.
  */
@@ -11,4 +25,18 @@ const getAllStudentsFromDB = async () => {
   return studentList;
 };
 
-export { getAllStudentsFromDB };
+/**
+ * Gets a student from the database by their id.
+ * @param id The id of the user to get.
+ * @returns The {@link Student} or null if the user was not found.
+ */
+const getStudentByID = async (id: string) => {
+  //   const user = await Student.findById(id).select(removeSensitiveDataQuery).exec();
+  //   return user;
+  const user = await Student.findOne({ id })
+    .select(removeSensitiveDataQuery)
+    .exec();
+  return user;
+};
+
+export { getAllStudentsFromDB, getStudentByID };
