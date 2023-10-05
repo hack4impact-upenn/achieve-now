@@ -5,6 +5,12 @@
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
 import { isAuthenticated } from '../controllers/auth.middleware';
+import { isExist } from '../controllers/block.middleware';
+import {
+  getBlockInfo,
+  putAddBlock,
+  putEditBlock,
+} from '../controllers/block.controller';
 import 'dotenv/config';
 
 const router = express.Router();
@@ -15,7 +21,7 @@ const router = express.Router();
  * Expects a JSON body with the following fields:
  * - id (string) - block id
  */
-router.get('/block-info', isAuthenticated, isAdmin);
+router.get('/block-info', isAuthenticated, isAdmin, getBlockInfo);
 
 /**
  * A PUT route to add/edit a block if it already exists. Checks first if the requestor
@@ -28,8 +34,8 @@ router.get('/block-info', isAuthenticated, isAdmin);
  *	- zoom: string;
  *	- students: string[];
  */
-router.put('/add-block', isAuthenticated, isAdmin, isExist);
+router.put('/add-block', isAuthenticated, isAdmin, isExist, putAddBlock);
 
-router.put('/edit-block', isAuthenticated, isAdmin);
+router.put('/edit-block', isAuthenticated, isAdmin, putEditBlock);
 
 export default router;

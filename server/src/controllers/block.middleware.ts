@@ -3,19 +3,24 @@
  */
 import express from 'express';
 import ApiError from '../util/apiError';
-import { Block, IBlock } from '../models/block.model';
 import { getBlock } from '../services/block.service';
 
-const isExist = (
+const isExist = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
   // Get Block
-  const { day, time, block } = req.body;
+  const { day, startTime, endTime, block } = req.body;
   // Check if the block exists
-  getBlock(day, time, block);
-    // If it does, return an error
-    res.
-    // If it doesn't, call next()
+  const blockRes = await getBlock(day, startTime, endTime, block);
+  // If it does, return an error
+  if (blockRes) {
+    next(ApiError.badRequest('Block already exists.'));
+  } else {
+    next();
+  }
 };
+
+// eslint-disable-next-line import/prefer-default-export
+export { isExist };

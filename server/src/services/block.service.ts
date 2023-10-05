@@ -2,13 +2,13 @@
  * Mongo functions for all block objects
  */
 
-import { Block, IBlock } from '../models/block.model';
+import { Block } from '../models/block.model';
 
 const getBlock = async (
+  day: number,
   startTime: string,
   endTime: string,
   block: number,
-  day: number,
 ) => {
   const response = await Block.findOne({
     startTime,
