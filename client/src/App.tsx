@@ -42,6 +42,10 @@ function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/resources" element={<ResourceDashboard />} />
                     <Route
+                      path="/resources/:studentID"
+                      element={<ResourceDashboard />}
+                    />
+                    <Route
                       path="/resources/student/:studentID"
                       element={<StudentResource />}
                     />

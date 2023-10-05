@@ -3,6 +3,8 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import COLORS from './assets/colors';
+import Button from '@mui/material/Button';
 //import { styled } from '@mui/system';
 // eslint-disable-next-line
 import { useData } from './util/api';
@@ -35,7 +37,7 @@ function createData(data: any) {
 function SplitGrid() {
   const students = useData(`student/all`);
   const studentData = students?.data ?? [];
-
+  const navigator = useNavigate();
   const { studentID } = useParams(); //userID of the student
   //get the resources for the student
   const resources = useData(`student/resource/${studentID}`);
@@ -53,6 +55,10 @@ function SplitGrid() {
 
   console.log(resourceTitles);
   console.log(resourceLinks);
+
+  const handleLogin = () => {
+    navigator('/login');
+  };
 
   return (
     <Box>
@@ -86,7 +92,36 @@ function SplitGrid() {
             elevation={0}
             square
           >
-            <h2>Additional Resources</h2>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box>
+                <h2>Additional Resources</h2>
+              </Box>
+
+              <Box>
+                <Button
+                  sx={{ color: 'black', borderColor: 'black', margin: 2 }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleLogin}
+                >
+                  Edit
+                </Button>
+                <Button
+                  sx={{ color: 'black', borderColor: 'black' }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleLogin}
+                >
+                  Assign
+                </Button>
+              </Box>
+            </Box>
             <Grid container spacing={2}>
               <Grid item xs={6} md={6}>
                 <h1>Title</h1>
