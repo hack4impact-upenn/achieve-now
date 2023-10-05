@@ -60,24 +60,22 @@ function SplitGrid() {
   const handleCheckboxChange = (index: any) => {
     const newValues = [...checkboxValues];
     const resource = allResourceData[index];
-    const resid = resource._id;
-    console.log('resource id');
-    console.log(resid);
+    const resid = resource._id.toString();
     if (newValues[index]) {
       //originally true, unassign
-      const res = deleteData(`student/delete-resource`, {
+      const deleteRes = deleteData(`student/delete-resource`, {
         'id': { id },
-        'resource': { resid },
+        'resource': resid,
       });
+      newValues[index] = false;
     } else {
       //originally false, assign
       const res = putData(`student/assign-resource`, {
         'id': { id },
-        'resource': { resid },
+        'resource': resid,
       });
+      newValues[index] = true;
     }
-
-    newValues[index] = !newValues[index];
     setCheckboxValues(newValues);
   };
 
@@ -164,7 +162,7 @@ function SplitGrid() {
                       control={
                         <Checkbox
                           key={index}
-                          checked={resourceTitles.indexOf(item) > -1}
+                          checked={checkboxValues[index] || false}
                           onChange={() => handleCheckboxChange(index)}
                         />
                       }

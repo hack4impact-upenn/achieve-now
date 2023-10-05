@@ -76,23 +76,26 @@ const deleteResource = async (
 ) => {
   const { id } = req.body;
   const { resource } = req.body;
+  
+  console.log('DELETION')
+  console.log(id)
+  console.log(resource)
   if (!id) {
-    next(ApiError.missingFields(['id']));
+    // next(ApiError.missingFields(['id']));
     return;
   }
+  
   if (!resource) {
-    next(ApiError.missingFields(['resource']));
+    // next(ApiError.missingFields(['resource']));
     return;
   }
-
+  
   // Check if student exists
   const student: IStudent | null = await getStudentByID(id);
   if (!student) {
     next(ApiError.notFound(`Student with id ${id} does not exist`));
     return;
   }
-  const student_id = student._id;
-
   if (!student.parent_additional_resources) {
     next(ApiError.notFound(`Student does not have any resources.`));
     return;
@@ -101,7 +104,8 @@ const deleteResource = async (
   const updated_resources = student.parent_additional_resources.filter(
     (item) => item !== resource,
   );
-  console.log(updated_resources);
+
+  console.log('updated: ' + updated_resources);
 
   updateResourcesByID(id, updated_resources)
     .then((student) => res.status(StatusCode.OK).send(student))
@@ -136,8 +140,6 @@ const updateResource = async (
     next(ApiError.notFound(`Student with id ${id} does not exist`));
     return;
   }
-
-  console.log(student);
 
   let resources = [];
 

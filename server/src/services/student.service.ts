@@ -34,8 +34,6 @@ const getAllStudentsFromDB = async () => {
  * @returns The {@link Student} or null if the user was not found.
  */
 const getStudentByID = async (id: string) => {
-  //   const user = await Student.findById(id).select(removeSensitiveDataQuery).exec();
-  //   return user;
   const user = await Student.findOne({ id })
     .select(removeSensitiveDataQuery)
     .exec();
