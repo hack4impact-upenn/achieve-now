@@ -19,6 +19,16 @@ const removeSensitiveDataQueryKeepPassword = [
 ];
 
 /**
+ * @returns All the {@link Student}s in the database without their passwords.
+ */
+const getAllStudentsFromDB = async () => {
+  const userList = await Student.find({})
+    .select(removeSensitiveDataQuery)
+    .exec();
+  return userList;
+};
+
+/**
  * Gets a student from the database by their id.
  * @param id The id of the user to get.
  * @returns The {@link Student} or null if the user was not found.
@@ -61,4 +71,5 @@ export {
   getStudentByID,
   getResourceByID,
   updateResourcesByID,
+  getAllStudentsFromDB,
 };

@@ -10,7 +10,29 @@ import {
   getStudentByID,
   getResourceByID,
   updateResourcesByID,
+  getAllStudentsFromDB,
 } from '../services/student.service';
+
+/**
+ * Get all students from the database. Upon success, send the a list of all students in the res body with 200 OK status code.
+ */
+const getAllStudents = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return (
+    getAllStudentsFromDB()
+      .then((userList) => {
+        res.status(StatusCode.OK).send(userList);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve all users'));
+      })
+  );
+};
+
 /**
  * Get resources for a particular student. Send a 200 OK status code on success.
  */
@@ -141,4 +163,4 @@ const updateResource = async (
     });
 };
 
-export { getStudentResources, deleteResource, updateResource };
+export { getStudentResources, deleteResource, updateResource, getAllStudents };

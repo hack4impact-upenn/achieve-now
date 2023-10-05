@@ -23,6 +23,8 @@ import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import Header from './components/PageHeader';
+import ResourceDashboard from './ResourceDashboard';
+import StudentResource from './StudentResource';
 
 function App() {
   return (
@@ -38,6 +40,11 @@ function App() {
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/resources" element={<ResourceDashboard />} />
+                    <Route
+                      path="/resources/student/:studentID"
+                      element={<StudentResource />}
+                    />
                     <Route
                       path="/verify-account/:token"
                       element={<VerifyAccountPage />}
