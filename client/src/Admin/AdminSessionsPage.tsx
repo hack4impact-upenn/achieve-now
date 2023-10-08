@@ -1,25 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Button,
-  Box,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Button, Box, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 
-/**
- * The Family Lessons Page displays each lesson w/ the lesson number,
- * followed by a screengrid of lesson materials (cards linking to websites, videos, documents)
- * for students and families to reference.
- */
+interface AdminDashboardRow {
+  key: string;
+  student: string;
+  coach: string;
+  nextSteps: React.ReactElement;
+}
+
 function AdminSessionsPage() {
+  const columns: TColumn[] = [
+    { id: 'student', label: 'Student' },
+    { id: 'coach', label: 'Coach' },
+    { id: 'nextSteps', label: 'Next Steps' },
+  ];
+
+  // Used to create the data type to create a row in the table
+  function createAdminSessionsRow(
+    _id: string,
+    student: string,
+    coach: string,
+    nextSteps: React.ReactElement,
+  ): AdminDashboardRow {
+    return {
+      key: _id,
+      student,
+      coach,
+      nextSteps,
+    };
+  }
+
+  // dummy data
+  const tableData = [
+    { key: '1', student: 'Mary', coach: 'John' },
+    // ... other data rows ...
+  ];
+
+  // if the userlist is not yet populated, display a loading spinner
+  if (!tableData) {
+    return (
+      <div style={{ width: '0', margin: 'auto' }}>
+        <CircularProgress size={80} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Header />
@@ -29,6 +60,7 @@ function AdminSessionsPage() {
           flexDirection: 'column',
           alignItems: 'center',
           padding: theme.spacing(10),
+          marginTop: theme.spacing(6),
           marginLeft: theme.spacing(6),
           marginRight: theme.spacing(6),
           minHeight: '80vh',
@@ -37,127 +69,62 @@ function AdminSessionsPage() {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
+            justifyContent: 'space-between',
+            width: '80%',
             position: 'relative',
-            gap: theme.spacing(-1),
             paddingBottom: theme.spacing(1),
           }}
         >
           <Typography
             variant="h2"
-            sx={{ fontWeight: theme.typography.fontWeightBold }}
-          >
-            Placeholder Block 1
-          </Typography>
-          <Typography variant="h5" component="div">
-            <b>Zoom Link: </b>
-            <a
-              href="https://zoom.us/join"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://zoom.us/join
-            </a>
-          </Typography>
-          <Box
             sx={{
+              fontWeight: theme.typography.fontWeightBold,
               position: 'absolute',
-              right: '10%',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              display: 'flex',
-              gap: theme.spacing(2),
+              left: '50%',
+              transform: 'translateX(-50%)',
             }}
           >
-            <Button
-              variant="outlined"
-              sx={{
-                backgroundColor: 'white',
-                borderColor: 'black',
-                '&:hover': {
-                  backgroundColor: 'grey.200',
-                },
-                width: theme.spacing(20),
-              }}
-            >
-              Edit Pair
-            </Button>
-          </Box>
+            Monday 8:50 - 9:50: Block 1
+          </Typography>
+          <Button
+            variant="outlined"
+            sx={{
+              position: 'absolute',
+              right: '0%',
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+            }}
+          >
+            Edit Block
+          </Button>
         </Box>
 
         <Box
           sx={{
-            marginTop: theme.spacing(2),
-            width: '100%',
-            backgroundColor: 'grey.300',
-            flexGrow: 1,
+            marginTop: theme.spacing(5),
+            width: '80%',
             padding: theme.spacing(2),
           }}
         >
-          <Grid container spacing={3} sx={{ paddingLeft: theme.spacing(10) }}>
-            <Grid item xs={3}>
-              <Box>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: theme.typography.fontWeightBold, mb: 2 }}
-                >
-                  Student
-                </Typography>
-                <Typography>Anna Bay</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: theme.typography.fontWeightBold, mb: 2 }}
-                >
-                  Coach
-                </Typography>
-                <Typography
-                  sx={{ whiteSpace: 'normal', overflowWrap: 'break-word' }}
-                >
-                  Helena Zhou
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: theme.typography.fontWeightBold, mb: 2 }}
-                >
-                  Next Steps
-                </Typography>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: 'white',
-                    borderColor: 'black',
-                    '&:hover': {
-                      backgroundColor: 'grey.200',
-                    },
-                    width: theme.spacing(15),
-                  }}
-                >
-                  See More
-                </Button>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box>
-                <Typography
-                  variant="h5"
-                  sx={{ fontWeight: theme.typography.fontWeightBold, mb: 2 }}
-                >
-                  Observations
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+          <PaginationTable
+            rows={tableData.map((data) =>
+              createAdminSessionsRow(
+                data.key,
+                data.student,
+                data.coach,
+                <a href="../users" target="_blank" rel="noopener noreferrer">
+                  Notes
+                </a>,
+              ),
+            )}
+            columns={columns}
+          />
         </Box>
       </Box>
     </div>
