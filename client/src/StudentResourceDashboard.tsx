@@ -24,7 +24,7 @@ function SplitGrid() {
   const studentData = students?.data ?? [];
   console.log('hello');
   console.log(students);
-  //console.log(studentData);
+  // console.log(studentData);
 
   return (
     <Box>

@@ -34,7 +34,7 @@ router.get('/all', getAllStudents);
  * resource (object) - The resource object
  */
 router.delete('/delete-resource', deleteResource);
-//isAuthenticated, isAdmin,
+// isAuthenticated, isAdmin,
 
 /**
  * A PUT route to assign a resource to a particular student.

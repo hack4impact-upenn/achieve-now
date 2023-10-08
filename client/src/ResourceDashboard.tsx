@@ -1,16 +1,17 @@
+/* eslint no-underscore-dangle: 0 */
 import React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/system';
 // eslint-disable-next-line
 import { useData, deleteData, putData } from './util/api';
-import StudentCard from './components/buttons/StudentCard';
-import PageHeader from './components/PageHeader';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import PageHeader from './components/PageHeader';
+import StudentCard from './components/buttons/StudentCard';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -33,8 +34,8 @@ function SplitGrid() {
     navigator('/login');
   };
 
-  const { studentID } = useParams(); //userID of the student
-  //get the resources for the student
+  const { studentID } = useParams(); // userID of the student
+  // get the resources for the student
   let id = studentID;
   if (!id) {
     id = '64fdef20a4834502f88418b7';
@@ -42,11 +43,11 @@ function SplitGrid() {
 
   const allResources = useData(`resource/all`);
   const allResourceData = allResources?.data ?? [];
-  let allResourceTitles = [];
-  let allResourceLinks = [];
-  let allResourceIDs = [];
+  const allResourceTitles = [];
+  const allResourceLinks = [];
+  const allResourceIDs = [];
 
-  for (let i = 0; i < allResourceData.length; i++) {
+  for (let i = 0; i < allResourceData.length; i += 1) {
     const resource = allResourceData[i];
     allResourceTitles.push(resource.title);
     allResourceLinks.push(resource.link);
@@ -62,17 +63,17 @@ function SplitGrid() {
     const resource = allResourceData[index];
     const resid = resource._id.toString();
     if (newValues[index]) {
-      //originally true, unassign
+      // originally true, unassign
       const deleteRes = deleteData(`student/delete-resource`, {
-        'id': { id },
-        'resource': resid,
+        id: { id },
+        resource: resid,
       });
       newValues[index] = false;
     } else {
-      //originally false, assign
+      // originally false, assign
       const res = putData(`student/assign-resource`, {
-        'id': { id },
-        'resource': resid,
+        id: { id },
+        resource: resid,
       });
       newValues[index] = true;
     }
@@ -82,10 +83,10 @@ function SplitGrid() {
   const resources = useData(`student/resource/${id}`);
   const resourceData = resources?.data ?? [];
 
-  let resourceTitles = [''];
-  let resourceLinks = [];
-  let resourceIDs = [];
-  for (let i = 0; i < resourceData.length; i++) {
+  const resourceTitles = [''];
+  const resourceLinks = [];
+  const resourceIDs = [];
+  for (let i = 0; i < resourceData.length; i += 1) {
     const resource = resourceData[i];
     resourceTitles.push(resource.title);
     resourceLinks.push(resource.link);
@@ -161,7 +162,7 @@ function SplitGrid() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          key={index}
+                          key={item}
                           checked={checkboxValues[index] || false}
                           onChange={() => handleCheckboxChange(index)}
                         />

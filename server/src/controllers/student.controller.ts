@@ -58,7 +58,7 @@ const getStudentResources = async (
   if (student.parent_additional_resources) {
     for (let i = 0; i < student.parent_additional_resources.length; i++) {
       const resource_id = student.parent_additional_resources[i];
-      let res = await getResourceByID(resource_id);
+      const res = await getResourceByID(resource_id);
       resources.push(res);
     }
   }
@@ -76,20 +76,20 @@ const deleteResource = async (
 ) => {
   const { id } = req.body;
   const { resource } = req.body;
-  
-  console.log('DELETION')
-  console.log(id)
-  console.log(resource)
+
+  console.log('DELETION');
+  console.log(id);
+  console.log(resource);
   if (!id) {
     // next(ApiError.missingFields(['id']));
     return;
   }
-  
+
   if (!resource) {
     // next(ApiError.missingFields(['resource']));
     return;
   }
-  
+
   // Check if student exists
   const student: IStudent | null = await getStudentByID(id);
   if (!student) {
@@ -105,7 +105,7 @@ const deleteResource = async (
     (item) => item !== resource,
   );
 
-  console.log('updated: ' + updated_resources);
+  console.log(`updated: ${updated_resources}`);
 
   updateResourcesByID(id, updated_resources)
     .then((student) => res.status(StatusCode.OK).send(student))
@@ -148,14 +148,14 @@ const updateResource = async (
   } else {
     resources.push('');
   }
-  console.log('original: ' + resources);
+  console.log(`original: ${resources}`);
   const student_id = student._id;
 
   resources.push(resource);
 
   const updated_resources = resources.filter((item) => item !== '');
 
-  console.log('updated: ' + updated_resources);
+  console.log(`updated: ${updated_resources}`);
 
   updateResourcesByID(id, updated_resources)
     .then(() => res.sendStatus(StatusCode.OK))

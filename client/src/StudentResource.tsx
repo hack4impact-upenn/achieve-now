@@ -3,16 +3,16 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import COLORS from './assets/colors';
 import Button from '@mui/material/Button';
-//import { styled } from '@mui/system';
-// eslint-disable-next-line
-import { useData } from './util/api';
 import { useParams, useNavigate } from 'react-router-dom';
-import StudentCard from './components/buttons/StudentCard';
-import PageHeader from './components/PageHeader';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import COLORS from './assets/colors';
+// import { styled } from '@mui/system';
+// eslint-disable-next-line
+import { useData } from './util/api';
+import StudentCard from './components/buttons/StudentCard';
+import PageHeader from './components/PageHeader';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -38,16 +38,16 @@ function SplitGrid() {
   const students = useData(`student/all`);
   const studentData = students?.data ?? [];
   const navigator = useNavigate();
-  const { studentID } = useParams(); //userID of the student
-  //get the resources for the student
+  const { studentID } = useParams(); // userID of the student
+  // get the resources for the student
   const resources = useData(`student/resource/${studentID}`);
   const resourceData = resources?.data ?? [];
   console.log('resources');
   console.log(resourceData);
 
-  let resourceTitles = [];
-  let resourceLinks = [];
-  for (let i = 0; i < resourceData.length; i++) {
+  const resourceTitles = [];
+  const resourceLinks = [];
+  for (let i = 0; i < resourceData.length; i += 1) {
     const resource = resourceData[i];
     resourceTitles.push(resource.title);
     resourceLinks.push(resource.link);
