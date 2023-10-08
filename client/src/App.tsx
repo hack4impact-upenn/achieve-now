@@ -24,12 +24,7 @@ import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import Header from './components/PageHeader';
-<<<<<<< HEAD
-import ResourceDashboard from './ResourceDashboard';
-import StudentResource from './StudentResource';
-=======
 import TeacherDashboard from './TeacherDashboard';
->>>>>>> main
 
 function App() {
   return (
@@ -46,15 +41,6 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/teacher" element={<TeacherDashboard />} />
                     <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/resources" element={<ResourceDashboard />} />
-                    <Route
-                      path="/resources/:studentID"
-                      element={<ResourceDashboard />}
-                    />
-                    <Route
-                      path="/resources/student/:studentID"
-                      element={<StudentResource />}
-                    />
                     <Route
                       path="/verify-account/:token"
                       element={<VerifyAccountPage />}
