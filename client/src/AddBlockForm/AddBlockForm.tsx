@@ -61,10 +61,9 @@ function AddBlockForm() {
           <Grid item width="1">
             <Typography variant="subtitle1">Day</Typography>
             <Select
-              id="demo-simple-select"
               value={day}
               label="Day"
-              autoWidth
+              fullWidth
               onChange={handleDayChange}
             >
               <MenuItem value="Sunday">Sunday</MenuItem>
@@ -121,6 +120,12 @@ function AddBlockForm() {
           </Grid>
           <Grid item width="1">
             <Typography variant="h6">Pairs</Typography>
+            <Select label="Coach" fullWidth>
+              <MenuItem value="Coach 1">Coach 1</MenuItem>
+            </Select>
+            <Select label="Student" fullWidth>
+              <MenuItem value="Student">Student 1</MenuItem>
+            </Select>
           </Grid>
           <Grid item container justifyContent="center">
             <PrimaryButton type="submit" variant="contained">
