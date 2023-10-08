@@ -14,7 +14,11 @@ const BlockSchema = new mongoose.Schema({
     ],
     required: true,
   },
-  time: {
+  startTime: {
+    type: String,
+    required: true,
+  },
+  endTime: {
     type: String,
     required: true,
   },
@@ -26,14 +30,21 @@ const BlockSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  students: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    required: true,
+    default: [],
+  },
 });
 
 interface IBlock extends mongoose.Document {
   _id: string;
   day: string;
-  time: string;
+  startTime: string;
+  endTime: string;
   block: number;
   zoom: string;
+  students: [string];
 }
 
 export default mongoose.model<IBlock>('Block', BlockSchema);
