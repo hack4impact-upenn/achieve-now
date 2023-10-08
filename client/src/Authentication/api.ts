@@ -56,6 +56,7 @@ async function register(
     lastName,
     email: lowercaseEmail,
     password,
+    role: 'admin',
   });
   if (res.error) {
     throw Error(res.error.message);

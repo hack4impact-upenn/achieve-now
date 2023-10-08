@@ -6,20 +6,21 @@ export interface UserState {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
-  admin: boolean | null;
+  role: string | null;
 }
 
 interface Payload {
   email: string;
   firstName: string;
   lastName: string;
-  admin: boolean;
+  role: string;
 }
 
 const initialState = {
   email: null,
   firstName: null,
   lastName: null,
+  role: null,
 } as UserState;
 
 /**
@@ -33,21 +34,21 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
-      state.admin = action.payload.admin;
+      state.role = action.payload.role;
     },
-    toggleAdmin: (state) => {
-      state.admin = !state.admin;
+    changeRole: (state, action: PayloadAction<Payload>) => {
+      state.role = action.payload.role;
     },
     logout: (state) => {
       state.email = null;
       state.firstName = null;
       state.lastName = null;
-      state.admin = null;
+      state.role = null;
     },
   },
 });
 
-export const { login, logout, toggleAdmin } = userSlice.actions;
+export const { login, logout, changeRole } = userSlice.actions;
 export default userSlice.reducer;
 
 /**

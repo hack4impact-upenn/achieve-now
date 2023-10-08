@@ -6,11 +6,17 @@ const removeSensitiveDataQuery = ['-verificationToken'];
  * Creates a new invite in the database.
  * @param email - string representing the email of the invited user
  * @param verificationToken - string representing verification token
+ * @param role - string representing the role of the invited user
  * @returns The created {@link Invite}
  */
-const createInvite = async (email: string, verificationToken: string) => {
+const createInvite = async (
+  email: string,
+  verificationToken: string,
+  role: string,
+) => {
   const newInvite = new Invite({
     email,
+    role,
     verificationToken,
   });
   const invite = await newInvite.save();

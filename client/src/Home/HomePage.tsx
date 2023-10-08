@@ -1,41 +1,34 @@
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
-import {
-  logout as logoutAction,
-  toggleAdmin,
-  selectUser,
-} from '../util/redux/userSlice';
-import { logout as logoutApi, selfUpgrade } from './api';
+import { logout as logoutAction, selectUser } from '../util/redux/userSlice';
+import { logout as logoutApi } from './api';
 import ScreenGrid from '../components/ScreenGrid';
 import PrimaryButton from '../components/buttons/PrimaryButton';
+import RoleDropdown from '../components/buttons/RoleDropdown';
 
-interface PromoteButtonProps {
-  admin: boolean | null;
-  handleSelfPromote: () => void;
+interface ChooseRoleProps {
+  role: string | null;
+  email: string;
   navigator: NavigateFunction;
 }
 
 /**
- * A button which, when clicked, will promote the user to admin. If the user is already admin, the button will be a link to the admin dashboard.
- * @param admin - a boolean indicating whether the user is an admin
- * @param handleSelfPromote - a function which promotes the user to admin
+ * A dropdown which, when clicked, will allow the user to select their role. If the user is already admin, the button will be a link to the admin dashboard.
+ * @param currRole - a string indicating whether the user's current role
+ * @param email - the email of the user to change the role of (my email)
  * @param navigator - a function which navigates to a new page (passed in from parent function)
  */
-function PromoteButton({
-  admin,
-  handleSelfPromote,
-  navigator,
-}: PromoteButtonProps) {
-  if (admin === null) {
+function RoleSelect({ role, email, navigator }: ChooseRoleProps) {
+  if (role === null) {
     return null;
   }
-  return !admin ? (
-    <PrimaryButton variant="contained" onClick={handleSelfPromote}>
-      Promote self to admin
-    </PrimaryButton>
+  return role !== 'admin' ? (
+    <Box width={0.3}>
+      <RoleDropdown currRole={role} email={email} />
+    </Box>
   ) : (
     <PrimaryButton
       variant="contained"
@@ -52,7 +45,6 @@ function HomePage() {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const navigator = useNavigate();
-  const [admin, setAdmin] = useState(user.admin);
   const logoutDispatch = () => dispatch(logoutAction());
   const handleLogout = async () => {
     if (await logoutApi()) {
@@ -61,22 +53,14 @@ function HomePage() {
     }
   };
 
-  const handleSelfPromote = async () => {
-    const newAdminStatus = await selfUpgrade(user.email as string);
-    if (newAdminStatus) {
-      dispatch(toggleAdmin());
-      setAdmin(true);
-    }
-  };
-
   const message = `Welcome to the Boilerplate, ${user.firstName} ${user.lastName}!`;
   return (
     <ScreenGrid>
       <Typography variant="h2">{message}</Typography>
       <Grid item container justifyContent="center">
-        <PromoteButton
-          admin={admin}
-          handleSelfPromote={handleSelfPromote}
+        <RoleSelect
+          role={user.role as string}
+          email={user.email as string}
           navigator={navigator}
         />
       </Grid>
