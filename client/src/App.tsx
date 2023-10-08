@@ -67,8 +67,10 @@ function App() {
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
                   </Route>
+
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/lessons" element={<FamilyLessonsPage />} />
+                  </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-lessons"
