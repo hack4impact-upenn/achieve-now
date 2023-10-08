@@ -13,13 +13,6 @@ const removeSensitiveDataQuery = [
   '-resetPasswordTokenExpiryDate',
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const removeSensitiveDataQueryKeepPassword = [
-  '-verificationToken',
-  '-resetPasswordToken',
-  '-resetPasswordTokenExpiryDate',
-];
-
 /**
  * @returns All the {@link Student}s in the database without their passwords.
  */
