@@ -1,15 +1,17 @@
 /**
  * All the controller functions containing the logic for routes relating to
- * admin users such as getting all users, deleting users and upgrading users.
+ * student users.
  */
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import {
-  getAllStudentsFromDB,
-  getStudentByID,
-} from '../services/student.service';
 import { IStudent } from '../models/student.model';
+import {
+  getStudentByID,
+  getResourceByID,
+  updateResourcesByID,
+  getAllStudentsFromDB,
+} from '../services/student.service';
 
 /**
  * Get students by teacher_id
@@ -78,4 +80,163 @@ const getStudent = async (
   );
 };
 
-export { getStudentsFromTeacherId, getStudent };
+/**
+ * Get all students from the database. Upon success, send the a list of all students in the res body with 200 OK status code.
+ */
+const getAllStudents = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return (
+    getAllStudentsFromDB()
+      .then((userList) => {
+        res.status(StatusCode.OK).send(userList);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve all users'));
+      })
+  );
+};
+
+/**
+ * Get resources for a particular student. Send a 200 OK status code on success.
+ */
+const getStudentResources = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const student: IStudent | null = await getStudentByID(id);
+  if (!student) {
+    next(ApiError.notFound(`Student with id ${id} does not exist`));
+    return;
+  }
+
+  const resources = [];
+
+  if (student.parent_additional_resources) {
+    for (let i = 0; i < student.parent_additional_resources.length; i++) {
+      const resource_id = student.parent_additional_resources[i];
+      let res = await getResourceByID(resource_id);
+      resources.push(res);
+    }
+  }
+
+  res.status(StatusCode.OK).send(resources);
+};
+
+/**
+ * Delete resource for a particular student. Send a 200 OK status code on success.
+ */
+const deleteResource = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.body;
+  const { resource } = req.body;
+
+  console.log('DELETION');
+  console.log(id);
+  console.log(resource);
+  if (!id) {
+    // next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  if (!resource) {
+    // next(ApiError.missingFields(['resource']));
+    return;
+  }
+
+  // Check if student exists
+  const student: IStudent | null = await getStudentByID(id);
+  if (!student) {
+    next(ApiError.notFound(`Student with id ${id} does not exist`));
+    return;
+  }
+  if (!student.parent_additional_resources) {
+    next(ApiError.notFound(`Student does not have any resources.`));
+    return;
+  }
+
+  const updated_resources = student.parent_additional_resources.filter(
+    (item) => item !== resource,
+  );
+
+  console.log('updated: ' + updated_resources);
+
+  updateResourcesByID(id, updated_resources)
+    .then((student) => res.status(StatusCode.OK).send(student))
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Failed to delete resource.'));
+    });
+};
+
+/**
+ * Update student resource (add specified).
+ */
+const updateResource = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.body;
+  const { resource } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+  if (!resource) {
+    next(ApiError.missingFields(['resource']));
+    return;
+  }
+
+  // Check if student exists
+  const student: IStudent | null = await getStudentByID(id);
+  if (!student) {
+    next(ApiError.notFound(`Student with id ${id} does not exist`));
+    return;
+  }
+
+  let resources = [];
+
+  if (student.parent_additional_resources) {
+    resources = student.parent_additional_resources;
+  } else {
+    resources.push('');
+  }
+  console.log('original: ' + resources);
+  const student_id = student._id;
+
+  resources.push(resource);
+
+  const updated_resources = resources.filter((item) => item !== '');
+
+  console.log('updated: ' + updated_resources);
+
+  updateResourcesByID(id, updated_resources)
+    .then(() => res.sendStatus(StatusCode.OK))
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Failed to add resource.'));
+    });
+};
+
+export {
+  getStudentsFromTeacherId,
+  getStudent,
+  getStudentResources,
+  deleteResource,
+  updateResource,
+  getAllStudents,
+};

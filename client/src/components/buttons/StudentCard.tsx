@@ -11,9 +11,7 @@ type StudentCardProps = {
 
 function StudentCard({ studentID, lesson }: StudentCardProps) {
   const navigate = useNavigate();
-  console.log(studentID);
   const user = useData(`user/${studentID}`);
-  console.log(user);
   let label = 'Name';
   if (user) {
     const info = user.data;
@@ -22,8 +20,8 @@ function StudentCard({ studentID, lesson }: StudentCardProps) {
   }
 
   function handleClick() {
-    // const s = `/city-dashboard/${cityName}`;
-    // navigate(s);
+    const s = `/resources/${studentID}`;
+    navigate(s);
   }
 
   return (

@@ -10,9 +10,9 @@ import { Router } from 'express';
 import adminRouter from './admin.route';
 import authRouter from './auth.route';
 import thumbnailRouter from './thumbnail.route';
-import resourceRouter from './resource.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';
+import resourceRouter from './resource.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -33,6 +33,18 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   },
   {
     prefix: '/api/resources',
+    router: resourceRouter,
+  },
+  {
+    prefix: '/api/student',
+    router: studentRouter,
+  },
+  {
+    prefix: '/api/user',
+    router: userRouter,
+  },
+  {
+    prefix: '/api/resource',
     router: resourceRouter,
   },
 ];
