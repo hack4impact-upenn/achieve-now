@@ -9,6 +9,7 @@ The prefix should be of the form '/api/ROUTERNAME'
 import { Router } from 'express';
 import adminRouter from './admin.route';
 import authRouter from './auth.route';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import thumbnailRouter from './thumbnail.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';

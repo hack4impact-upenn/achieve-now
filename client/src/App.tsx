@@ -9,6 +9,7 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
+import FamilyLessonsPage from './Family/FamilyLessonsPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import {
   UnauthenticatedRoutesWrapper,
@@ -65,6 +66,10 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                  </Route>
+
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route path="/lessons" element={<FamilyLessonsPage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
