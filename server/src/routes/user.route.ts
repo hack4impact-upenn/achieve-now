@@ -13,6 +13,10 @@ const router = express.Router();
 /**
  * A GET route to get a user by their ID
  */
+<<<<<<< HEAD
 router.get('/:id', getUser);
+=======
+router.get('/:id', isAuthenticated, isAdmin, getUser);
+>>>>>>> main
 
 export default router;

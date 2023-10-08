@@ -4,18 +4,23 @@
  */
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
+<<<<<<< HEAD
 import {
   getStudentResources,
   deleteResource,
   updateResource,
   getAllStudents,
 } from '../controllers/student.controller';
+=======
+import { getStudentsFromTeacherId } from '../controllers/student.controller';
+>>>>>>> main
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
 const router = express.Router();
 
 /**
+<<<<<<< HEAD
  * A GET route to get parent additional resources.
  * Expects the following fields in the URL:
  * id (string) - The student id of the particular student
@@ -43,4 +48,11 @@ router.delete('/delete-resource', deleteResource);
  * resource (object) - The resource object
  */
 router.put('/assign-resource', updateResource);
+=======
+ * A GET route to get all users. Checks first if the requestor is a
+ * authenticated and is an admin.
+ */
+router.get('/teacher/:id', isAuthenticated, isAdmin, getStudentsFromTeacherId);
+
+>>>>>>> main
 export default router;

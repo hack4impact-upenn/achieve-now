@@ -4,6 +4,7 @@
 import { Student } from '../models/student.model';
 import { Resource } from '../models/resource.model';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const passwordHashSaltRounds = 10;
 const removeSensitiveDataQuery = [
   '-password',
@@ -12,6 +13,7 @@ const removeSensitiveDataQuery = [
   '-resetPasswordTokenExpiryDate',
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const removeSensitiveDataQueryKeepPassword = [
   '-verificationToken',
   '-resetPasswordToken',

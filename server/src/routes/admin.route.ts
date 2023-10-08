@@ -6,7 +6,7 @@ import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getAllUsers,
-  upgradePrivilege,
+  changeRole,
   deleteUser,
   inviteUser,
   verifyToken,
@@ -35,7 +35,7 @@ router.get('/adminstatus', isAuthenticated, isAdmin, approve);
  * Expects a JSON body with the following fields:
  * - email (string) - The email of the user to be promoted
  */
-router.put('/promote', isAuthenticated, isAdmin, upgradePrivilege);
+router.put('/change-role', isAuthenticated, isAdmin, changeRole);
 
 /**
  * A PUT route to upgrade a user's privilege
@@ -43,7 +43,7 @@ router.put('/promote', isAuthenticated, isAdmin, upgradePrivilege);
  * - email (string) - The email of the user to be promoted
  */
 // delete during deployment
-router.put('/autopromote', upgradePrivilege);
+router.put('/auto-change-role', changeRole);
 
 /**
  * A PUT route to delete a user. Checks first if the requestor
@@ -57,6 +57,8 @@ router.delete('/:email', isAuthenticated, isAdmin, deleteUser);
  * A POST route to invite a new user
  * Expects a JSON body with the following fields:
  * - email (string) - The email to invite the user from
+ * - userType (string) - The type of user to invite
+ * - active (boolean) - Whether the user is active or not
  */
 router.post('/invite', isAuthenticated, isAdmin, inviteUser);
 

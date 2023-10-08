@@ -19,6 +19,7 @@ import 'dotenv/config';
 const router = express.Router();
 
 /**
+ * TO DELETE
  * A POST route to register a user. Expects a JSON body with the following fields:
  * - firstName (string) - The first name of the user
  * - lastName (string) - The last name of the user

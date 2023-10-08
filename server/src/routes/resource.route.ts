@@ -4,15 +4,28 @@
  */
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
-import { getAllResources } from '../controllers/resource.controller';
-import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
+import { Router } from 'express';
+import {
+  createResourceHandler,
+  getLessonResourcesHandler,
+  updateResourceHandler,
+  getAllResources,
+} from '../controllers/resource.controller';
+import { isAuthenticated } from '../controllers/auth.middleware';
 
-const router = express.Router();
+const resourceRouter = Router();
 
-/**
- * A GET route to get all resources.
- */
-router.get('/all', getAllResources);
+resourceRouter.get('/all', getAllResources);
 
-export default router;
+resourceRouter.get(
+  '/lesson/:lessonId',
+  isAuthenticated,
+  getLessonResourcesHandler,
+);
+
+resourceRouter.put('/:resourceId', updateResourceHandler);
+
+resourceRouter.post('/', createResourceHandler);
+
+export default resourceRouter;

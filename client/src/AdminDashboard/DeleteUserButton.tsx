@@ -7,7 +7,7 @@ import AlertType from '../util/types/alert';
 import useAlert from '../util/hooks/useAlert';
 
 interface DeleteUserButtonProps {
-  admin: boolean;
+  role: string;
   email: string;
   removeRow: (user: string) => void;
 }
@@ -15,12 +15,12 @@ interface DeleteUserButtonProps {
 /**
  * The button component which, when clicked, will delete the user from the database.
  * If the user is an admin, the button will be unclickable.
- * @param admin - whether the user is an admin
+ * @param role - user's role
  * @param email - the email of the user to delete
  * @param removeRow - a function which removes a row from the user table. This
  * function is called upon successfully deletion of user from the database.
  */
-function DeleteUserButton({ admin, email, removeRow }: DeleteUserButtonProps) {
+function DeleteUserButton({ role, email, removeRow }: DeleteUserButtonProps) {
   const { setAlert } = useAlert();
   const [isLoading, setLoading] = useState(false);
   async function handleDelete() {
@@ -35,7 +35,7 @@ function DeleteUserButton({ admin, email, removeRow }: DeleteUserButtonProps) {
   if (isLoading) {
     return <LoadingButton />;
   }
-  if (!admin) {
+  if (role !== 'admin') {
     return (
       <ConfirmationModal
         buttonText="Remove User"

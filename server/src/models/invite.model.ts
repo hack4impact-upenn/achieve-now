@@ -10,6 +10,11 @@ const InviteSchema = new mongoose.Schema({
     match:
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g,
   },
+  role: {
+    type: String,
+    enum: ['parent', 'coach', 'admin', 'teacher'],
+    required: true,
+  },
   verificationToken: {
     type: String,
     required: false,
@@ -21,6 +26,7 @@ const InviteSchema = new mongoose.Schema({
 interface IInvite extends mongoose.Document {
   _id: string;
   email: string;
+  role: string;
   verificationToken: string;
 }
 
