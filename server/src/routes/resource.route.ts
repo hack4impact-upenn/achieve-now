@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-    createResourceHandler,
+  createResourceHandler,
   getLessonResourcesHandler,
   updateResourceHandler,
 } from '../controllers/resource.controller';
