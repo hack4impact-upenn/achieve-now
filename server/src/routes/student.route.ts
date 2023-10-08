@@ -10,6 +10,7 @@ import {
   updateResource,
   getAllStudents,
   getStudentsFromTeacherId,
+  getStudent,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -49,6 +50,8 @@ router.put('/assign-resource', isAuthenticated, isAdmin, updateResource);
  * A GET route to get all users. Checks first if the requestor is a
  * authenticated and is an admin.
  */
-router.get('/teacher/:id', isAuthenticated, isAdmin, getStudentsFromTeacherId);
+router.get('/teacher/:id', getStudentsFromTeacherId);
+
+router.get('/student/:id', getStudent);
 
 export default router;
