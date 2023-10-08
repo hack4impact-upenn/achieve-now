@@ -35,7 +35,7 @@ const getPageThumbnailUrl = async (url: string) => {
 };
 
 /**
- * HTTP handler for retrieving a thumbnail from a url 
+ * HTTP handler for retrieving a thumbnail from a url
  */
 const retrieveThumbnail: RequestHandler = async (req, res) => {
   const { url } = req.body;

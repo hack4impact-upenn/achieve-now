@@ -2,10 +2,8 @@
  * A file for defining the colors used in the project.
  */
 const COLORS = {
-  // From Official hack website
-  // https://github.com/hack4impact/chapter-website-template/blob/main/public/style.css
-  primaryBlue: '#0069ca',
-  secondarySeafoam: '#80d2c8',
+  primaryBlue: '#3c618f',
+  secondarySeafoam: '#00A7A7',
   gray: '#657788',
   primaryDark: '#4A4848', // Dark Blue
   primaryDark2: '#2e5987', // Dark Blue level 2

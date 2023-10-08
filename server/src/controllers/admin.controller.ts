@@ -8,7 +8,7 @@ import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import { IUser } from '../models/user.model';
 import {
-  upgradeUserToAdmin,
+  changeUserRole,
   getUserByEmail,
   getAllUsersFromDB,
   deleteUserById,
@@ -46,12 +46,12 @@ const getAllUsers = async (
  * Upgrade a user to an admin. The email of the user is expected to be in the request body.
  * Upon success, return 200 OK status code.
  */
-const upgradePrivilege = async (
+const changeRole = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { email } = req.body;
+  const { email, role } = req.body;
   if (!email) {
     next(ApiError.missingFields(['email']));
     return;
@@ -62,12 +62,12 @@ const upgradePrivilege = async (
     next(ApiError.notFound(`User with email ${email} does not exist`));
     return;
   }
-  if (user.admin) {
-    next(ApiError.badRequest(`User is already an admin`));
+  if (user.role === role) {
+    next(ApiError.badRequest(`User is already: ${role}`));
     return;
   }
 
-  upgradeUserToAdmin(user._id)
+  changeUserRole(user._id, role)
     .then(() => {
       res.sendStatus(StatusCode.OK);
     })
@@ -103,7 +103,7 @@ const deleteUser = async (
     next(ApiError.badRequest('Cannot delete self.'));
     return;
   }
-  if (user.admin) {
+  if (user.role === 'admin') {
     next(ApiError.forbidden('Cannot delete an admin.'));
     return;
   }
@@ -140,7 +140,7 @@ const inviteUser = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { email } = req.body;
+  const { email, role } = req.body;
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
   if (!email.match(emailRegex)) {
@@ -164,7 +164,7 @@ const inviteUser = async (
     if (existingInvite) {
       await updateInvite(existingInvite, verificationToken);
     } else {
-      await createInvite(lowercaseEmail, verificationToken);
+      await createInvite(lowercaseEmail, verificationToken, role);
     }
 
     await emailInviteLink(lowercaseEmail, verificationToken);
@@ -174,4 +174,4 @@ const inviteUser = async (
   }
 };
 
-export { getAllUsers, upgradePrivilege, deleteUser, verifyToken, inviteUser };
+export { getAllUsers, changeRole, deleteUser, verifyToken, inviteUser };
