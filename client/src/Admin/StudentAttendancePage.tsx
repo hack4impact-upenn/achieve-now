@@ -11,7 +11,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Header from '../components/PageHeader';
 
 interface IAttendance {
@@ -24,45 +25,35 @@ interface IAttendance {
   }[];
 }
 
-const sampleData: IAttendance = {
-  dates: ['10/06/2023', '10/03/2023', '10/01/2023', '09/29/2023', '09/27/2023'],
-  attendance: [
-    {
-      name: 'Anna',
-      attendance: {
-        '10/06/2023': 1,
-        '10/03/2023': 0,
-        '10/01/2023': 1,
-        '09/29/2023': 1,
-        '09/27/2023': 1,
-      },
-    },
-    {
-      name: 'Helena',
-      attendance: {
-        '10/06/2023': 1,
-        '10/03/2023': 1,
-        '10/01/2023': 1,
-        '09/29/2023': 1,
-        '09/27/2023': 1,
-      },
-    },
-    {
-      name: 'Vince',
-      attendance: {
-        '10/06/2023': 0,
-        '10/03/2023': 0,
-        '10/01/2023': 0,
-        '09/29/2023': 0,
-        '09/27/2023': 0,
-      },
-    },
-  ],
-};
-
 function StudentAttendancePage() {
-  const [rawData, setRawData] = useState(sampleData);
-  const [data, setData] = useState(sampleData);
+  const [rawData, setRawData] = useState<IAttendance>({
+    dates: [] as string[],
+    attendance: [],
+  });
+  const [data, setData] = useState<IAttendance>({
+    dates: [] as string[],
+    attendance: [],
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get('http://localhost:4000/api/student/all');
+      const attendances = result.data.map((student: any) => ({
+        name: 'Test Name',
+        attendance: student.progress_stats.attendance ?? {},
+      }));
+      const dates: string[] = [];
+      attendances.forEach((student: any) => {
+        Object.keys(student.attendance).forEach((date) => {
+          if (!dates.includes(date)) dates.push(date);
+        });
+      });
+      setRawData({ dates, attendance: attendances });
+      setData({ dates, attendance: attendances });
+    };
+
+    fetchData();
+  });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const search = e.target.value.toLowerCase();
