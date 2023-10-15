@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/system';
 // eslint-disable-next-line
 import { useData, deleteData, putData } from './util/api';
-import StudentCard from './components/buttons/StudentCard';
+import LessonCard from './components/buttons/LessonCard';
 import PageHeader from './components/PageHeader';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -19,14 +19,14 @@ const ScrollableBox = styled(Box)({
 
 // eslint-disable-next-line
 function createData(data: any) {
-  return data.map((student: any) => {
-    return <StudentCard studentID={student.user_id} lesson="Lesson 1" />;
+  return data.map((lesson: any) => {
+    return <LessonCard lessonID={lesson._id}/>;
   });
 }
 
 function SplitGrid() {
-  const students = useData(`student/all`);
-  const studentData = students?.data ?? [];
+  const lessons = useData(`lesson/all`);
+  const lessonData = lessons?.data ?? [];
   const navigator = useNavigate();
 
   const handleLogin = () => {

@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/system';
 // eslint-disable-next-line
 import { useData } from './util/api';
-import StudentCard from './components/buttons/StudentCard';
+import StudentCard from './components/buttons/LessonCard';
 import PageHeader from './components/PageHeader';
 
 const ScrollableBox = styled(Box)({
