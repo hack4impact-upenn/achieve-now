@@ -27,6 +27,7 @@ import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import Header from './components/PageHeader';
 import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
+import ResourceDashboard from './ResourceDashboard';
 
 function App() {
   return (
@@ -42,6 +43,11 @@ function App() {
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/teacher" element={<TeacherDashboard />} />
+                    <Route path="/resource" element={<ResourceDashboard />} />
+                    <Route
+                      path="/resource/:id"
+                      element={<ResourceDashboard />}
+                    />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                       path="/verify-account/:token"
