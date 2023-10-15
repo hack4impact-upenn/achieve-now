@@ -22,14 +22,7 @@ function RoleDropdown({ currRole, email, updateFE }: RoleDropdownProps) {
     setLoading(true);
     if (user.email === email) {
       if (await selfChange(user.email as string, newRole)) {
-        dispatch(
-          changeRole({
-            email: user.email as string,
-            firstName: user.firstName as string,
-            lastName: user.lastName as string,
-            role: newRole,
-          }),
-        );
+        dispatch(changeRole({ role: newRole }));
         setRole(newRole);
         if (updateFE) {
           updateFE(email, newRole);

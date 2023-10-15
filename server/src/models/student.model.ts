@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const StudentSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -12,34 +8,34 @@ const StudentSchema = new mongoose.Schema({
   },
   school_id: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'School' }],
-    required: true,
+    required: false,
   },
   teacher_id: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    required: true,
+    required: false,
   },
   coach_id: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    required: true,
+    required: false,
   },
   block_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Block',
-    required: true,
+    required: false,
   },
   lesson_level: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson',
-    required: true,
+    required: false,
   },
   parent_additional_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
-    required: true,
+    required: false,
     default: [],
   },
   coach_additional_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
-    required: true,
+    required: false,
     default: [],
   },
   progress_stats: {
@@ -48,22 +44,31 @@ const StudentSchema = new mongoose.Schema({
       type: Map,
       of: Number,
     },
-    required: true,
+    required: false,
     default: {},
   },
   parent_name: {
     type: String,
     required: true,
   },
-  parent_commmunication_days: {
+  parent_communication_days: {
     type: String,
     enum: ['weekends', 'weekdays', 'any'],
-    required: false,
+    required: true,
   },
   parent_communication_times: {
     type: String,
     enum: ['morning', 'afternoon', 'evening'],
-    required: false,
+    required: true,
+  },
+  best_communication_method: {
+    type: String,
+    enum: ['email', 'phone', 'text'],
+    required: true,
+  },
+  personality: {
+    type: String,
+    required: true,
   },
   media_waiver: {
     type: Boolean,
@@ -88,8 +93,10 @@ interface IStudent extends mongoose.Document {
   coach_additional_resources: [string];
   progress_stats: Map<string, Map<string, number>>;
   parent_name: string;
-  parent_commmunication_days: string;
+  parent_communication_days: string;
   parent_communication_times: string;
+  best_communication_method: string;
+  personality: string;
   media_waiver: boolean;
   work_habits: string;
 }

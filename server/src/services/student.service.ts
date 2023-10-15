@@ -30,7 +30,7 @@ const getAllStudentsFromDB = async () => {
 /**
  * Gets a student from the database by their id.
  * @param id The id of the user to get.
- * @returns The {@link Student} or null if the user was not found.
+ * @returns The {@link Student} or null if the student was not found.
  */
 const getStudentByID = async (id: string) => {
   //   const user = await Student.findById(id).select(removeSensitiveDataQuery).exec();
@@ -41,4 +41,24 @@ const getStudentByID = async (id: string) => {
   return user;
 };
 
-export { getAllStudentsFromDB, getStudentByID };
+const createStudent = async (
+  userId: string,
+  parentName: string,
+  parentCommunicationTimes: string,
+  parentCommunicationDays: string,
+  bestCommunicationMethod: string,
+  personality: string,
+) => {
+  const newStudent = new Student({
+    user_id: userId,
+    parent_name: parentName,
+    parent_communication_times: parentCommunicationTimes,
+    parent_communication_days: parentCommunicationDays,
+    best_communication_method: bestCommunicationMethod,
+    personality,
+  });
+  const student = await newStudent.save();
+  return student;
+};
+
+export { getAllStudentsFromDB, getStudentByID, createStudent };
