@@ -26,6 +26,7 @@ import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import Header from './components/PageHeader';
 import TeacherDashboard from './TeacherDashboard';
+import OnboardingPage from './Authentication/OnboardingPage';
 
 function App() {
   return (
@@ -63,6 +64,10 @@ function App() {
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/home" element={<HomePage />} />
+                    <Route
+                      path="/onboarding/student"
+                      element={<OnboardingPage />}
+                    />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />

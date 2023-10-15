@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Link, Typography, Grid } from '@mui/material';
+import { TextField, Link, Grid } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch } from '../util/redux/hooks';
 import { login as loginRedux } from '../util/redux/userSlice';
@@ -11,6 +11,7 @@ import { loginUser } from './api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import ScreenGrid from '../components/ScreenGrid';
+import AchieveLogo from '../assets/achieve-now-logo.png';
 
 /**
  * A page allowing users to input their email and password to login. The default
@@ -72,8 +73,11 @@ function LoginPage() {
     firstName: string,
     lastName: string,
     role: string,
+    isOnboarded: boolean,
   ) {
-    dispatch(loginRedux({ email: userEmail, firstName, lastName, role }));
+    dispatch(
+      loginRedux({ email: userEmail, firstName, lastName, role, isOnboarded }),
+    );
   }
 
   const clearErrorMessages = () => {
@@ -113,13 +117,19 @@ function LoginPage() {
     if (validateInputs()) {
       loginUser(values.email, values.password)
         .then((user) => {
+          const isOnboarded = user.firstName !== '' && user.lastName !== '';
           dispatchUser(
-            user.email!,
-            user.firstName!,
-            user.lastName!,
-            user.role!,
+            user.email || null,
+            user.firstName || null,
+            user.lastName || null,
+            user.role || null,
+            isOnboarded,
           );
-          navigate('/home');
+          if (isOnboarded) {
+            navigate('/home');
+          } else if (user.role === 'student') {
+            navigate('/onboarding/student');
+          }
         })
         .catch((e) => {
           setShowError('alert', true);
@@ -133,9 +143,7 @@ function LoginPage() {
       <FormGrid>
         <FormCol>
           <Grid item container justifyContent="center">
-            <Typography variant="h2" textAlign="center">
-              Welcome to Boilerplate
-            </Typography>
+            <img width="50%" src={AchieveLogo} alt="Achieve Now Logo" />
           </Grid>
           <Grid item width="1">
             <TextField
@@ -177,11 +185,7 @@ function LoginPage() {
                 Forgot password?
               </Link>
             </Grid>
-            <Grid item>
-              <Link component={RouterLink} to="/register">
-                Sign up
-              </Link>
-            </Grid>
+            {/*  removed the signup link */}
           </FormRow>
         </FormCol>
       </FormGrid>

@@ -7,6 +7,7 @@ export interface UserState {
   firstName: string | null;
   lastName: string | null;
   role: string | null;
+  isOnboarded: boolean | null;
 }
 
 interface Payload {
@@ -14,6 +15,7 @@ interface Payload {
   firstName: string;
   lastName: string;
   role: string;
+  isOnboarded: boolean;
 }
 
 const initialState = {
@@ -21,6 +23,7 @@ const initialState = {
   firstName: null,
   lastName: null,
   role: null,
+  isOnboarded: null,
 } as UserState;
 
 /**
@@ -35,8 +38,9 @@ const userSlice = createSlice({
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
       state.role = action.payload.role;
+      state.isOnboarded = action.payload.isOnboarded;
     },
-    changeRole: (state, action: PayloadAction<Payload>) => {
+    changeRole: (state, action: PayloadAction<{ role: string }>) => {
       state.role = action.payload.role;
     },
     logout: (state) => {
@@ -44,11 +48,21 @@ const userSlice = createSlice({
       state.firstName = null;
       state.lastName = null;
       state.role = null;
+      state.isOnboarded = null;
+    },
+    onboardUserStore: (
+      state,
+      action: PayloadAction<{ firstName: string; lastName: string }>,
+    ) => {
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
+      state.isOnboarded = true;
     },
   },
 });
 
-export const { login, logout, changeRole } = userSlice.actions;
+export const { login, logout, changeRole, onboardUserStore } =
+  userSlice.actions;
 export default userSlice.reducer;
 
 /**

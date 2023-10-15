@@ -123,6 +123,34 @@ async function registerInvite(
   }
 }
 
+async function onboardStudent(values: any, email: string) {
+  const {
+    studentFirst,
+    studentLast,
+    parentName,
+    parentPhone,
+    bestDay,
+    bestTime,
+    contactMethod,
+    studentInterests,
+  } = values;
+  const lowercaseEmail = email.toLowerCase();
+  const res = await postData('auth/onboard-student', {
+    email: lowercaseEmail,
+    studentFirst,
+    studentLast,
+    parentName,
+    parentPhone,
+    parentCommunicationDays: bestDay,
+    parentCommunicationTimes: bestTime,
+    bestCommunicationMethod: contactMethod,
+    personality: studentInterests,
+  });
+  if (res.error) {
+    throw Error(res.error.message);
+  }
+}
+
 export {
   register,
   loginUser,
@@ -130,4 +158,5 @@ export {
   sendResetPasswordEmail,
   resetPassword,
   registerInvite,
+  onboardStudent,
 };
