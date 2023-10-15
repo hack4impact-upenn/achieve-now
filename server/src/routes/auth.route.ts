@@ -12,6 +12,7 @@ import {
   resetPassword,
   verifyAccount,
   registerInvite,
+  onboardStudent,
 } from '../controllers/auth.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -73,5 +74,11 @@ router.get('/authstatus', isAuthenticated, approve);
  * a new account is created. Otherwise a 400 bad request error is returned
  */
 router.post('/register-invite', registerInvite);
+
+/**
+ * A POST route to onboard a student user. If the information is valid a new
+ * student object is created. Otherwise a 400 bad request error is returned.
+ */
+router.post('/onboard-student', onboardStudent);
 
 export default router;

@@ -143,6 +143,28 @@ const deleteUserById = async (id: string) => {
   return user;
 };
 
+/**
+ * A function that updates the user's name in the database.
+ * @param id The id of the user to update.
+ * @param firstName The new first name of the user.
+ * @param lastName The new last name of the user.
+ * @param phone The new phone number of the user.
+ * @returns The updated {@link User}
+ */
+const updateUserInfo = async (
+  id: string,
+  firstName: string,
+  lastName: string,
+  phone: string,
+) => {
+  const user = await User.findByIdAndUpdate(
+    id,
+    { firstName, lastName, phone },
+    { new: true },
+  ).exec();
+  return user;
+};
+
 export {
   passwordHashSaltRounds,
   createUser,
@@ -154,4 +176,5 @@ export {
   getAllUsersFromDB,
   changeUserRole,
   deleteUserById,
+  updateUserInfo,
 };
