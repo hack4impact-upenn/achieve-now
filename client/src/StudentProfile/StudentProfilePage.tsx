@@ -6,15 +6,15 @@ import IStudent from '../util/types/student';
 import Header from '../components/PageHeader';
 
 function StudentProfilePage() {
-  const { studentId } = useParams();
-  const [studentInfo, setStudentInfo] = useState<IStudent>(Object);
+  const { id } = useParams();
+  // const [studentInfo, setStudentInfo] = useState<IStudent>(Object);
 
-  const student = useData(`student/${studentId}`);
+  const student = useData(`student/${id}`);
+  const studentInfo = student ? student.data : null;
 
-  useEffect(() => {
-    setStudentInfo(student?.data);
-  }, [student]);
-
+  if (studentInfo === null) {
+    return <div>Student not available</div>;
+  }
   return (
     <>
       <Header />
