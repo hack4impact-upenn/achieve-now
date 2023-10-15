@@ -10,12 +10,24 @@ const StudentSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
   school_id: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'School' }],
     required: true,
   },
+  school_name: {
+    type: String,
+    required: true,
+  },
   teacher_id: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    required: true,
+  },
+  teacher_name: {
+    type: String,
     required: true,
   },
   coach_id: {
@@ -25,6 +37,14 @@ const StudentSchema = new mongoose.Schema({
   block_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Block',
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
     required: true,
   },
   lesson_level: {
@@ -79,10 +99,15 @@ const StudentSchema = new mongoose.Schema({
 interface IStudent extends mongoose.Document {
   _id: string;
   user_id: string;
+  name: string;
   school_id: [string];
+  school_name: string;
   teacher_id: [string];
+  teacher_name: string;
   coach_id: [string];
   block_id: string;
+  phoneNumber: string;
+  email: string;
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];

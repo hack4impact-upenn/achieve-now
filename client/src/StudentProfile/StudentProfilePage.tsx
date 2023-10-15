@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Box, Container } from '@mui/material';
+import { useParams } from 'react-router-dom';
+import { useData } from '../util/api';
+import IStudent from '../util/types/student';
 import Header from '../components/PageHeader';
 
-function StudentProfilePage({ studentId }: { studentId: string }) {
-  const student = {
-    name: 'Anna Bay',
-    school: 'Castro Valley Elementary School',
-    teacher: 'Mrs. Johnson',
-    phoneNumber: '510-888-3333',
-    email: 'email@gmail.com',
-    guardianName: 'Marina Bay',
-    guardianCommunicationDays: 'Weekdays',
-    guardianCommunicationTimes: 'Mornings',
-    waiver: true,
-  };
+function StudentProfilePage() {
+  const { studentId } = useParams();
+  const [studentInfo, setStudentInfo] = useState<IStudent>(Object);
+
+  const student = useData(`student/${studentId}`);
+
+  useEffect(() => {
+    setStudentInfo(student?.data);
+  }, [student]);
 
   return (
     <>
@@ -38,51 +38,51 @@ function StudentProfilePage({ studentId }: { studentId: string }) {
         >
           <Container>
             <Typography variant="h4" textAlign="center">
-              {student.name}
+              {studentInfo.name}
             </Typography>
           </Container>
           <Container sx={{ my: 5 }}>
             <Box marginBottom={1}>
               <Typography variant="body1">
-                <strong>School:</strong> {student.school}
+                <strong>School:</strong> {studentInfo.school_name}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
-                <strong>Teacher:</strong> {student.teacher}
+                <strong>Teacher:</strong> {studentInfo.teacher_name}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
-                <strong>Phone Number:</strong> {student.phoneNumber}
+                <strong>Phone Number:</strong> {studentInfo.phoneNumber}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
-                <strong>Email:</strong> {student.email}
+                <strong>Email:</strong> {studentInfo.email}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
-                <strong>Parent/Guardian Name:</strong> {student.guardianName}
+                <strong>Parent/Guardian Name:</strong> {studentInfo.parent_name}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
                 <strong>Parent Communication Preferences Days:</strong>{' '}
-                {student.guardianCommunicationDays}
+                {studentInfo.parent_commmunication_days}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
                 <strong>Parent Communication Preferences Times:</strong>{' '}
-                {student.guardianCommunicationTimes}
+                {studentInfo.parent_communication_times}
               </Typography>
             </Box>
             <Box marginBottom={1}>
               <Typography variant="body1">
                 <strong>Media Waiver:</strong>{' '}
-                {student.waiver ? 'Complete' : 'Incomplete'}
+                {studentInfo.media_waiver ? 'Complete' : 'Incomplete'}
               </Typography>
             </Box>
           </Container>

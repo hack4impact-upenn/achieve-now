@@ -65,10 +65,7 @@ function App() {
                     <Route path="/users" element={<AdminDashboardPage />} />
                   </Route>
                   {/* TODO: make the route protected */}
-                  <Route
-                    path="/student-info"
-                    element={<StudentProfilePage studentId="12345" />}
-                  />
+                  <Route path="/student/:id" element={<StudentProfilePage />} />
 
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
                   <Route
