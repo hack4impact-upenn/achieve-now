@@ -23,6 +23,13 @@ const router = express.Router();
 router.get('/resource/:id', getLessonResources);
 
 /**
+ * A GET route to get lesson by id.
+ * Expects the following fields in the URL:
+ * id (string) - The lesson id of the particular lesson
+ */
+router.get('/:id', getLessonResources);
+
+/**
  * A GET route to get all lessons.
  */
 router.get('/all', getAllLessons);

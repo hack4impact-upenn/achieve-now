@@ -4,15 +4,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../util/api';
 
-type StudentCardProps = {
-  studentID: string;
-  lesson: string;
+type LesonCardProps = {
+  lessonID: string;
 };
 
-function StudentCard({ studentID, lesson }: StudentCardProps) {
+function LessonCard({ lessonID }: LessonCardProps) {
   const navigate = useNavigate();
-  console.log(studentID);
-  const user = useData(`user/${studentID}`);
+  const lesson = useData(`lesson/${studentID}`);
   console.log(user);
   let label = 'Name';
   if (user) {
