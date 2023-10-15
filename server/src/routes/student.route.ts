@@ -1,18 +1,57 @@
 /**
  * Specifies the middleware and controller functions to call for each route
- * relating to authentication.
+ * relating to admin users.
  */
 import express from 'express';
-import getStudent from '../controllers/student.controller';
+import { isAdmin } from '../controllers/admin.middleware';
+import {
+  getStudentsFromTeacherId,
+  getStudent,
+  getStudentResources,
+  deleteResource,
+  updateResource,
+  getAllStudents,
+} from '../controllers/student.controller';
+import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
 const router = express.Router();
 
 /**
- * TO DELETE
- * A GET route to get a student object
- * - id of the student
+ * A GET route to get parent additional resources.
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
  */
-router.get('/:id', getStudent);
+router.get('/resource/:id', isAuthenticated, getStudentResources);
+
+/**
+ * A GET route to get all students.
+ */
+router.get('/all', isAuthenticated, getAllStudents);
+
+/**
+ * A PUT route to delete a resource from the parent additional resources.
+ * Expects a JSON body with the following fields:
+ * id (string) - The student id of the particular student
+ * resource (object) - The resource object
+ */
+router.delete('/delete-resource', isAuthenticated, isAdmin, deleteResource);
+// isAuthenticated, isAdmin,
+
+/**
+ * A PUT route to assign a resource to a particular student.
+ * Expects a JSON body with the following fields:
+ * id (string) - The student id of the student
+ * resource (object) - The resource object
+ */
+router.put('/assign-resource', isAuthenticated, isAdmin, updateResource);
+
+/**
+ * A GET route to get all users. Checks first if the requestor is a
+ * authenticated and is an admin.
+ */
+router.get('/teacher/:id', getStudentsFromTeacherId);
+
+router.get('/student/:id', getStudent);
 
 export default router;
