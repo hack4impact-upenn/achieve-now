@@ -27,6 +27,7 @@ const createExpressApp = (sessionStore: MongoStore): express.Express => {
   app.set('port', process.env.PORT || 4000);
   // Gives express the ability to parse requests with JSON and turn the JSON into objects
   app.use(express.json());
+  console.log(app.locals);
   // Gives express the ability to parse urlencoded payloads
   app.use(
     express.urlencoded({
