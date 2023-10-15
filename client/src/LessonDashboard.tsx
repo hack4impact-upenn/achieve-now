@@ -46,6 +46,7 @@ function SplitGrid() {
   let allResourceLinks = [];
   let allResourceIDs = [];
   let allResourceTypes = [];
+  let allResourceDesc = [];
 
   for (let i = 0; i < allResourceData.length; i++) {
     const resource = allResourceData[i];
@@ -53,6 +54,7 @@ function SplitGrid() {
     allResourceLinks.push(resource.link);
     allResourceIDs.push(resource._id);
     allResourceTypes.push(resource.type);
+    allResourceDesc.push("This teaches something.");
   }
 
   const [checkboxValues, setCheckboxValues] = React.useState(
@@ -175,14 +177,20 @@ function SplitGrid() {
               </Grid>
               <Grid item xs={6} md={6}>
                 <h1>Type</h1>
-                {allResourceTypes.map((link) => (
-                  <h4>{link}</h4>
+                {allResourceTypes.map((t) => (
+                  <h4>{t}</h4>
                 ))}
               </Grid>
               <Grid item xs={6} md={6}>
                 <h1>Link</h1>
                 {allResourceLinks.map((link) => (
                   <h4>{link}</h4>
+                ))}
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <h1>Description</h1>
+                {allResourceDesc.map((desc) => (
+                  <h4>{desc}</h4>
                 ))}
               </Grid>
             </Grid>
