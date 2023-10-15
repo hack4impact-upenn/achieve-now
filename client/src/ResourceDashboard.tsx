@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import PageHeader from './components/PageHeader';
 import StudentCard from './components/buttons/StudentCard';
+import TextField from '@mui/material/TextField';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -29,6 +30,7 @@ function SplitGrid() {
   const students = useData(`student/all`);
   const studentData = students?.data ?? [];
   const navigator = useNavigate();
+  console.log(studentData)
 
   const handleLogin = () => {
     navigator('/login');
@@ -46,12 +48,16 @@ function SplitGrid() {
   const allResourceTitles = [];
   const allResourceLinks = [];
   const allResourceIDs = [];
+  const allResourceDesc= [];
+  const allResourceTypes= [];
 
   for (let i = 0; i < allResourceData.length; i += 1) {
     const resource = allResourceData[i];
     allResourceTitles.push(resource.title);
     allResourceLinks.push(resource.link);
     allResourceIDs.push(resource._id);
+    allResourceDesc.push(resource.description);
+    allResourceTypes.push(resource.type);
   }
 
   const [checkboxValues, setCheckboxValues] = React.useState(
@@ -93,6 +99,35 @@ function SplitGrid() {
     resourceIDs.push(resource._id);
   }
 
+  //search bar
+
+  const users = useData(`admin/all`);
+  const userData = users?.data ?? [];
+  let idAgeMapping = new Map<string, string>();
+  for (let i = 0; i < userData.length; i += 1) {
+    const user = userData[i];
+    const name = user.firstName + " " + user.lastName;
+    idAgeMapping.set(user._id, name);
+  }
+
+  const [searchInput, setSearchInput] = React.useState("");
+
+  const handleChange = (e: { preventDefault: () => void; target: { value: React.SetStateAction<string>; }; }) => {
+    e.preventDefault();
+    setSearchInput(e.target.value);
+  };
+  
+  if (searchInput.length > 0) {
+      studentData.filter((student: { _id: any; }) => {
+        const suser_id = student._id;
+        const name = idAgeMapping.get(suser_id)
+        if (!name) {
+          return false;
+        }
+      return name.match(searchInput);
+  });
+  }
+
   return (
     <Box>
       <PageHeader />
@@ -111,6 +146,12 @@ function SplitGrid() {
           >
             <h2>Students</h2>
             {createData(studentData)}
+            <TextField
+              label="Search"
+              defaultValue="Name"
+              onChange={handleChange}
+              value={searchInput}
+            />
           </Paper>
 
           <Paper
@@ -155,7 +196,7 @@ function SplitGrid() {
               </Box>
             </Box>
             <Grid container spacing={2}>
-              <Grid item xs={6} md={6}>
+              <Grid item xs={2} md={3}>
                 <h1>Title</h1>
                 {allResourceTitles.map((item, index) => (
                   <Box>
@@ -172,7 +213,19 @@ function SplitGrid() {
                   </Box>
                 ))}
               </Grid>
-              <Grid item xs={6} md={6}>
+              <Grid item xs={2} md={3}>
+                <h1>Description</h1>
+                {allResourceDesc.map((link) => (
+                  <h4>{link}</h4>
+                ))}
+              </Grid>
+              <Grid item xs={2} md={3}>
+                <h1>Type</h1>
+                {allResourceTypes.map((link) => (
+                  <h4>{link}</h4>
+                ))}
+              </Grid>
+              <Grid item xs={2} md={3}>
                 <h1>Link</h1>
                 {allResourceLinks.map((link) => (
                   <h4>{link}</h4>
