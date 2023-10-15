@@ -28,37 +28,6 @@ interface ICard extends IResource {
   image?: string;
 }
 
-const cards: ICard[] = [
-  {
-    id: '0',
-    title: 'lizard website example',
-    link: 'https://reptilerapture.net/',
-    actions: ['Share', 'Learn More'],
-  },
-  {
-    id: '1',
-    title: 'video example',
-    link: 'https://www.youtube.com/watch?v=KrLj6nc516A',
-    actions: ['Learn More'],
-  },
-  {
-    id: '2',
-    title: 'docs example',
-    link: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit?usp=sharing',
-  },
-  {
-    id: '3',
-    title: 'this one has no picture',
-    link: '',
-  },
-  {
-    id: '4',
-    title: 'this one also without picture',
-    link: '',
-  },
-  // ... other cards ...
-];
-
 /**
  * The Family Lessons Page displays each lesson w/ the lesson number,
  * followed by a screengrid of lesson materials (cards linking to websites, videos, documents)
@@ -66,20 +35,25 @@ const cards: ICard[] = [
  */
 function FamilyLessonsPage() {
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
+
   useEffect(() => {
-    const fetchImages = async () => {
+    const fetchResources = async () => {
+      const response = await axios.get(
+        'http://localhost:4000/api/resources/all',
+      );
+      const resources: ICard[] = response.data;
+
       const updatedCards = await Promise.all(
-        cards.map(async (card: ICard) => {
+        resources.map(async (card: ICard) => {
           if (card.link) {
             try {
-              const response = await axios.post(
+              const resp = await axios.post(
                 'http://localhost:4000/api/thumbnail',
                 {
                   url: card.link,
                 },
               );
-              console.log(response.data);
-              if (response.data && response.data.url) {
+              if (resp.data && resp.data.url) {
                 return { ...card, image: response.data.url };
               }
             } catch (error) {
@@ -92,7 +66,7 @@ function FamilyLessonsPage() {
       setCardsWithImages(updatedCards);
     };
 
-    fetchImages();
+    fetchResources();
   }, []);
 
   return (

@@ -3,11 +3,11 @@
  * student users.
  */
 import express from 'express';
+import { RequestHandler } from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import { getAllResourcesFromDB } from '../services/resource.service';
-import { RequestHandler } from 'express';
 import {
+  getAllResourcesFromDB,
   createResource,
   getLessonResources,
   updateResource,
