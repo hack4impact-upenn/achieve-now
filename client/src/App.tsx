@@ -38,10 +38,6 @@ function App() {
                 <AlertPopup />
                 <Routes>
                   {/* Routes accessed only if user is not authenticated */}
-                  <Route
-                    path="/onboarding/student"
-                    element={<OnboardingPage />}
-                  />
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/teacher" element={<TeacherDashboard />} />
@@ -67,6 +63,10 @@ function App() {
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/home" element={<HomePage />} />
+                    <Route
+                      path="/onboarding/student"
+                      element={<OnboardingPage />}
+                    />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
