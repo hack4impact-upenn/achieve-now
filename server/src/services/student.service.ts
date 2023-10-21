@@ -89,7 +89,7 @@ const createStudent = async (
 const updateAttendance = async (
   id: string,
   date: number,
-  attendance: number,
+  attendance: string,
 ) => {
   const student = await Student.findOneAndUpdate(
     { id },
@@ -107,7 +107,7 @@ const createAttendanceOnDate = async (date: number) => {
     {},
     {
       $set: {
-        [`progress_stats.attendance.${date}`]: -1,
+        [`progress_stats.attendance.${date}`]: '',
       },
     },
   );

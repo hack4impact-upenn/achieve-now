@@ -24,7 +24,7 @@ interface IAttendance {
   attendance: {
     name: string;
     attendance: {
-      [date: string]: number;
+      [date: string]: string;
     };
   }[];
 }
@@ -66,6 +66,7 @@ function StudentAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
+    console.log(dates);
     setRawData({ dates, attendance: attendances });
     setData({ dates, attendance: attendances });
     console.log({ dates, attendance: attendances });
@@ -151,13 +152,7 @@ function StudentAttendancePage() {
               <TableRow>
                 <TableCell>{student.name}</TableCell>
                 {data.dates.map((date) => (
-                  <TableCell>
-                    {student.attendance[date] === -1
-                      ? ''
-                      : student.attendance[date]
-                      ? 'Present'
-                      : 'Absent'}
-                  </TableCell>
+                  <TableCell>{student.attendance[date]}</TableCell>
                 ))}
               </TableRow>
             ))}
