@@ -92,8 +92,12 @@ const updateAttendance = async (
   attendance: string,
 ) => {
   const student = await Student.findOneAndUpdate(
-    { id },
-    { $set: { [`progress_stats.attendance.${date}`]: attendance } },
+    {
+      _id: id,
+    },
+    {
+      $set: { [`progress_stats.attendance.${date}`]: attendance },
+    },
   ).exec();
   return student;
 };

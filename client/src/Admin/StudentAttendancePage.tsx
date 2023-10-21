@@ -2,7 +2,9 @@
 import {
   Box,
   Button,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   Table,
   TableCell,
@@ -19,9 +21,38 @@ import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
 
+const studentStatusOptions = [
+  'No Session',
+  'Not in School',
+  'Early Dismissal',
+  'Special Event',
+  'Absent',
+  'Late',
+  'Not in Session-Other Appt',
+  'At Home',
+  'Tech Issue',
+  'Behavior Issue',
+  'Walked Away',
+  'Logged Off',
+  "Didn't Finish",
+  'Assessed Ahead',
+  'Dropped - Attendance',
+  'Moved',
+  'Review',
+  'Review Complete',
+  'Finished Program',
+  'Needs SR',
+  'Passed SR',
+  'Failed SR',
+  'Needs CC',
+  'Passed CC',
+  'Failed CC',
+];
+
 interface IAttendance {
   dates: number[];
   attendance: {
+    id: string;
     name: string;
     attendance: {
       [date: string]: string;
@@ -56,7 +87,10 @@ function StudentAttendancePage() {
         };
       }),
     );
+    console.log(students);
     const attendances = students.map((student: any) => ({
+      // eslint-disable-next-line no-underscore-dangle
+      id: student._id,
       name: student.name,
       attendance: student.progress_stats.attendance ?? {},
     }));
@@ -66,10 +100,8 @@ function StudentAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
-    console.log(dates);
     setRawData({ dates, attendance: attendances });
     setData({ dates, attendance: attendances });
-    console.log({ dates, attendance: attendances });
   };
 
   useEffect(() => {
@@ -94,6 +126,19 @@ function StudentAttendancePage() {
   const deleteDate = async (date: number) => {
     await axios.put('http://localhost:4000/api/student/attendance/delete', {
       date,
+    });
+    fetchData();
+  };
+
+  const handleChangeAttendance = async (
+    id: string,
+    date: number,
+    attendance: string,
+  ) => {
+    await axios.put('http://localhost:4000/api/student/attendance', {
+      id,
+      date,
+      attendance,
     });
     fetchData();
   };
@@ -152,7 +197,18 @@ function StudentAttendancePage() {
               <TableRow>
                 <TableCell>{student.name}</TableCell>
                 {data.dates.map((date) => (
-                  <TableCell>{student.attendance[date]}</TableCell>
+                  <TableCell>
+                    <Select
+                      value={student.attendance[date]}
+                      onChange={(e) =>
+                        handleChangeAttendance(student.id, date, e.target.value)
+                      }
+                    >
+                      {studentStatusOptions.map((option) => (
+                        <MenuItem value={option}>{option}</MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
