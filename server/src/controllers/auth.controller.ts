@@ -14,6 +14,7 @@ import {
   getUserByEmail,
   getUserByResetPasswordToken,
   getUserByVerificationToken,
+  updateUserInfo,
 } from '../services/user.service';
 import {
   emailResetPasswordLink,
@@ -25,6 +26,7 @@ import {
   removeInviteByToken,
 } from '../services/invite.service';
 import { IInvite } from '../models/invite.model';
+import { createStudent } from '../services/student.service';
 
 /**
  * A controller function to login a user and create a session with Passport.
@@ -48,7 +50,7 @@ const login = async (
     },
     // Callback function defined by passport strategy in configPassport.ts
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (err, user, info) => {
+    (err: any, user: any, info: any) => {
       if (err) {
         next(ApiError.internal('Failed to authenticate user.'));
         return;
@@ -374,6 +376,119 @@ const registerInvite = async (
   }
 };
 
+const onboardStudent = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const {
+    email,
+    studentFirst,
+    studentLast,
+    parentName,
+    parentPhone,
+    parentCommunicationDays,
+    parentCommunicationTimes,
+    bestCommunicationMethod,
+    personality,
+  } = req.body;
+  if (
+    !email ||
+    !studentFirst ||
+    !studentLast ||
+    !parentName ||
+    !parentPhone ||
+    !parentCommunicationDays ||
+    !parentCommunicationTimes ||
+    !bestCommunicationMethod ||
+    !personality
+  ) {
+    next(
+      ApiError.missingFields([
+        'email',
+        'studentFirst',
+        'studentLast',
+        'parentName',
+        'parentPhone',
+        'parentCommunicationDays',
+        'parentCommunicationTimes',
+        'bestCommunicationMethod',
+        'personality',
+      ]),
+    );
+    return;
+  }
+  const nameRegex = /^[a-z ,.'-]+/i;
+  if (!parentName.match(nameRegex)) {
+    next(ApiError.badRequest('Invalid parent name.'));
+    return;
+  }
+  if (!studentFirst.match(nameRegex)) {
+    next(ApiError.badRequest('Invalid student first name.'));
+    return;
+  }
+  if (!studentLast.match(nameRegex)) {
+    next(ApiError.badRequest('Invalid student last name.'));
+    return;
+  }
+  const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+  if (!parentPhone.match(phoneRegex)) {
+    next(ApiError.badRequest('Invalid phone number.'));
+    return;
+  }
+  const communicationDaysRegex = /^(weekends|weekdays|any)$/;
+  if (!parentCommunicationDays.match(communicationDaysRegex)) {
+    next(ApiError.badRequest('Invalid parent communication days.'));
+    return;
+  }
+  const communicationTimesRegex = /^(morning|afternoon|evening)$/;
+  if (!parentCommunicationTimes.match(communicationTimesRegex)) {
+    next(ApiError.badRequest('Invalid parent communication times.'));
+    return;
+  }
+  const communicationMethodRegex = /^(email|phone|text)$/;
+  if (!bestCommunicationMethod.match(communicationMethodRegex)) {
+    next(ApiError.badRequest('Invalid best communication method.'));
+  }
+  try {
+    const userId = await getUserByEmail(email);
+    if (!userId) {
+      next(ApiError.badRequest('Invalid email.'));
+      return;
+    }
+    console.log(userId);
+    if (userId.role !== 'student') {
+      next(ApiError.badRequest('Invalid role.'));
+      return;
+    }
+    const userObj = await updateUserInfo(
+      userId._id,
+      studentFirst,
+      studentLast,
+      parentPhone,
+    );
+    if (!userObj) {
+      next(ApiError.badRequest('Invalid user.'));
+      return;
+    }
+    const studentObj = await createStudent(
+      userId._id,
+      parentName,
+      parentCommunicationTimes,
+      parentCommunicationDays,
+      bestCommunicationMethod,
+      personality,
+    );
+    if (!studentObj) {
+      next(ApiError.badRequest('Invalid student.'));
+      return;
+    }
+    res.sendStatus(StatusCode.CREATED);
+  } catch {
+    next(ApiError.internal('Unable to onboard student.'));
+  }
+};
+
 export {
   login,
   logout,
@@ -383,4 +498,5 @@ export {
   sendResetPasswordEmail,
   resetPassword,
   registerInvite,
+  onboardStudent,
 };

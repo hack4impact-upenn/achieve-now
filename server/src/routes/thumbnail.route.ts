@@ -23,19 +23,19 @@ const getPageThumbnailUrl = async (url: string) => {
   const parser = new DomParser();
   const doc = parser.parseFromString(html);
   const metaElements = doc.getElementsByTagName('meta');
-  let thumbnailUrl = '';
+  let thumbnailUrl = null;
   metaElements?.forEach((e) => {
     const property = e.getAttribute('property');
     if (property === 'og:image') {
       const content = e.getAttribute('content');
-      thumbnailUrl = content || '';
+      thumbnailUrl = content || null;
     }
   });
   return thumbnailUrl;
 };
 
 /**
- * HTTP handler for retrieving a thumbnail from a url 
+ * HTTP handler for retrieving a thumbnail from a url
  */
 const retrieveThumbnail: RequestHandler = async (req, res) => {
   const { url } = req.body;

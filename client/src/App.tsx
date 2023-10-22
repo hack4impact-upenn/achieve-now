@@ -10,6 +10,8 @@ import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
+import FamilyLessonsPage from './Family/FamilyLessonsPage';
+import AdminLessonsPage from './Admin/AdminLessonsPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -24,6 +26,10 @@ import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import Header from './components/PageHeader';
+import TeacherDashboard from './TeacherDashboard';
+import OnboardingPage from './Authentication/OnboardingPage';
+import ResourceDashboard from './ResourceDashboard';
+import StudentAttendancePage from './Admin/StudentAttendancePage';
 
 function App() {
   return (
@@ -38,6 +44,12 @@ function App() {
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/teacher" element={<TeacherDashboard />} />
+                    <Route path="/resource" element={<ResourceDashboard />} />
+                    <Route
+                      path="/resource/:id"
+                      element={<ResourceDashboard />}
+                    />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                       path="/verify-account/:token"
@@ -60,6 +72,10 @@ function App() {
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/home" element={<HomePage />} />
+                    <Route
+                      path="/onboarding/student"
+                      element={<OnboardingPage />}
+                    />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
@@ -68,6 +84,21 @@ function App() {
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route path="/lessons" element={<FamilyLessonsPage />} />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/admin-lessons"
+                      element={<AdminLessonsPage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/admin-attendance"
+                      element={<StudentAttendancePage />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}

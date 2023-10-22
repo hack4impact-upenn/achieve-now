@@ -9,8 +9,12 @@ The prefix should be of the form '/api/ROUTERNAME'
 import { Router } from 'express';
 import adminRouter from './admin.route';
 import authRouter from './auth.route';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import thumbnailRouter from './thumbnail.route';
 import blockRouter from './block.route';
+import studentRouter from './student.route';
+import userRouter from './user.route';
+import resourceRouter from './resource.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -22,8 +26,16 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
     router: adminRouter,
   },
   {
-    prefix: '/api/thumbnail',
-    router: thumbnailRouter,
+    prefix: '/api/student',
+    router: studentRouter,
+  },
+  {
+    prefix: '/api/user',
+    router: userRouter,
+  },
+  {
+    prefix: '/api/resources',
+    router: resourceRouter,
   },
   {
     prefix: '/api/block',
