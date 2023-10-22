@@ -29,6 +29,7 @@ import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
+import CoachAttendancePage from './Admin/CoachAttendancePage';
 
 function App() {
   return (
@@ -91,8 +92,14 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/admin-attendance"
+                      path="/admin-student-attendance"
                       element={<StudentAttendancePage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/admin-coach-attendance"
+                      element={<CoachAttendancePage />}
                     />
                   </Route>
 

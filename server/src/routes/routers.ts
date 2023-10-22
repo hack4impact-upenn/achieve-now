@@ -14,6 +14,7 @@ import thumbnailRouter from './thumbnail.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';
 import resourceRouter from './resource.route';
+import coachRouter from './coach.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -23,6 +24,10 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
     prefix: '/api/admin',
     router: adminRouter,
+  },
+  {
+    prefix: '/api/coach',
+    router: coachRouter,
   },
   {
     prefix: '/api/student',
