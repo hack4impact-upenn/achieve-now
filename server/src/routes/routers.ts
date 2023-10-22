@@ -11,6 +11,7 @@ import adminRouter from './admin.route';
 import authRouter from './auth.route';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import thumbnailRouter from './thumbnail.route';
+import blockRouter from './block.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';
 import resourceRouter from './resource.route';
@@ -35,6 +36,10 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
     prefix: '/api/resources',
     router: resourceRouter,
+  },
+  {
+    prefix: '/api/block',
+    router: blockRouter,
   },
 ];
 
