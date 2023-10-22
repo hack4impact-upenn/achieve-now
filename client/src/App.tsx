@@ -9,8 +9,10 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
+import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyLessonsPage from './Family/FamilyLessonsPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
+import AdminNotesPage from './Admin/AdminNotesPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -79,8 +81,13 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                  </Route>{' '}
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/admin-sessions"
+                      element={<AdminSessionsPage />}
+                    />
                   </Route>
-
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/lessons" element={<FamilyLessonsPage />} />
                   </Route>
@@ -89,6 +96,7 @@ function App() {
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
                     />
+                    <Route path="/admin-notes" element={<AdminNotesPage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
@@ -102,7 +110,6 @@ function App() {
                       element={<CoachAttendancePage />}
                     />
                   </Route>
-
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
                   <Route
                     path="/"
@@ -110,7 +117,6 @@ function App() {
                       <DynamicRedirect unAuthPath="/login" authPath="/home" />
                     }
                   />
-
                   {/* Route which is accessed if no other route is matched */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
