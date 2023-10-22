@@ -1,75 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Box, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { useData } from '../util/api';
 import theme from '../assets/theme';
-import ScreenGrid from '../components/ScreenGrid';
 
-interface AdminDashboardRow {
-  key: string;
-  student: string;
-  coach: string;
-  nextSteps: React.ReactElement;
-}
+const mockTableData = [
+  {
+    key: '1',
+    date: 'Monday',
+    time: '8:50am - 9:50am',
+    names: ["John's Block", 'Mrs. Johnson', 'Block A'],
+  },
+  {
+    key: '2',
+    date: 'Monday',
+    time: '11:50am - 12:50pm',
+    names: ['NAME', 'NAME'],
+  },
+  {
+    key: '3',
+    date: 'Monday',
+    time: '1:30pm - 2:30pm',
+    names: ['NAME', 'NAME', 'NAME'],
+  },
+  {
+    key: '4',
+    date: 'Tuesday',
+    time: '8:50am - 9:50am',
+    names: ['NAME'],
+  },
+];
 
-interface BlockInfo {
-  key: string;
-  student: string;
-  coach: string;
-  // Add other properties if needed
-}
+const uniqueDates = Array.from(new Set(mockTableData.map((item) => item.date)));
 
 function AdminSessionsPage() {
-  const columns: TColumn[] = [
-    { id: 'student', label: 'Student' },
-    { id: 'coach', label: 'Coach' },
-    { id: 'nextSteps', label: 'Next Steps' },
-  ];
-
-  // State for table data
-  const [tableData, setTableData] = useState<BlockInfo[] | null>(null);
-
-  // Fetch data from the backend
-  useEffect(() => {
-    // assumming the block id is known / fetched from elsewhere
-    const blockId = 'some_block_id';
-
-    axios
-      .get('/block-info', {
-        params: { id: blockId },
-      })
-      .then((response) => {
-        setTableData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching block info:', error);
-      });
-  }, []);
-
-  // for the button
-  const handleEditBlock = () => {
-    // todo add functionality
-    console.log('Editing block...');
-  };
-
-  // Used to create the data type to create a row in the table
-  function createAdminSessionsRow(
-    _id: string,
-    student: string,
-    coach: string,
-    nextSteps: React.ReactElement,
-  ): AdminDashboardRow {
-    return {
-      key: _id,
-      student,
-      coach,
-      nextSteps,
-    };
-  }
-
   return (
     <div>
       <Header />
@@ -105,11 +69,10 @@ function AdminSessionsPage() {
               transform: 'translateX(-50%)',
             }}
           >
-            Monday 8:50 - 9:50: Block 1
+            Sessions
           </Typography>
           <Button
             variant="outlined"
-            onClick={handleEditBlock}
             sx={{
               position: 'absolute',
               right: '0%',
@@ -121,39 +84,54 @@ function AdminSessionsPage() {
               width: theme.spacing(20),
             }}
           >
-            Edit Block
+            Add Block
           </Button>
         </Box>
 
-        <Box
-          sx={{
-            marginTop: theme.spacing(5),
-            width: '80%',
-            padding: theme.spacing(2),
-          }}
-        >
-          {tableData && (
-            <PaginationTable
-              rows={tableData.map(
-                (
-                  data: BlockInfo, // Explicitly type the data parameter
-                ) =>
-                  createAdminSessionsRow(
-                    data.key,
-                    data.student,
-                    data.coach,
-                    <a
-                      href="../users"
-                      target="_blank"
-                      rel="noopener noreferrer"
+        <Box p={4}>
+          {/* Monday Sessions */}
+          {uniqueDates.map((date) => (
+            <Box key={date} mt={3}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: theme.typography.fontWeightBold,
+                }}
+              >
+                {date}
+              </Typography>
+              <Box display="flex" justifyContent="space-between">
+                {mockTableData
+                  .filter((item) => item.date === date)
+                  .map((session) => (
+                    <Box
+                      key={session.key}
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: theme.spacing(2),
+                        margin: theme.spacing(3),
+                        backgroundColor: 'LightGray',
+                        borderRadius: '8px',
+                      }}
                     >
-                      Notes
-                    </a>,
-                  ),
-              )}
-              columns={columns}
-            />
-          )}
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: theme.typography.fontWeightBold,
+                        }}
+                      >
+                        {session.time}
+                      </Typography>
+                      {session.names.map((name) => (
+                        <Typography variant="subtitle1">{name}</Typography>
+                      ))}
+                    </Box>
+                  ))}
+              </Box>
+            </Box>
+          ))}
         </Box>
       </Box>
     </div>
