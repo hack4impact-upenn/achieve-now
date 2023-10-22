@@ -22,9 +22,7 @@ const removeSensitiveDataQueryKeepPassword = [
  * @returns All the {@link Lesson}s in the database without their passwords.
  */
 const getAllLessonsFromDB = async () => {
-  const list = await Lesson.find({})
-    .select(removeSensitiveDataQuery)
-    .exec();
+  const list = await Lesson.find({}).select(removeSensitiveDataQuery).exec();
   return list;
 };
 

@@ -11,6 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -20,7 +21,7 @@ const ScrollableBox = styled(Box)({
 // eslint-disable-next-line
 function createData(data: any) {
   return data.map((lesson: any) => {
-    return <LessonCard lessonID={lesson._id}/>;
+    return <LessonCard lessonID={lesson._id} />;
   });
 }
 
@@ -54,7 +55,7 @@ function SplitGrid() {
     allResourceLinks.push(resource.link);
     allResourceIDs.push(resource._id);
     allResourceTypes.push(resource.type);
-    allResourceDesc.push("This teaches something.");
+    allResourceDesc.push('This teaches something.');
   }
 
   const [checkboxValues, setCheckboxValues] = React.useState(
@@ -68,15 +69,15 @@ function SplitGrid() {
     if (newValues[index]) {
       //originally true, unassign
       const deleteRes = deleteData(`lesson/delete-resource`, {
-        'id': { id },
-        'resource': resid,
+        id: { id },
+        resource: resid,
       });
       newValues[index] = false;
     } else {
       //originally false, assign
       const res = putData(`lesson/assign-resource`, {
-        'id': { id },
-        'resource': resid,
+        id: { id },
+        resource: resid,
       });
       newValues[index] = true;
     }
@@ -96,6 +97,38 @@ function SplitGrid() {
     resourceIDs.push(resource._id);
   }
 
+  // Search bar
+
+  const all_lessons = useData(`lesson/all`);
+  const all_lessonData = all_lessons?.data ?? [];
+  const idNameMapping = new Map<string, string>();
+  for (let i = 0; i < lessonData.length; i += 1) {
+    const lesson = lessonData[i];
+    const name = `${lesson.number}`;
+    idNameMapping.set(lesson._id, 'Lesson ' + name);
+  }
+
+  const [searchInput, setSearchInput] = React.useState('');
+
+  const handleChange = (e: {
+    preventDefault: () => void;
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    e.preventDefault();
+    setSearchInput(e.target.value);
+  };
+
+  if (searchInput.length > 0) {
+    lessonData.filter((lesson: { _id: any }) => {
+      const sUserId = lesson._id;
+      const name = idNameMapping.get(sUserId);
+      if (!name) {
+        return false;
+      }
+      return name.match(searchInput);
+    });
+  }
+
   return (
     <Box>
       <PageHeader />
@@ -112,8 +145,14 @@ function SplitGrid() {
             elevation={0}
             square
           >
-            <h2>Students</h2>
-            {createData(studentData)}
+            <h2>Lessons</h2>
+            {createData(resourceData)}
+            <TextField
+              label="Search"
+              defaultValue="Lesson Name"
+              onChange={handleChange}
+              value={searchInput}
+            />
           </Paper>
 
           <Paper

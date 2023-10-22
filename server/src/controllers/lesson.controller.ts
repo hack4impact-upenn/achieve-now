@@ -6,10 +6,10 @@ import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import { ILesson } from '../models/lesson.model';
 import {
-    getAllLessonsFromDB,
-    getLessonByID,
-    getResourceByID,
-    updateResourcesByID,
+  getAllLessonsFromDB,
+  getLessonByID,
+  getResourceByID,
+  updateResourcesByID,
 } from '../services/lesson.service';
 
 /**
@@ -23,7 +23,7 @@ const getAllLessons = async (
   return (
     getAllLessonsFromDB()
       .then((list) => {
-        console.log(list)
+        console.log(list);
         res.status(StatusCode.OK).send(list);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

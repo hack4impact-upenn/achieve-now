@@ -5,10 +5,10 @@
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
-    getLessonResources, 
-    deleteResource, 
-    updateResource, 
-    getAllLessons,
+  getLessonResources,
+  deleteResource,
+  updateResource,
+  getAllLessons,
 } from '../controllers/lesson.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';

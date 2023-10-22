@@ -4,19 +4,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../util/api';
 
-type LesonCardProps = {
+type LessonCardProps = {
   lessonID: string;
 };
 
 function LessonCard({ lessonID }: LessonCardProps) {
   const navigate = useNavigate();
-  const lesson = useData(`lesson/${studentID}`);
-  console.log(user);
-  let label = 'Name';
-  if (user) {
-    const info = user.data;
-    const name = `${info.firstName} ${info.lastName}`;
-    label = name;
+  const lesson = useData(`lesson/${lessonID}`);
+  let label = 'Lesson ';
+  if (lesson) {
+    const info = lesson.data;
+    const number = `${info.number}`;
+    label += '' + number;
   }
 
   function handleClick() {
@@ -38,7 +37,7 @@ function LessonCard({ lessonID }: LessonCardProps) {
             variant="subtitle1"
           >
             <b>
-              <i>{lesson}</i>
+              <i>{label}</i>
             </b>
           </Typography>
         </CardContent>
@@ -47,4 +46,4 @@ function LessonCard({ lessonID }: LessonCardProps) {
   );
 }
 
-export default StudentCard;
+export default LessonCard;
