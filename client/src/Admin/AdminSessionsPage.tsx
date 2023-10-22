@@ -4,6 +4,7 @@ import { Button, Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
+import { useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 
@@ -14,12 +15,45 @@ interface AdminDashboardRow {
   nextSteps: React.ReactElement;
 }
 
+interface BlockInfo {
+  key: string;
+  student: string;
+  coach: string;
+  // Add other properties if needed
+}
+
 function AdminSessionsPage() {
   const columns: TColumn[] = [
     { id: 'student', label: 'Student' },
     { id: 'coach', label: 'Coach' },
     { id: 'nextSteps', label: 'Next Steps' },
   ];
+
+  // State for table data
+  const [tableData, setTableData] = useState<BlockInfo[] | null>(null);
+
+  // Fetch data from the backend
+  useEffect(() => {
+    // assumming the block id is known / fetched from elsewhere
+    const blockId = 'some_block_id';
+
+    axios
+      .get('/block-info', {
+        params: { id: blockId },
+      })
+      .then((response) => {
+        setTableData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching block info:', error);
+      });
+  }, []);
+
+  // for the button
+  const handleEditBlock = () => {
+    // todo add functionality
+    console.log('Editing block...');
+  };
 
   // Used to create the data type to create a row in the table
   function createAdminSessionsRow(
@@ -34,21 +68,6 @@ function AdminSessionsPage() {
       coach,
       nextSteps,
     };
-  }
-
-  // dummy data
-  const tableData = [
-    { key: '1', student: 'Mary', coach: 'John' },
-    // ... other data rows ...
-  ];
-
-  // if the userlist is not yet populated, display a loading spinner
-  if (!tableData) {
-    return (
-      <div style={{ width: '0', margin: 'auto' }}>
-        <CircularProgress size={80} />
-      </div>
-    );
   }
 
   return (
@@ -90,6 +109,7 @@ function AdminSessionsPage() {
           </Typography>
           <Button
             variant="outlined"
+            onClick={handleEditBlock}
             sx={{
               position: 'absolute',
               right: '0%',
@@ -112,19 +132,28 @@ function AdminSessionsPage() {
             padding: theme.spacing(2),
           }}
         >
-          <PaginationTable
-            rows={tableData.map((data) =>
-              createAdminSessionsRow(
-                data.key,
-                data.student,
-                data.coach,
-                <a href="../users" target="_blank" rel="noopener noreferrer">
-                  Notes
-                </a>,
-              ),
-            )}
-            columns={columns}
-          />
+          {tableData && (
+            <PaginationTable
+              rows={tableData.map(
+                (
+                  data: BlockInfo, // Explicitly type the data parameter
+                ) =>
+                  createAdminSessionsRow(
+                    data.key,
+                    data.student,
+                    data.coach,
+                    <a
+                      href="../users"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Notes
+                    </a>,
+                  ),
+              )}
+              columns={columns}
+            />
+          )}
         </Box>
       </Box>
     </div>
