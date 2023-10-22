@@ -37,4 +37,6 @@ interface ICoach extends mongoose.Document {
   progress_stats: Map<string, Map<string, any>>;
 }
 
-export default mongoose.model<ICoach>('Coach', CoachSchema);
+const Coach = mongoose.model<ICoach>('Coach', CoachSchema);
+
+export { ICoach, Coach };

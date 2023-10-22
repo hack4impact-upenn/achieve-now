@@ -21,32 +21,17 @@ import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
 
-const studentStatusOptions = [
-  'No Session',
-  'Not in School',
-  'Early Dismissal',
-  'Special Event',
-  'Absent',
+const coachStatusOptions = [
+  'Planned Absence',
   'Late',
-  'Not in Session-Other Appt',
-  'At Home',
+  'LMC',
+  'No Show',
+  'No Show - Covered',
+  'Dismissed',
   'Tech Issue',
-  'Behavior Issue',
-  'Walked Away',
-  'Logged Off',
-  "Didn't Finish",
-  'Assessed Ahead',
-  'Dropped - Attendance',
-  'Moved',
-  'Review',
-  'Review Complete',
-  'Finished Program',
-  'Needs SR',
-  'Passed SR',
-  'Failed SR',
-  'Needs CC',
-  'Passed CC',
-  'Failed CC',
+  'Covered For',
+  'Co-Coach Attended',
+  'No Session',
 ];
 
 interface IAttendance {
@@ -60,7 +45,7 @@ interface IAttendance {
   }[];
 }
 
-function StudentAttendancePage() {
+function CoachAttendancePage() {
   const [rawData, setRawData] = useState<IAttendance>({
     dates: [] as number[],
     attendance: [],
@@ -74,28 +59,28 @@ function StudentAttendancePage() {
     useState<boolean>(false);
 
   const fetchData = async () => {
-    const result = await axios.get('http://localhost:4000/api/student/all');
-    const students = result.data as any[];
+    const result = await axios.get('http://localhost:4000/api/coach/all');
+    const coaches = result.data as any[];
     await Promise.all(
-      students.map(async (student: any, index: number) => {
+      coaches.map(async (coach: any, index: number) => {
         const res = await axios.get(
-          `http://localhost:4000/api/user/${student.user_id}`,
+          `http://localhost:4000/api/user/${coach.user_id}`,
         );
-        students[index] = {
-          ...student,
+        coaches[index] = {
+          ...coach,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
       }),
     );
-    const attendances = students.map((student: any) => ({
+    const attendances = coaches.map((coach: any) => ({
       // eslint-disable-next-line no-underscore-dangle
-      id: student._id,
-      name: student.name,
-      attendance: student.progress_stats.attendance ?? {},
+      id: coach._id,
+      name: coach.name,
+      attendance: coach.progress_stats.attendance ?? {},
     }));
     const dates: number[] = [];
-    attendances.forEach((student: any) => {
-      Object.keys(student.attendance).forEach((date) => {
+    attendances.forEach((coach: any) => {
+      Object.keys(coach.attendance).forEach((date) => {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
@@ -109,21 +94,21 @@ function StudentAttendancePage() {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const search = e.target.value.toLowerCase();
-    const newData = rawData.attendance.filter((student) =>
-      student.name.toLowerCase().includes(search),
+    const newData = rawData.attendance.filter((coach) =>
+      coach.name.toLowerCase().includes(search),
     );
     setData({ ...rawData, attendance: newData });
   };
 
   const addDate = async (date: number) => {
-    await axios.put('http://localhost:4000/api/student/attendance/create', {
+    await axios.put('http://localhost:4000/api/coach/attendance/create', {
       date,
     });
     fetchData();
   };
 
   const deleteDate = async (date: number) => {
-    await axios.put('http://localhost:4000/api/student/attendance/delete', {
+    await axios.put('http://localhost:4000/api/coach/attendance/delete', {
       date,
     });
     fetchData();
@@ -134,7 +119,7 @@ function StudentAttendancePage() {
     date: number,
     attendance: string,
   ) => {
-    await axios.put('http://localhost:4000/api/student/attendance', {
+    await axios.put('http://localhost:4000/api/coach/attendance', {
       id,
       date,
       attendance,
@@ -162,7 +147,7 @@ function StudentAttendancePage() {
         justifyContent="start"
         spacing={2}
       >
-        <Typography variant="h3">Student Attendance</Typography>
+        <Typography variant="h3">Coach Attendance</Typography>
         <Stack direction="row" spacing={2}>
           <TextField
             label="search"
@@ -186,24 +171,24 @@ function StudentAttendancePage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Student</TableCell>
+                <TableCell>Coach</TableCell>
                 {data.dates.map((date) => (
                   <TableCell>{dayjs.unix(date).format('MM/DD/YYYY')}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
-            {data.attendance.map((student) => (
+            {data.attendance.map((coach) => (
               <TableRow>
-                <TableCell>{student.name}</TableCell>
+                <TableCell>{coach.name}</TableCell>
                 {data.dates.map((date) => (
                   <TableCell>
                     <Select
-                      value={student.attendance[date]}
+                      value={coach.attendance[date]}
                       onChange={(e) =>
-                        handleChangeAttendance(student.id, date, e.target.value)
+                        handleChangeAttendance(coach.id, date, e.target.value)
                       }
                     >
-                      {studentStatusOptions.map((option) => (
+                      {coachStatusOptions.map((option) => (
                         <MenuItem value={option}>{option}</MenuItem>
                       ))}
                     </Select>
@@ -218,4 +203,4 @@ function StudentAttendancePage() {
   );
 }
 
-export default StudentAttendancePage;
+export default CoachAttendancePage;
