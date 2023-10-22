@@ -33,7 +33,7 @@ const mockTableData = [
 
 const uniqueDates = Array.from(new Set(mockTableData.map((item) => item.date)));
 
-function AdminLessonsPage() {
+function AdminSessionsPage() {
   return (
     <div>
       <Header />
@@ -138,4 +138,4 @@ function AdminLessonsPage() {
   );
 }
 
-export default AdminLessonsPage;
+export default AdminSessionsPage;

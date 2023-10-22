@@ -42,7 +42,7 @@ const StudentSchema = new mongoose.Schema({
     type: Map,
     of: {
       type: Map,
-      of: Number,
+      of: String,
     },
     required: false,
     default: {},
