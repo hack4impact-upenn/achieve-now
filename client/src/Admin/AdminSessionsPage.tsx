@@ -1,39 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Box, Typography } from '@mui/material';
+import moment from 'moment';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
-
-const mockTableData = [
-  {
-    key: '1',
-    date: 'Monday',
-    time: '8:50am - 9:50am',
-    names: ["John's Block", 'Mrs. Johnson', 'Block A'],
-  },
-  {
-    key: '2',
-    date: 'Monday',
-    time: '11:50am - 12:50pm',
-    names: ['NAME', 'NAME'],
-  },
-  {
-    key: '3',
-    date: 'Monday',
-    time: '1:30pm - 2:30pm',
-    names: ['NAME', 'NAME', 'NAME'],
-  },
-  {
-    key: '4',
-    date: 'Tuesday',
-    time: '8:50am - 9:50am',
-    names: ['NAME'],
-  },
-];
-
-const uniqueDates = Array.from(new Set(mockTableData.map((item) => item.date)));
+import { useData } from '../util/api';
+import IBlock from '../util/types/block';
 
 function AdminLessonsPage() {
+  const [blockList, setBlockList] = useState<IBlock[]>([]);
+  const [uniqueDays, setUniqueDays] = useState<string[]>([]);
+  const blocks = useData('admin/blocks');
+
+  useEffect(() => {
+    const data = blocks?.data || [];
+    setBlockList(data);
+    setUniqueDays(Array.from(new Set(data.map((block: IBlock) => block.day))));
+    console.log(data);
+  }, [blocks]);
+
   return (
     <div>
       <Header />
@@ -90,22 +75,22 @@ function AdminLessonsPage() {
 
         <Box p={4}>
           {/* Monday Sessions */}
-          {uniqueDates.map((date) => (
-            <Box key={date} mt={3}>
+          {uniqueDays.map((day) => (
+            <Box key={day} mt={3}>
               <Typography
                 variant="h6"
                 sx={{
                   fontWeight: theme.typography.fontWeightBold,
                 }}
               >
-                {date}
+                {day}
               </Typography>
               <Box display="flex" justifyContent="space-between">
-                {mockTableData
-                  .filter((item) => item.date === date)
+                {blockList
+                  .filter((item) => item.day === day)
                   .map((session) => (
                     <Box
-                      key={session.key}
+                      // key={session._id}
                       sx={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -122,9 +107,10 @@ function AdminLessonsPage() {
                           fontWeight: theme.typography.fontWeightBold,
                         }}
                       >
-                        {session.time}
+                        {moment(session.startTime, 'HH:mm').format('LT')}-
+                        {moment(session.endTime, 'HH:mm').format('LT')}
                       </Typography>
-                      {session.names.map((name) => (
+                      {session.students.map((name) => (
                         <Typography variant="subtitle1">{name}</Typography>
                       ))}
                     </Box>

@@ -67,6 +67,8 @@ const useData = (url: string) => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getData(url);
+      console.log(url);
+      console.log(res);
       setData(res);
     };
 

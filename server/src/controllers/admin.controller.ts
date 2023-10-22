@@ -13,6 +13,7 @@ import {
   getAllUsersFromDB,
   deleteUserById,
 } from '../services/user.service';
+import { getAllBlocksfromDB } from '../services/block.service';
 import {
   createInvite,
   getInviteByEmail,
@@ -21,6 +22,7 @@ import {
 } from '../services/invite.service';
 import { IInvite } from '../models/invite.model';
 import { emailInviteLink } from '../services/mail.service';
+import { IBlock } from '../models/block.model';
 
 /**
  * Get all users from the database. Upon success, send the a list of all users in the res body with 200 OK status code.
@@ -174,4 +176,52 @@ const inviteUser = async (
   }
 };
 
-export { getAllUsers, changeRole, deleteUser, verifyToken, inviteUser };
+/**
+ * Get all blocks from the database. Upon success, send the a list of all blocks in the res body with 200 OK status code.
+ */
+const getAllBlocks = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return (
+    getAllBlocksfromDB()
+      .then((blockList) => {
+        const days = [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ];
+        const sortedList = blockList.sort((block1, block2) => {
+          if (days.indexOf(block1.day) !== days.indexOf(block2.day)) {
+            return days.indexOf(block1.day) - days.indexOf(block2.day);
+          }
+          if (block1.startTime < block2.startTime) {
+            return -1;
+          }
+          if (block1.startTime > block2.startTime) {
+            return 1;
+          }
+          return 0;
+        });
+        res.status(StatusCode.OK).send(sortedList);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve all blocks'));
+      })
+  );
+};
+
+export {
+  getAllUsers,
+  changeRole,
+  deleteUser,
+  verifyToken,
+  inviteUser,
+  getAllBlocks,
+};
