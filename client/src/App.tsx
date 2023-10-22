@@ -11,6 +11,7 @@ import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import FamilyLessonsPage from './Family/FamilyLessonsPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
+import AdminSessionsPage from './Admin/AdminSessionsPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -86,6 +87,12 @@ function App() {
                     <Route
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/admin-sessions"
+                      element={<AdminSessionsPage />}
                     />
                   </Route>
 
