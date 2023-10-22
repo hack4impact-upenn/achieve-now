@@ -58,4 +58,12 @@ const editBlock = async (
   return response;
 };
 
-export { getBlock, getStudents, addBlock, editBlock };
+/**
+ * @returns All the {@link Block}s in the database
+ */
+const getAllBlocksfromDB = async () => {
+  const blockList = await Block.find({}).exec();
+  return blockList;
+};
+
+export { getBlock, getStudents, addBlock, editBlock, getAllBlocksfromDB};
