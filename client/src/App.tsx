@@ -11,6 +11,7 @@ import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import FamilyLessonsPage from './Family/FamilyLessonsPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
+import AdminNotesPage from './Admin/AdminNotesPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -87,6 +88,7 @@ function App() {
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
                     />
+                    <Route path="/admin-notes" element={<AdminNotesPage />} />
                   </Route>
 
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
