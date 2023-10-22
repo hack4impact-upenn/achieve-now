@@ -28,6 +28,7 @@ import Header from './components/PageHeader';
 import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
+import StudentAttendancePage from './Admin/StudentAttendancePage';
 
 function App() {
   return (
@@ -86,6 +87,12 @@ function App() {
                     <Route
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/admin-attendance"
+                      element={<StudentAttendancePage />}
                     />
                   </Route>
 

@@ -11,6 +11,9 @@ import {
   getAllStudents,
   getStudentsFromTeacherId,
   getStudent,
+  updateStudentAttendance,
+  deleteStudentAttendanceByDate,
+  createStudentAttendanceByDate,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -53,5 +56,21 @@ router.put('/assign-resource', isAuthenticated, isAdmin, updateResource);
 router.get('/teacher/:id', getStudentsFromTeacherId);
 
 router.get('/student/:id', getStudent);
+
+router.put('/attendance', isAuthenticated, isAdmin, updateStudentAttendance);
+
+router.put(
+  '/attendance/create',
+  isAuthenticated,
+  isAdmin,
+  createStudentAttendanceByDate,
+);
+
+router.put(
+  '/attendance/delete',
+  isAuthenticated,
+  isAdmin,
+  deleteStudentAttendanceByDate,
+);
 
 export default router;
