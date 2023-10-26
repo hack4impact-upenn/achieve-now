@@ -5,6 +5,7 @@ import {
   DialogTitle,
   MenuItem,
   Select,
+  Stack,
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
@@ -34,21 +35,32 @@ function DeleteDateDialog({
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle>Delete Date</DialogTitle>
-      <DialogActions>
-        <Select
-          value={date}
-          onChange={(event) => setDate(event.target.value as number)}
+      <DialogTitle sx={{ textAlign: 'center' }}>Delete Date</DialogTitle>
+      <DialogActions
+        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ width: '100%', justifyContent: 'space-between' }}
         >
-          {options.map((option) => (
-            <MenuItem value={option}>
-              {dayjs.unix(option).format('MM/DD/YY')}
-            </MenuItem>
-          ))}
-        </Select>
-        <Button variant="outlined" onClick={handleSubmit}>
-          Submit
-        </Button>
+          <Select
+            value={date}
+            sx={{
+              minWidth: 150,
+            }}
+            onChange={(event) => setDate(event.target.value as number)}
+          >
+            {options.map((option) => (
+              <MenuItem value={option}>
+                {dayjs.unix(option).format('MM/DD/YY')}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button variant="outlined" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Stack>
       </DialogActions>
     </Dialog>
   );

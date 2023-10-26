@@ -157,7 +157,7 @@ function StudentAttendancePage() {
       />
       <Header />
       <Stack
-        sx={{ width: '100%', height: '100vh', paddingTop: '1rem' }}
+        sx={{ width: '100%', paddingTop: '1rem' }}
         alignItems="center"
         justifyContent="start"
         spacing={2}
@@ -182,38 +182,44 @@ function StudentAttendancePage() {
             </Button>
           </Stack>
         </Stack>
-        <Paper sx={{ margin: '4rem' }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Student</TableCell>
-                {data.dates.map((date) => (
-                  <TableCell>{dayjs.unix(date).format('MM/DD/YYYY')}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            {data.attendance.map((student) => (
-              <TableRow>
-                <TableCell>{student.name}</TableCell>
-                {data.dates.map((date) => (
-                  <TableCell>
-                    <Select
-                      value={student.attendance[date]}
-                      onChange={(e) =>
-                        handleChangeAttendance(student.id, date, e.target.value)
-                      }
-                    >
-                      {studentStatusOptions.map((option) => (
-                        <MenuItem value={option}>{option}</MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </Table>
-        </Paper>
       </Stack>
+      <Box
+        sx={{
+          padding: '2rem',
+          flexDirection: 'row',
+          justifyContent: 'start',
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Student</TableCell>
+              {data.dates.map((date) => (
+                <TableCell>{dayjs.unix(date).format('MM/DD/YYYY')}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          {data.attendance.map((student) => (
+            <TableRow>
+              <TableCell>{student.name}</TableCell>
+              {data.dates.map((date) => (
+                <TableCell>
+                  <Select
+                    value={student.attendance[date]}
+                    onChange={(e) =>
+                      handleChangeAttendance(student.id, date, e.target.value)
+                    }
+                  >
+                    {studentStatusOptions.map((option) => (
+                      <MenuItem value={option}>{option}</MenuItem>
+                    ))}
+                  </Select>
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </Table>
+      </Box>
     </>
   );
 }
