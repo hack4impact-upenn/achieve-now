@@ -1,7 +1,13 @@
-import { Router } from "express";
-import { isAuthenticated } from "../controllers/auth.middleware";
-import { isAdmin } from "../controllers/admin.middleware";
-import { createCoach, createCoachAttendanceByDate, deleteCoachAttendanceByDate, getAllCoaches, updateCoachAttendance } from "../controllers/coach.controller";
+import { Router } from 'express';
+import { isAuthenticated } from '../controllers/auth.middleware';
+import { isAdmin } from '../controllers/admin.middleware';
+import {
+  createCoach,
+  createCoachAttendanceByDate,
+  deleteCoachAttendanceByDate,
+  getAllCoaches,
+  updateCoachAttendance,
+} from '../controllers/coach.controller';
 
 const coachRouter = Router();
 

@@ -6,6 +6,7 @@ interface IBlock {
   day: string;
   startTime: string;
   endTime: string;
+  name: string;
   block: number;
   zoom: string;
   students: [string];

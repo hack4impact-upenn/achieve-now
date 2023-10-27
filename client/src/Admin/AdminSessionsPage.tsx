@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Button, Box, Typography } from '@mui/material';
+import { BlockOutlined } from '@material-ui/icons';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import { useData } from '../util/api';
 import IBlock from '../util/types/block';
 
 function AdminSessionsPage() {
-  const [blockList, setBlockList] = useState<IBlock[]>([]);
+  const [blockDict, setBlockDict] = useState<{ [key: string]: any }>({});
   const [uniqueDays, setUniqueDays] = useState<string[]>([]);
   const blocks = useData('admin/blocks');
 
   useEffect(() => {
-    const data = blocks?.data || [];
-    setBlockList(data);
-    setUniqueDays(Array.from(new Set(data.map((block: IBlock) => block.day))));
-    console.log(data);
+    const data = blocks?.data || {};
+    setBlockDict(data);
+    setUniqueDays(Object.keys(data));
   }, [blocks]);
 
   return (
@@ -85,36 +85,40 @@ function AdminSessionsPage() {
               >
                 {day}
               </Typography>
-              <Box display="flex" justifyContent="space-between">
-                {blockList
-                  .filter((block) => block.day === day)
-                  .map((session) => (
-                    <Box
-                      // key={session.key}
+              <Box display="flex" justifyContent="left">
+                {Object.keys(blockDict[day]).map((slot) => (
+                  <Box
+                    // key={session.key}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      padding: theme.spacing(2),
+                      margin: theme.spacing(3),
+                      backgroundColor: 'LightGray',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
                       sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        padding: theme.spacing(2),
-                        margin: theme.spacing(3),
-                        backgroundColor: 'LightGray',
-                        borderRadius: '8px',
+                        fontWeight: theme.typography.fontWeightBold,
                       }}
                     >
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: theme.typography.fontWeightBold,
-                        }}
-                      >
-                        {moment(session.startTime, 'HH:mm').format('LT')}-
-                        {moment(session.endTime, 'HH:mm').format('LT')}
-                      </Typography>
-                      {session.students.map((name: string) => (
-                        <Typography variant="subtitle1">{name}</Typography>
-                      ))}
-                    </Box>
-                  ))}
+                      {moment(
+                        blockDict[day][slot][0].startTime,
+                        'HH:mm',
+                      ).format('LT')}
+                      -
+                      {moment(blockDict[day][slot][0].endTime, 'HH:mm').format(
+                        'LT',
+                      )}
+                    </Typography>
+                    {blockDict[day][slot].map((block: IBlock) => (
+                      <Typography variant="subtitle1">{block.name}</Typography>
+                    ))}
+                  </Box>
+                ))}
               </Box>
             </Box>
           ))}

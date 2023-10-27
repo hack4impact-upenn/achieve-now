@@ -1,12 +1,11 @@
-import { Coach } from "../models/coach.model";
+import { Coach } from '../models/coach.model';
 
 /**
  * @returns All the {@link Student}s in the database without their passwords.
  */
 const getAllCoachesFromDB = async () => {
-    const userList = await Coach.find({})
-        .exec();
-    return userList;
+  const userList = await Coach.find({}).exec();
+  return userList;
 };
 
 /**
@@ -14,19 +13,19 @@ const getAllCoachesFromDB = async () => {
  * @returns the newly created coach
  */
 const createCoachInDB = async (
-    userId: string,
-    partnerSite: string,
-    mailingAddress: string,
-    mediaWaiver: boolean,
+  userId: string,
+  partnerSite: string,
+  mailingAddress: string,
+  mediaWaiver: boolean,
 ) => {
-    const newCoach = new Coach({
-        user_id: userId,
-        partner_site: partnerSite,
-        mailing_address: mailingAddress,
-        media_waiver: mediaWaiver,
-    });
-    const coach = await newCoach.save();
-    return coach;
+  const newCoach = new Coach({
+    user_id: userId,
+    partner_site: partnerSite,
+    mailing_address: mailingAddress,
+    media_waiver: mediaWaiver,
+  });
+  const coach = await newCoach.save();
+  return coach;
 };
 
 /**
@@ -37,19 +36,19 @@ const createCoachInDB = async (
  * @returns The updated {@link Student}
  */
 const updateAttendance = async (
-    id: string,
-    date: number,
-    attendance: string,
+  id: string,
+  date: number,
+  attendance: string,
 ) => {
-    const student = await Coach.findOneAndUpdate(
-        {
-            _id: id,
-        },
-        {
-            $set: { [`progress_stats.attendance.${date}`]: attendance },
-        },
-    ).exec();
-    return student;
+  const student = await Coach.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: { [`progress_stats.attendance.${date}`]: attendance },
+    },
+  ).exec();
+  return student;
 };
 
 /**
@@ -57,14 +56,14 @@ const updateAttendance = async (
  * @param date: The timestamp of the date to create attendance for
  */
 const createAttendanceOnDate = async (date: number) => {
-    await Coach.updateMany(
-        {},
-        {
-            $set: {
-                [`progress_stats.attendance.${date}`]: '',
-            },
-        },
-    );
+  await Coach.updateMany(
+    {},
+    {
+      $set: {
+        [`progress_stats.attendance.${date}`]: '',
+      },
+    },
+  );
 };
 
 /**
@@ -72,20 +71,20 @@ const createAttendanceOnDate = async (date: number) => {
  * @param date: The timestamp of the date to delete attendance for
  */
 const deleteAttendanceOnDate = async (date: number) => {
-    await Coach.updateMany(
-        {},
-        {
-            $unset: {
-                [`progress_stats.attendance.${date}`]: 1,
-            },
-        },
-    );
+  await Coach.updateMany(
+    {},
+    {
+      $unset: {
+        [`progress_stats.attendance.${date}`]: 1,
+      },
+    },
+  );
 };
 
 export {
-    getAllCoachesFromDB,
-    createCoachInDB,
-    updateAttendance,
-    createAttendanceOnDate,
-    deleteAttendanceOnDate,
+  getAllCoachesFromDB,
+  createCoachInDB,
+  updateAttendance,
+  createAttendanceOnDate,
+  deleteAttendanceOnDate,
 };

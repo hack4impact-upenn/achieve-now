@@ -66,4 +66,4 @@ const getAllBlocksfromDB = async () => {
   return blockList;
 };
 
-export { getBlock, getStudents, addBlock, editBlock, getAllBlocksfromDB};
+export { getBlock, getStudents, addBlock, editBlock, getAllBlocksfromDB };

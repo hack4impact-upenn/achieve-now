@@ -208,7 +208,25 @@ const getAllBlocks = async (
           }
           return 0;
         });
-        res.status(StatusCode.OK).send(sortedList);
+        const resp: { [key: string]: any } = {};
+        days.forEach((day) => {
+          const d: { [key: string]: any } = {};
+          sortedList
+            .filter((block) => {
+              return block.day == day;
+            })
+            .forEach((block) => {
+              const key = block.startTime.concat(block.endTime);
+              if (!(key in d)) {
+                d[key] = [];
+              }
+              d[key].push(block);
+            });
+          if (Object.keys(d).length) {
+            resp[day] = d;
+          }
+        });
+        res.status(StatusCode.OK).send(resp);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
@@ -217,4 +235,11 @@ const getAllBlocks = async (
   );
 };
 
-export { getAllUsers, changeRole, deleteUser, verifyToken, inviteUser, getAllBlocks };
+export {
+  getAllUsers,
+  changeRole,
+  deleteUser,
+  verifyToken,
+  inviteUser,
+  getAllBlocks,
+};
