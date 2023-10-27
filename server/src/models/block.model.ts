@@ -14,15 +14,15 @@ const BlockSchema = new mongoose.Schema({
     ],
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
   startTime: {
     type: String,
     required: true,
   },
   endTime: {
-    type: String,
-    required: true,
-  },
-  name: {
     type: String,
     required: true,
   },
@@ -44,9 +44,9 @@ const BlockSchema = new mongoose.Schema({
 interface IBlock extends mongoose.Document {
   _id: string;
   day: string;
+  name: string;
   startTime: string;
   endTime: string;
-  name: string;
   block: number;
   zoom: string;
   students: [string];

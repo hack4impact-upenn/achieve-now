@@ -7,7 +7,20 @@ import {
   getStudents,
   addBlock,
   editBlock,
+  getBlockById,
 } from '../services/block.service';
+
+const getBlockInfoById = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  if (!req.params.id) {
+    next(ApiError.missingFields(['id']));
+  }
+  const block = await getBlockById(req.params.id);
+  res.status(StatusCode.OK).send(block);
+};
 
 const getBlockInfo = async (
   req: express.Request,
@@ -78,4 +91,4 @@ const putEditBlock = async (
   );
 };
 
-export { getBlockInfo, putAddBlock, putEditBlock };
+export { getBlockInfoById, getBlockInfo, putAddBlock, putEditBlock };

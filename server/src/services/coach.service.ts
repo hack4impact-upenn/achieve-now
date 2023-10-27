@@ -1,4 +1,9 @@
+/* eslint-disable camelcase */
+import mongoose from 'mongoose';
 import { Coach } from '../models/coach.model';
+import { IStudent, Student } from '../models/student.model';
+import { getAllBlocksfromDB } from './block.service';
+import { IBlock } from '../models/block.model';
 
 /**
  * @returns All the {@link Student}s in the database without their passwords.
@@ -81,10 +86,41 @@ const deleteAttendanceOnDate = async (date: number) => {
   );
 };
 
+const getCoachBlocks = async (coach_id: string) => {
+  const students = await Student.find({});
+  const filteredStudents = students.filter(
+    (student: IStudent) =>
+      student.coach_id &&
+      student.coach_id.includes &&
+      student.coach_id.includes(coach_id),
+  );
+  const blocks: string[] = [];
+  filteredStudents.forEach((student: IStudent) => {
+    if (!student.block_id) {
+      return;
+    }
+    if (!blocks.includes(student.block_id.toString())) {
+      blocks.push(student.block_id.toString());
+    }
+  });
+
+  const rawBlocks: IBlock[] = await getAllBlocksfromDB();
+  const filteredBlocks = rawBlocks
+    .map((block) => ({
+      _id: block._id.toString(),
+      name: block.name,
+    }))
+    .filter((block) => blocks.includes(block._id))
+    .map((block) => block.name);
+
+  return filteredBlocks;
+};
+
 export {
   getAllCoachesFromDB,
   createCoachInDB,
   updateAttendance,
   createAttendanceOnDate,
   deleteAttendanceOnDate,
+  getCoachBlocks,
 };

@@ -5,6 +5,7 @@ import {
   createCoachInDB,
   deleteAttendanceOnDate,
   getAllCoachesFromDB,
+  getCoachBlocks,
   updateAttendance,
 } from '../services/coach.service';
 import StatusCode from '../util/statusCode';
@@ -119,10 +120,26 @@ const deleteCoachAttendanceByDate = async (
   res.status(StatusCode.OK).send(coach);
 };
 
+const getCoachBlocksById = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const blocks = await getCoachBlocks(id);
+  res.status(StatusCode.OK).send(blocks);
+}
+
 export {
   getAllCoaches,
   createCoach,
   updateCoachAttendance,
   createCoachAttendanceByDate,
   deleteCoachAttendanceByDate,
+  getCoachBlocksById,
 };

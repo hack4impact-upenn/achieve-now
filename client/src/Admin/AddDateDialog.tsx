@@ -1,4 +1,5 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import React, { useState } from 'react';
@@ -22,12 +23,16 @@ function AddDateDialog({ open, setOpen, addDate }: AddDateProps) {
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle>Add Date</DialogTitle>
-      <DialogActions>
-        <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
-        <Button variant="outlined" onClick={handleSubmit}>
-          Submit
-        </Button>
+      <DialogTitle sx={{ textAlign: 'center' }}>Add Date</DialogTitle>
+      <DialogActions
+        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+      >
+        <Stack direction="row" spacing={2}>
+          <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
+          <Button variant="outlined" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Stack>
       </DialogActions>
     </Dialog>
   );
