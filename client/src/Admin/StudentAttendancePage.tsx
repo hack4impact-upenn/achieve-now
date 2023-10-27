@@ -5,6 +5,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  SelectChangeEvent,
   Stack,
   Table,
   TableCell,
@@ -54,6 +55,7 @@ interface IAttendance {
   attendance: {
     id: string;
     name: string;
+    blockName: string;
     attendance: {
       [date: string]: string;
     };
@@ -69,6 +71,10 @@ function StudentAttendancePage() {
     dates: [] as number[],
     attendance: [],
   });
+  const [blocks, setBlocks] = useState<string[]>([]);
+  const [search, setSearch] = useState<string>('');
+  const [block, setBlock] = useState<string>('All Blocks');
+
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
@@ -76,21 +82,36 @@ function StudentAttendancePage() {
   const fetchData = async () => {
     const result = await axios.get('http://localhost:4000/api/student/all');
     const students = result.data as any[];
+    const studentBlocks: string[] = [];
     await Promise.all(
       students.map(async (student: any, index: number) => {
-        const res = await axios.get(
+        let res = await axios.get(
           `http://localhost:4000/api/user/${student.user_id}`,
         );
         students[index] = {
           ...student,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
+        if (res.data.block_id) {
+          res = await axios.get(
+            `http://localhost:4000/api/block/block-info-id/${res.data.block_id}`,
+          );
+          if (!studentBlocks.includes(res.data.name)) {
+            studentBlocks.push(res.data.name);
+          }
+          students[index] = {
+            ...students[index],
+            blockName: res.data.name,
+          };
+        }
       }),
     );
+
     const attendances = students.map((student: any) => ({
       // eslint-disable-next-line no-underscore-dangle
       id: student._id,
       name: student.name,
+      blockName: student.blockName,
       attendance: student.progress_stats.attendance ?? {},
     }));
     const dates: number[] = [];
@@ -99,8 +120,12 @@ function StudentAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
+
+    console.log(attendances);
+
     setRawData({ dates, attendance: attendances });
     setData({ dates, attendance: attendances });
+    setBlocks(studentBlocks);
   };
 
   useEffect(() => {
@@ -108,10 +133,24 @@ function StudentAttendancePage() {
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const search = e.target.value.toLowerCase();
-    const newData = rawData.attendance.filter((student) =>
-      student.name.toLowerCase().includes(search),
+    const searchFilter = e.target.value.toLowerCase();
+    const newData = rawData.attendance.filter(
+      (student) =>
+        student.name.toLowerCase().includes(search) &&
+        (block === 'All Blocks' || student.blockName === block),
     );
+    setSearch(searchFilter);
+    setData({ ...rawData, attendance: newData });
+  };
+
+  const handleFilterBlock = (e: SelectChangeEvent<string>) => {
+    const filter = e.target.value;
+    const newData = rawData.attendance.filter(
+      (student) =>
+        (student.blockName === filter || filter === 'All Blocks') &&
+        student.name.toLowerCase().includes(search),
+    );
+    setBlock(filter);
     setData({ ...rawData, attendance: newData });
   };
 
@@ -170,6 +209,14 @@ function StudentAttendancePage() {
             variant="outlined"
             onChange={handleSearch}
           />
+          {blocks.length > 0 && (
+            <Select onChange={handleFilterBlock} value={block}>
+              <MenuItem value="All Blocks">All Blocks</MenuItem>
+              {blocks.map((b) => (
+                <MenuItem value={b}>{b}</MenuItem>
+              ))}
+            </Select>
+          )}
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"

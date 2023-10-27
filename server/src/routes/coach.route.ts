@@ -6,6 +6,7 @@ import {
   createCoachAttendanceByDate,
   deleteCoachAttendanceByDate,
   getAllCoaches,
+  getCoachBlocksById,
   updateCoachAttendance,
 } from '../controllers/coach.controller';
 
@@ -30,5 +31,7 @@ coachRouter.put(
   isAdmin,
   deleteCoachAttendanceByDate,
 );
+
+coachRouter.get('/blocks/:id', isAuthenticated, isAdmin, getCoachBlocksById);
 
 export default coachRouter;

@@ -8,12 +8,18 @@ import { isAuthenticated } from '../controllers/auth.middleware';
 import { isExist } from '../controllers/block.middleware';
 import {
   getBlockInfo,
+  getBlockInfoById,
   putAddBlock,
   putEditBlock,
 } from '../controllers/block.controller';
 import 'dotenv/config';
 
 const router = express.Router();
+
+/**
+ * A GET route to get block information from its id.
+ */
+router.get('/block-info-id/:id', isAuthenticated, isAdmin, getBlockInfoById);
 
 /**
  * A GET route to get student coach pairs for a given block. Checks first if the requestor is

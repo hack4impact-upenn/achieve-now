@@ -4,6 +4,12 @@
 
 import { Block } from '../models/block.model';
 
+const getBlockById = async (id: string) => {
+  const response = await Block.findById(id);
+  console.log(response);
+  return response;
+};
+
 const getBlock = async (
   day: number,
   startTime: string,
@@ -66,4 +72,11 @@ const getAllBlocksfromDB = async () => {
   return blockList;
 };
 
-export { getBlock, getStudents, addBlock, editBlock, getAllBlocksfromDB };
+export {
+  getBlockById,
+  getBlock,
+  getStudents,
+  addBlock,
+  editBlock,
+  getAllBlocksfromDB,
+};
