@@ -32,6 +32,7 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+//task 30
 
 function App() {
   return (
