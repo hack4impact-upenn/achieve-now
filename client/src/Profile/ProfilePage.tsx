@@ -1,9 +1,9 @@
 import React from 'react';
 import { Typography, Grid } from '@mui/material';
-import ScreenGrid from '../components/ScreenGrid';
-import ProfileTable from './ProfileTable';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import ScreenGrid from '../components/ScreenGrid';
+import ProfileTable from './ProfileTable';
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -18,7 +18,9 @@ function ProfilePage() {
         <Typography variant="h2">User Profiles</Typography>
       </Grid>
       <Grid item container width="60vw" justifyContent="flex-end">
-      <Button variant="outlined" onClick = {handleClick}>Invite User</Button>
+        <Button variant="outlined" onClick={handleClick}>
+          Invite User
+        </Button>
       </Grid>
       <Grid item>
         <div style={{ height: '60vh', width: '60vw' }}>
