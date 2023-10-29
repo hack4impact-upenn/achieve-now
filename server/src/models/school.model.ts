@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const SchoolSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
   name: {
     type: String,
     required: true,

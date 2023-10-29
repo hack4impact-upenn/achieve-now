@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import mongoose from 'mongoose';
 import { Coach } from '../models/coach.model';
 import { IStudent, Student } from '../models/student.model';
 import { getAllBlocksfromDB } from './block.service';
@@ -116,6 +115,22 @@ const getCoachBlocks = async (coach_id: string) => {
   return filteredBlocks;
 };
 
+const getStudentFromCoach = async (coach_id: string) => {
+  const students = await Student.find({});
+  const filteredStudents = students.filter(
+    (student: IStudent) =>
+      student.coach_id &&
+      student.coach_id.includes &&
+      student.coach_id.includes(coach_id),
+  );
+  return filteredStudents[0];
+};
+
+const getCoach = async (coach_id: string) => {
+  const coach = await Coach.findOne({ _id: coach_id });
+  return coach;
+};
+
 export {
   getAllCoachesFromDB,
   createCoachInDB,
@@ -123,4 +138,6 @@ export {
   createAttendanceOnDate,
   deleteAttendanceOnDate,
   getCoachBlocks,
+  getStudentFromCoach,
+  getCoach,
 };
