@@ -32,8 +32,8 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import AdminResourcesPage from './Admin/AdminResourcesPage';
 
-// hello
 function App() {
   return (
     <div className="App">
@@ -99,6 +99,10 @@ function App() {
                     />
                     <Route path="/admin-notes" element={<AdminNotesPage />} />
                   </Route>
+                  <Route
+                    element={<AdminResourcesPage />}
+                    path="/admin-resources"
+                  />
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-student-attendance"
