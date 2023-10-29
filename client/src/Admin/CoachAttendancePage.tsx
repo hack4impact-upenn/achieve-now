@@ -214,6 +214,7 @@ function CoachAttendancePage() {
           padding: '2rem',
           flexDirection: 'row',
           justifyContent: 'start',
+          overflowX: 'scroll',
         }}
       >
         <Table>
