@@ -180,6 +180,9 @@ function AdminResourcesPage() {
             />
           )}
         </Box>
+        <Button variant="outlined" sx={{ marginTop: theme.spacing(2) }}>
+          Submit
+        </Button>
       </Box>
     </div>
   );
