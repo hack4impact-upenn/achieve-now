@@ -32,6 +32,7 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import SchoolProfilePage from './SchoolProfile/SchoolProfilePage';
 
 function App() {
   return (
@@ -86,6 +87,12 @@ function App() {
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/school/profiles"
+                      element={<SchoolProfilePage />}
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
