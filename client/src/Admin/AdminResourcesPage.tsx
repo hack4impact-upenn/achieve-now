@@ -44,10 +44,10 @@ function AdminResourcesPage() {
   const [tableData, setTableData] = useState(initialTableData);
 
   const columns: TColumn[] = [
-    { id: 'title', label: 'Date' },
-    { id: 'description', label: 'Student Observations' },
-    { id: 'link', label: 'Student Next Steps' },
-    { id: 'type', label: 'Coach Observations' },
+    { id: 'title', label: 'Title' },
+    { id: 'description', label: 'Description' },
+    { id: 'link', label: 'Link' },
+    { id: 'type', label: 'Type' },
   ];
 
   // for the buttons
