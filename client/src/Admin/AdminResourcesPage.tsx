@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Box, Typography } from '@mui/material';
+import {
+  Button,
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
@@ -29,10 +39,17 @@ const initialTableData = [
     title: 'Test',
     description: 'desc',
     link: 'http:google.com',
-    type: 'Video',
+    type: 'Slides',
   },
   {
     key: '3',
+    title: 'Test',
+    description: 'desc',
+    link: 'http:google.com',
+    type: 'Article',
+  },
+  {
+    key: '4',
     title: 'Test',
     description: 'desc',
     link: 'http:google.com',
@@ -42,6 +59,9 @@ const initialTableData = [
 
 function AdminResourcesPage() {
   const [tableData, setTableData] = useState(initialTableData);
+  const [filteredTableData, setFilteredTableData] = useState(initialTableData);
+
+  const [resourceType, setResourceType] = useState<string[]>([]);
 
   const columns: TColumn[] = [
     { id: 'title', label: 'Title' },
@@ -59,7 +79,7 @@ function AdminResourcesPage() {
 
   const handleAddEntry = () => {
     const dummyData = {
-      key: 'dummyKey',
+      key: Date.now().toString(),
       title: 'Dummy Test',
       description: 'Dummy desc',
       link: 'Dummy link',
@@ -85,6 +105,27 @@ function AdminResourcesPage() {
       type,
     };
   }
+
+  useEffect(() => {
+    if (resourceType.length !== 0) {
+      setFilteredTableData(
+        tableData.filter((row: AdminResourcesRow) =>
+          resourceType.includes(row.type),
+        ),
+      );
+    } else {
+      setFilteredTableData(tableData);
+    }
+  }, [resourceType, tableData]);
+  const selectChangeHandler = (e: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = e;
+    setResourceType(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
 
   return (
     <div>
@@ -165,9 +206,26 @@ function AdminResourcesPage() {
             padding: theme.spacing(2),
           }}
         >
-          {tableData && (
+          <Box sx={{ paddingBottom: theme.spacing(2) }}>
+            <FormControl>
+              <InputLabel id="resource-type-label">Type</InputLabel>
+              <Select
+                labelId="resource-type-label"
+                multiple
+                value={resourceType}
+                onChange={selectChangeHandler}
+                input={<OutlinedInput label="Type" />}
+                sx={{ width: 200 }}
+              >
+                <MenuItem value="Video">Video</MenuItem>
+                <MenuItem value="Slides">Slides</MenuItem>
+                <MenuItem value="Article">Article</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          {filteredTableData && (
             <PaginationTable
-              rows={tableData.map((data) =>
+              rows={filteredTableData.map((data) =>
                 createAdminResourcesRow(
                   data.key,
                   data.title,
