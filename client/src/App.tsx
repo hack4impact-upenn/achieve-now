@@ -13,6 +13,7 @@ import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyLessonsPage from './Family/FamilyLessonsPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
+import AdminAddBlockPage from './Admin/AdminAddBlockPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -86,6 +87,12 @@ function App() {
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
+                    />
+                  </Route>
+                  <Route>
+                    <Route
+                      path="/admin-add-block"
+                      element={<AdminAddBlockPage />}
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
