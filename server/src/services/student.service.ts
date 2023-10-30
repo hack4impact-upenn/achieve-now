@@ -133,19 +133,12 @@ const deleteAttendanceOnDate = async (date: number) => {
 };
 
 const addCoachToStudent = async (student_id: string, coach_id: string) => {
-  await Student.findByIdAndUpdate(
+  const student = await Student.findByIdAndUpdate(
     student_id,
-    { name: 'coach_id' },
-    { $addToSet: { coach_id } },
+    { $set: { coach_id: [coach_id] } },
+    { new: true },
   );
-};
-
-const addTeacherToStudent = async (student_id: string, teacher_id: string) => {
-  await Student.findByIdAndUpdate(
-    student_id,
-    { name: 'teacher_id' },
-    { $addToSet: { teacher_id } },
-  );
+  return student;
 };
 
 export {
@@ -159,5 +152,4 @@ export {
   createAttendanceOnDate,
   deleteAttendanceOnDate,
   addCoachToStudent,
-  addTeacherToStudent,
 };

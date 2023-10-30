@@ -15,7 +15,6 @@ import {
   deleteStudentAttendanceByDate,
   createStudentAttendanceByDate,
   addCoach,
-  addTeacher,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -77,6 +76,5 @@ router.put(
 );
 
 router.put('/add-coach', addCoach);
-router.put('/add-teacher', addTeacher);
 
 export default router;

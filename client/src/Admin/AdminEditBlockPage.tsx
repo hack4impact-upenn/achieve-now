@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { Box, display } from '@mui/system';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
+import { useParams } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
@@ -19,12 +20,17 @@ import ScreenGrid from '../components/ScreenGrid';
 import FormGrid from '../components/form/FormGrid';
 import FormCol from '../components/form/FormCol';
 import PrimaryButton from '../components/buttons/PrimaryButton';
-import { useData } from '../util/api';
+import { getData, useData } from '../util/api';
 import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
-import { addBlock } from '../Home/api';
+import { editBlock } from '../Home/api';
 
-function AdminAddBlockPage() {
+function AdminEditBlockPage() {
+  const blockId = useParams().id;
+  const block = useData(`block/block-info-id/${blockId}`);
+
+  const [valid, setValid] = useState(false);
+
   const [day, setDay] = useState('');
   const [name, setName] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -46,6 +52,53 @@ function AdminAddBlockPage() {
   const studentList = useData('student/all');
 
   useEffect(() => {
+    if (!block || !block.data) {
+      setValid(false);
+      return;
+    }
+    setValid(true);
+    const data = block?.data || {};
+    setDay(data.day);
+    setName(data.name);
+    setStartTime(data.startTime);
+    setEndTime(data.endTime);
+    setBlockNumber(data.block);
+    setZoom(data.zoom);
+
+    if (data.students && data.students.length > 0) {
+      const resolvedStudents = data.students.map((studentId: string) => {
+        return (
+          students.find((user: IStudent) => user.user_id === studentId) || null
+        );
+      });
+      console.log(resolvedStudents);
+      if (
+        resolvedStudents.length > 0 &&
+        resolvedStudents[0]?.teacher_id &&
+        resolvedStudents[0]?.teacher_id.length > 0
+      ) {
+        setTeacher(
+          teachers.find(
+            (user: IUser) => resolvedStudents[0].teacher_id[0] === user._id,
+          ) || null,
+        );
+      }
+
+      const p: [IUser | null, IStudent | null][] = [];
+      resolvedStudents.forEach((s: IStudent) => {
+        if (s === null) {
+          return;
+        }
+        p.push([
+          coaches.find((user: IUser) => s.coach_id[0] === user._id) || null,
+          s,
+        ]);
+      });
+      setPairs(p);
+    }
+  }, [block, students, teachers, coaches]);
+
+  useEffect(() => {
     const data = users?.data || [];
     setTeachers(data.filter((user: IUser) => user.role === 'teacher'));
     setCoaches(data.filter((user: IUser) => user.role === 'coach'));
@@ -53,7 +106,6 @@ function AdminAddBlockPage() {
 
   useEffect(() => {
     setStudents(studentList?.data || []);
-    console.log(studentList?.data);
   }, [studentList]);
 
   const handleDayChange = (event: SelectChangeEvent) => {
@@ -116,7 +168,8 @@ function AdminAddBlockPage() {
       setError(true);
       return;
     }
-    addBlock({
+    editBlock({
+      blockId,
       day,
       name,
       startTime,
@@ -127,11 +180,11 @@ function AdminAddBlockPage() {
     });
   };
 
-  return (
+  return valid ? (
     <div>
       <Header />
       <ScreenGrid>
-        <Typography variant="h4">Add Block</Typography>
+        <Typography variant="h4">Edit Block</Typography>
         <FormGrid>
           <FormCol>
             <Grid item width="1">
@@ -347,7 +400,9 @@ function AdminAddBlockPage() {
         </FormGrid>
       </ScreenGrid>
     </div>
+  ) : (
+    <div />
   );
 }
 
-export default AdminAddBlockPage;
+export default AdminEditBlockPage;

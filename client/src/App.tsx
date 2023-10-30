@@ -33,6 +33,7 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import AdminEditBlockPage from './Admin/AdminEditBlockPage';
 
 function App() {
   return (
@@ -88,11 +89,13 @@ function App() {
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
                     />
-                  </Route>
-                  <Route>
                     <Route
                       path="/admin-add-block"
                       element={<AdminAddBlockPage />}
+                    />
+                    <Route
+                      path="/admin-edit-block/:id"
+                      element={<AdminEditBlockPage />}
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>

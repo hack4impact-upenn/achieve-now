@@ -15,7 +15,6 @@ import {
   deleteAttendanceOnDate,
   createAttendanceOnDate,
   addCoachToStudent,
-  addTeacherToStudent,
 } from '../services/student.service';
 
 /**
@@ -304,28 +303,12 @@ const addCoach = async (
     next(ApiError.missingFields(['coach_id']));
     return;
   }
-
-  const student = addCoachToStudent(student_id, coach_id);
-  res.status(StatusCode.OK).send(student);
-};
-
-const addTeacher = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  const { student_id, teacher_id } = req.body;
-  if (!student_id) {
-    next(ApiError.missingFields(['student_id']));
-    return;
-  }
-  if (!teacher_id) {
-    next(ApiError.missingFields(['teacher_id']));
-    return;
-  }
-
-  const student = addTeacherToStudent(student_id, teacher_id);
-  res.status(StatusCode.OK).send(student);
+  addCoachToStudent(student_id, coach_id)
+    .then((student) => res.status(StatusCode.OK).send(student))
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal(e));
+    });
 };
 
 export {
@@ -339,5 +322,4 @@ export {
   createStudentAttendanceByDate,
   deleteStudentAttendanceByDate,
   addCoach,
-  addTeacher,
 };
