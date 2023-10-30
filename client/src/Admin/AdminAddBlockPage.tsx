@@ -53,7 +53,6 @@ function AdminAddBlockPage() {
 
   useEffect(() => {
     setStudents(studentList?.data || []);
-    console.log(studentList?.data);
   }, [studentList]);
 
   const handleDayChange = (event: SelectChangeEvent) => {
@@ -75,7 +74,6 @@ function AdminAddBlockPage() {
   const handleEndTimeChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    console.log(endTime);
     setEndTime(event.target.value as string);
   };
 
@@ -104,7 +102,6 @@ function AdminAddBlockPage() {
   };
 
   const handleSubmit = () => {
-    console.log(pairs);
     if (
       day === '' ||
       name === '' ||

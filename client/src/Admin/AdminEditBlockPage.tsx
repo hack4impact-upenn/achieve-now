@@ -71,7 +71,6 @@ function AdminEditBlockPage() {
           students.find((user: IStudent) => user.user_id === studentId) || null
         );
       });
-      console.log(resolvedStudents);
       if (
         resolvedStudents.length > 0 &&
         resolvedStudents[0]?.teacher_id &&
@@ -127,7 +126,6 @@ function AdminEditBlockPage() {
   const handleEndTimeChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    console.log(endTime);
     setEndTime(event.target.value as string);
   };
 
@@ -156,7 +154,6 @@ function AdminEditBlockPage() {
   };
 
   const handleSubmit = () => {
-    console.log(pairs);
     if (
       day === '' ||
       name === '' ||
