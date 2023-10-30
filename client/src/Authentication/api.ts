@@ -2,7 +2,14 @@
  * A file for defining functions used to interact with the backend server
  * for authentication purposes.
  */
-import { postData } from '../util/api';
+import { postData, putData } from '../util/api';
+import IStudent from '../util/types/student';
+import IUser from '../util/types/user';
+
+interface ResolvedReq {
+  data: any | null;
+  error: Error | any | null;
+}
 
 /**
  * Sends a request to the server to log in a user
@@ -151,6 +158,49 @@ async function onboardStudent(values: any, email: string) {
   }
 }
 
+async function addBlock(values: any) {
+  const { day, name, startTime, endTime, block, zoom, teacher, pairs } = values;
+
+  const students = new Set();
+  const teacherPromises: Promise<ResolvedReq>[] = [];
+  const coachPromises: Promise<ResolvedReq>[] = [];
+
+  pairs.forEach((pair: [IUser | null, IStudent | null]) => {
+    if (pair[0] === null || pair[1] === null) {
+      return;
+    }
+    students.add(pair[1]);
+    teacherPromises.push(
+      putData('student/add-teacher', {
+        student: pairs[1]._id /* eslint no-underscore-dangle: 0 */,
+        teacher: teacher._id /* eslint no-underscore-dangle: 0 */,
+      }),
+    );
+    coachPromises.push(
+      putData('student/add-coach', {
+        student: pairs[1]._id /* eslint no-underscore-dangle: 0 */,
+        coach: pairs[0]._id /* eslint no-underscore-dangle: 0 */,
+      }),
+    );
+  });
+
+  await Promise.all(teacherPromises);
+  await Promise.all(coachPromises);
+
+  const res = await putData('block/add-block', {
+    day,
+    name,
+    startTime,
+    endTime,
+    block,
+    zoom,
+    students: Array.from(students),
+  });
+  if (res.error) {
+    throw Error(res.error.message);
+  }
+}
+
 export {
   register,
   loginUser,
@@ -159,4 +209,5 @@ export {
   resetPassword,
   registerInvite,
   onboardStudent,
+  addBlock,
 };

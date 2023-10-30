@@ -133,7 +133,7 @@ const getCoachBlocksById = async (
 
   const blocks = await getCoachBlocks(id);
   res.status(StatusCode.OK).send(blocks);
-}
+};
 
 export {
   getAllCoaches,

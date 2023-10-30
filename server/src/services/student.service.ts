@@ -132,6 +132,22 @@ const deleteAttendanceOnDate = async (date: number) => {
   );
 };
 
+const addCoachToStudent = async (student_id: string, coach_id: string) => {
+  await Student.findByIdAndUpdate(
+    student_id,
+    { name: 'coach_id' },
+    { $addToSet: { coach_id } },
+  );
+};
+
+const addTeacherToStudent = async (student_id: string, teacher_id: string) => {
+  await Student.findByIdAndUpdate(
+    student_id,
+    { name: 'teacher_id' },
+    { $addToSet: { teacher_id } },
+  );
+};
+
 export {
   passwordHashSaltRounds,
   getStudentByID,
@@ -142,4 +158,6 @@ export {
   updateAttendance,
   createAttendanceOnDate,
   deleteAttendanceOnDate,
+  addCoachToStudent,
+  addTeacherToStudent,
 };

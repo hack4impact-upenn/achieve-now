@@ -14,9 +14,12 @@ import {
   updateStudentAttendance,
   deleteStudentAttendanceByDate,
   createStudentAttendanceByDate,
+  addCoach,
+  addTeacher,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
+import { addListener } from 'process';
 
 const router = express.Router();
 
@@ -72,5 +75,8 @@ router.put(
   isAdmin,
   deleteStudentAttendanceByDate,
 );
+
+router.put('/add-coach', addCoach);
+router.put('/add-teacher', addTeacher);
 
 export default router;

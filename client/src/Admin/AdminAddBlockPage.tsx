@@ -21,6 +21,7 @@ import PrimaryButton from '../components/buttons/PrimaryButton';
 import { useData } from '../util/api';
 import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
+import { addBlock } from '../Authentication/api';
 
 interface AdminAddBlockPage {
   key: string;
@@ -64,6 +65,7 @@ const initialTableData = [
  */
 function AdminAddBlockPage() {
   const [day, setDay] = useState('');
+  const [name, setName] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [blockNumber, setBlockNumber] = useState('');
@@ -76,6 +78,8 @@ function AdminAddBlockPage() {
   const [pairs, setPairs] = useState<[IUser | null, IStudent | null][]>([
     [null, null],
   ]);
+
+  const [error, setError] = useState(false);
 
   const users = useData('admin/all');
   const studentList = useData('student/all');
@@ -92,6 +96,12 @@ function AdminAddBlockPage() {
 
   const handleDayChange = (event: SelectChangeEvent) => {
     setDay(event.target.value as string);
+  };
+
+  const handleNameChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setName(event.target.value as string);
   };
 
   const handleStartTimeChange = (
@@ -131,6 +141,30 @@ function AdminAddBlockPage() {
     setPairs((prev) => [...prev.slice(0, index), ...prev.slice(index + 1)]);
   };
 
+  const handleSubmit = () => {
+    if (
+      !day ||
+      !name ||
+      !startTime ||
+      !endTime ||
+      !blockNumber ||
+      !zoom ||
+      !teacher
+    ) {
+      setError(true);
+    }
+    addBlock({
+      day,
+      name,
+      startTime,
+      endTime,
+      block: Number(blockNumber),
+      zoom,
+      teacher,
+      pairs,
+    });
+  };
+
   return (
     <div>
       <Header />
@@ -154,6 +188,17 @@ function AdminAddBlockPage() {
                 <MenuItem value="Friday">Friday</MenuItem>
                 <MenuItem value="Saturday">Saturday</MenuItem>
               </Select>
+            </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={name}
+                onChange={handleNameChange}
+                label="Name"
+                required
+                variant="standard"
+                placeholder="Name"
+              />
             </Grid>
             <Grid item width="1">
               <Typography variant="subtitle1">Start Time</Typography>
@@ -298,10 +343,21 @@ function AdminAddBlockPage() {
               </Grid>
             )}
             <Grid item container justifyContent="center">
-              <PrimaryButton type="submit" variant="contained">
+              <PrimaryButton
+                type="submit"
+                variant="contained"
+                onClick={handleSubmit}
+              >
                 Submit
               </PrimaryButton>
             </Grid>
+            {error && (
+              <Grid item container justifyContent="center">
+                <Typography justifyContent="center" color="red">
+                  Please fill out all fields
+                </Typography>
+              </Grid>
+            )}
           </FormCol>
         </FormGrid>
       </ScreenGrid>

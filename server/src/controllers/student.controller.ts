@@ -14,6 +14,8 @@ import {
   updateAttendance,
   deleteAttendanceOnDate,
   createAttendanceOnDate,
+  addCoachToStudent,
+  addTeacherToStudent,
 } from '../services/student.service';
 
 /**
@@ -288,6 +290,44 @@ const deleteStudentAttendanceByDate = async (
   res.status(StatusCode.OK).send(student);
 };
 
+const addCoach = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { student_id, coach_id } = req.body;
+  if (!student_id) {
+    next(ApiError.missingFields(['student_id']));
+    return;
+  }
+  if (!coach_id) {
+    next(ApiError.missingFields(['coach_id']));
+    return;
+  }
+
+  const student = addCoachToStudent(student_id, coach_id);
+  res.status(StatusCode.OK).send(student);
+};
+
+const addTeacher = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { student_id, teacher_id } = req.body;
+  if (!student_id) {
+    next(ApiError.missingFields(['student_id']));
+    return;
+  }
+  if (!teacher_id) {
+    next(ApiError.missingFields(['teacher_id']));
+    return;
+  }
+
+  const student = addTeacherToStudent(student_id, teacher_id);
+  res.status(StatusCode.OK).send(student);
+};
+
 export {
   getStudentsFromTeacherId,
   getStudent,
@@ -298,4 +338,6 @@ export {
   updateStudentAttendance,
   createStudentAttendanceByDate,
   deleteStudentAttendanceByDate,
+  addCoach,
+  addTeacher,
 };
