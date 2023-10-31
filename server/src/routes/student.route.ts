@@ -8,7 +8,7 @@ import {
   getAdditionalStudentResources,
   getAllStudentResources,
   deleteResource,
-  updateResource,
+  addResource,
   getAllStudents,
   getStudentsFromTeacherId,
   getStudent,
@@ -62,7 +62,7 @@ router.post('/delete-resource', isAuthenticated, isAdmin, deleteResource);
  * resource (object) - The resource object
  * role (string) - The role of the user making the request (parent, coach)
  */
-router.post('/assign-resource', isAuthenticated, isAdmin, updateResource);
+router.post('/assign-resource', isAuthenticated, isAdmin, addResource);
 
 /**
  * A GET route to get all users. Checks first if the requestor is a

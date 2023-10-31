@@ -14,6 +14,7 @@ import thumbnailRouter from './thumbnail.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';
 import resourceRouter from './resource.route';
+import lessonRouter from './lesson.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -39,6 +40,10 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
     prefix: '/api/thumbnail',
     router: thumbnailRouter,
+  },
+  {
+    prefix: '/api/lesson',
+    router: lessonRouter,
   },
 ];
 

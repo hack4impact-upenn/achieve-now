@@ -58,14 +58,20 @@ function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
   const label = `${studentObj.firstName} ${studentObj.lastName}`;
 
   function handleClick() {
-    const s = `/resources/${studentID}`;
+    const s = `/resources/student/${studentID}`;
     navigate(s);
   }
 
   return (
     <Card sx={{ p: 0.1, bgcolor: '#EDEDED', mb: 1, borderRadius: '8px' }}>
       <CardActionArea onClick={handleClick}>
-        <CardContent>
+        <CardContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography variant="body1">{label}</Typography>
           <Typography
             sx={{
@@ -75,9 +81,11 @@ function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
             }}
             variant="subtitle1"
           >
-            <b>
-              <i>{studentObj.lessonNumber}</i>
-            </b>
+            <i>
+              {studentObj.lessonNumber
+                ? `Lesson ${studentObj.lessonNumber}`
+                : ''}
+            </i>
           </Typography>
         </CardContent>
       </CardActionArea>

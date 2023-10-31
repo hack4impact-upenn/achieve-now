@@ -118,11 +118,13 @@ const getAllStudentsWithUserLesson = async (
   const userPromises = students.map((student) => getUserById(student.user_id));
   Promise.all(lessonPromises)
     .then((lessons) => {
+      console.log(lessons);
       Promise.all(userPromises)
         .then((users) => {
           const response = students.map((student, index) => {
             const user = users[index];
             const lesson = lessons[index];
+            console.log(lesson);
             return {
               studentId: student._id,
               firstName: user?.firstName,
@@ -385,7 +387,7 @@ const deleteResource = async (
 /**
  * Update student resource (add specified).
  */
-const updateResource = async (
+const addResource = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
@@ -447,6 +449,6 @@ export {
   getAllStudentResources,
   getAdditionalStudentResources,
   deleteResource,
-  updateResource,
+  addResource,
   getAllStudents,
 };

@@ -96,11 +96,21 @@ function ResourceTable({
     return (
       <div
         style={{
+          justifyContent: 'center',
+          alignItems: 'center',
           width: '100%',
-          minHeight: '300px',
+          height: '200px',
         }}
       >
-        <div style={{ margin: 'auto' }}>
+        <div
+          style={{
+            margin: 'auto',
+            width: '80px',
+            height: '80px',
+            marginTop: '60px',
+            marginBottom: '60px',
+          }}
+        >
           <CircularProgress size={80} />
         </div>
       </div>

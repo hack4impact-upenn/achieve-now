@@ -2,20 +2,12 @@
 import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-// eslint-disable-next-line
-import { useParams, useNavigate } from 'react-router-dom';
-import { useData, deleteData, putData, postData } from '../util/api';
+import { useParams } from 'react-router-dom';
+import { useData, postData } from '../util/api';
 import PageHeader from '../components/PageHeader';
-import { StudentCardFromObj } from './StudentCard';
-import SearchStudentsBar from './SearchBar';
+import SearchBar from './SearchBar';
 import ResourceTable from './ResourceTable';
-
-// eslint-disable-next-line
-function createData(data: any) {
-  return data.map((student: any) => {
-    return <StudentCardFromObj studentObj={student} />;
-  });
-}
+import LessonCardFromObj from './LessonCard';
 
 interface IResource {
   _id: string;
@@ -30,10 +22,17 @@ interface IRow extends IResource {
 }
 
 function LessonResourceDashboard() {
-  const { id } = useParams();
-  const studentsRes = useData(`student/all-info`);
-  const allStudents = studentsRes?.data || [];
-  const [currStudents, setCurrStudents] = React.useState<any[]>([]);
+  const { lessonId } = useParams();
+  const lessonsRes = useData(`lesson/all`);
+  const [lessonNumber, setLessonNumber] = React.useState<string>('');
+  const [allLessons, setAllLessons] = React.useState<any[]>([]);
+  const [currLessons, setCurrLessons] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    const allLessonData = lessonsRes?.data || [];
+    setAllLessons(allLessonData || []);
+    setCurrLessons(allLessonData || []);
+  }, [lessonId, lessonsRes]);
 
   const resourcesRes = useData(`resources/all`);
   const [parentResources, setParentResources] = React.useState<IRow[]>([]);
@@ -42,84 +41,66 @@ function LessonResourceDashboard() {
   useEffect(() => {
     const getResources = async () => {
       const allResourceData = resourcesRes?.data || [];
+      const lessonRes = await postData(`lesson/${lessonId}/resources`);
+      const lessonData = lessonRes?.data;
+      if (!lessonData) {
+        return;
+      }
+      const num = lessonData.number || '';
+      setLessonNumber(num);
+      const parentData = lessonData.parent_resources || [];
+      const coachData = lessonData.coach_resources || [];
 
-      const parentRes = await postData(`student/resource/additional/${id}`, {
-        role: 'parent',
-      });
-      const parentData = parentRes?.data || [];
-      const oldParentResources = allResourceData;
-
-      const coachRes = await postData(`student/resource/additional/${id}`, {
-        role: 'coach',
-      });
-      const coachData = coachRes?.data || [];
-      const oldCoachResources = allResourceData;
-
-      parentData.forEach((resource: any) => {
-        const resId = resource.id.toString();
-        const index = allResourceData.findIndex(
-          (res: any) => res.id.toString() === resId,
+      const newParentResources = allResourceData.map((resource: any) => {
+        const index = parentData.findIndex(
+          (res: any) => res._id.toString() === resource._id.toString(),
         );
         if (index !== -1) {
-          oldParentResources[index].isChecked = true;
-        } else {
-          oldParentResources[index].isChecked = false;
+          return { ...resource, isChecked: true };
         }
+        return { ...resource, isChecked: false };
       });
 
-      coachData.forEach((resource: any) => {
-        const resId = resource.id.toString();
-        const index = allResourceData.findIndex(
-          (res: any) => res.id.toString() === resId,
+      const newCoachResources = allResourceData.map((resource: any) => {
+        const index = coachData.findIndex(
+          (res: any) => res._id.toString() === resource._id.toString(),
         );
         if (index !== -1) {
-          oldCoachResources[index].isChecked = true;
-        } else {
-          oldCoachResources[index].isChecked = false;
+          return { ...resource, isChecked: true };
         }
+        return { ...resource, isChecked: false };
       });
-      setParentResources(oldParentResources);
-      setCoachResources(oldCoachResources);
-      setCurrStudents(studentsRes?.data || []);
+
+      setParentResources(newParentResources);
+      setCoachResources(newCoachResources);
     };
     getResources();
-  }, [id, resourcesRes?.data, studentsRes?.data]);
-
-  // Search bar
-  const idAgeMapping = new Map<string, string>();
-  for (let i = 0; i < allStudents.length; i += 1) {
-    const user = allStudents[i];
-    const name = `${user.firstName} ${user.lastName}`;
-    idAgeMapping.set(user.studentId, name);
-  }
+  }, [currLessons, lessonId, resourcesRes?.data, resourcesRes, lessonNumber]);
 
   const handleSearch = (searchInput: string) => {
     if (searchInput.length > 0) {
-      const newCurrStudents = allStudents.filter((student: { _id: any }) => {
-        // eslint-disable-next-line no-underscore-dangle
-        const sUserId = student._id;
-        const name = idAgeMapping.get(sUserId);
-        if (!name) {
-          return false;
-        }
-        return name.match(searchInput);
+      const newCurrLessons = allLessons.filter((lesson) => {
+        return lesson.number.toString().match(searchInput);
       });
-      setCurrStudents(newCurrStudents);
+      setCurrLessons(newCurrLessons);
+    } else {
+      setCurrLessons(allLessons);
     }
   };
 
-  const handleParentCheckboxChange = async (studentId: string) => {
+  const handleParentCheckboxChange = async (resourceId: string) => {
     const newValues = [...parentResources];
-    const resource = parentResources.find((res) => res._id === id);
-    const index = parentResources.findIndex((res) => res._id === id);
+    const resource = parentResources.find((res) => res._id === resourceId);
+    const index = parentResources.findIndex((res) => res._id === resourceId);
     if (!resource) {
       return;
     }
     if (resource.isChecked) {
       // originally true, unassign
-      const deleteRes = await deleteData(`student/delete-resource`, {
-        id: { studentId },
-        resource: id,
+      const deleteRes = await postData(`lesson/deleteResource`, {
+        id: lessonId,
+        resource: resourceId,
+        role: 'parent',
       });
       if (deleteRes.error) {
         console.log(deleteRes.error);
@@ -127,9 +108,10 @@ function LessonResourceDashboard() {
       newValues[index].isChecked = false;
     } else {
       // originally false, assign
-      const res = await putData(`student/assign-resource`, {
-        id: { studentId },
-        resource: id,
+      const res = await postData(`lesson/addResource`, {
+        id: lessonId,
+        resource: resourceId,
+        role: 'parent',
       });
       if (res.error) {
         console.log(res.error);
@@ -139,61 +121,121 @@ function LessonResourceDashboard() {
     setParentResources(newValues);
   };
 
+  const handleCoachCheckBoxChange = async (resourceId: string) => {
+    const newValues = [...coachResources];
+    const resource = coachResources.find((res) => res._id === resourceId);
+    const index = coachResources.findIndex((res) => res._id === resourceId);
+    if (!resource) {
+      return;
+    }
+    if (resource.isChecked) {
+      // originally true, unassign
+      const deleteRes = await postData(`lesson/deleteResource`, {
+        id: lessonId,
+        resource: resourceId,
+        role: 'coach',
+      });
+      if (deleteRes.error) {
+        console.log(deleteRes.error);
+      }
+      newValues[index].isChecked = false;
+    } else {
+      // originally false, assign
+      const res = await postData(`lesson/addResource`, {
+        id: lessonId,
+        resource: resourceId,
+        role: 'coach',
+      });
+      if (res.error) {
+        console.log(res.error);
+      }
+      newValues[index].isChecked = true;
+    }
+    setCoachResources(newValues);
+  };
+
   return (
     <Box>
       <PageHeader />
-      <Box display="flex" flexDirection="column" width="100%" height="100vh">
-        <Box display="flex" flexGrow={5}>
-          <Paper
-            sx={{
-              width: '30%',
-              overflowY: 'auto',
-              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
-              bgcolor: 'white',
-              p: 2,
-            }}
-            elevation={0}
-            square
-          >
-            <h2>Lessons</h2>
-            {createData(currStudents)}
-            <SearchStudentsBar handleSearch={handleSearch} />
-          </Paper>
+      <Box
+        display="flex"
+        flexDirection="row"
+        width="100%"
+        maxHeight="calc(100vh - 66px)"
+      >
+        <Paper
+          sx={{
+            width: '25%',
+            overflowY: 'auto',
+            maxHeight: 'calc(100vh - 66px)', // Subtract the Toolbar height (default is 64px)
+            bgcolor: 'white',
+            p: 2,
+          }}
+          elevation={0}
+          square
+        >
+          <h1>Lessons</h1>
+          <SearchBar handleSearch={handleSearch} />
+          {currLessons.map((lesson: any) => {
+            return <LessonCardFromObj lessonObj={lesson} />;
+          })}
+        </Paper>
 
-          <Paper
+        <Paper
+          sx={{
+            width: '75%',
+            overflowY: 'auto',
+            maxHeight: 'calc(100vh - 66px)', // Subtract the Toolbar height (default is 64px)
+            bgcolor: '#EDEDED',
+            p: 2,
+            paddingX: 4,
+          }}
+          elevation={0}
+          square
+        >
+          <Box
             sx={{
-              width: '70%',
-              overflowY: 'auto',
-              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
-              bgcolor: '#EDEDED',
-              p: 2,
-              paddingX: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
             }}
-            elevation={0}
-            square
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box>
-                <h2>Lesson 3 Resources</h2>
-                {/* FLAG: fix this hardcoding */}
-              </Box>
-              {!id ? (
-                <h2>No Lesson Selected </h2>
-              ) : (
-                <ResourceTable
-                  allResources={parentResources}
-                  handleCheckboxChange={handleParentCheckboxChange}
-                />
-              )}
+            <h1>
+              {lessonNumber !== ''
+                ? `Lesson ${lessonNumber}`
+                : 'Invalid Selected Lesson'}
+            </h1>
+            <h3>Parent Additional Resources</h3>
+            {!lessonId ? (
+              <h3>No Lesson Selected </h3>
+            ) : (
+              <ResourceTable
+                allResources={parentResources}
+                handleCheckboxChange={handleParentCheckboxChange}
+              />
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              marginTop: '24px',
+            }}
+          >
+            <Box>
+              <h3>Coach Additional Resources</h3>
             </Box>
-          </Paper>
-        </Box>
+            {!lessonId ? (
+              <h4>No Lesson Selected </h4>
+            ) : (
+              <ResourceTable
+                allResources={coachResources}
+                handleCheckboxChange={handleCoachCheckBoxChange}
+              />
+            )}
+          </Box>
+        </Paper>
       </Box>
     </Box>
   );

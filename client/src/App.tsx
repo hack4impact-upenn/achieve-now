@@ -75,11 +75,11 @@ function App() {
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
                     <Route
-                      path="/resources/:studentId"
+                      path="/resources/student/:studentId"
                       element={<StudentResourceDashboard />}
                     />
                     <Route
-                      path="/lessons/:lessonId"
+                      path="/resources/lesson/:lessonId"
                       element={<LessonResourceDashboard />}
                     />
                     <Route

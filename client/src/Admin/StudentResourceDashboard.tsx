@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
-import { useData, deleteData, putData, postData } from '../util/api';
+import { useData, postData } from '../util/api';
 import PageHeader from '../components/PageHeader';
 import { StudentCardFromObj } from './StudentCard';
 import SearchBar from './SearchBar';
@@ -44,7 +44,6 @@ function StudentResourceDashboard() {
 
   useEffect(() => {
     const getResources = async () => {
-      console.log(studentId);
       const allResourceData = resourcesRes?.data || [];
 
       const parentRes = await postData(
@@ -54,7 +53,6 @@ function StudentResourceDashboard() {
         },
       );
       const parentData = parentRes?.data || [];
-      console.log(parentData);
 
       const coachRes = await postData(
         `student/resource/additional/${studentId}`,
@@ -63,7 +61,6 @@ function StudentResourceDashboard() {
         },
       );
       const coachData = coachRes?.data || [];
-      console.log(coachData);
 
       const newParentResources = allResourceData.map((resource: any) => {
         const index = parentData.findIndex(
@@ -182,7 +179,7 @@ function StudentResourceDashboard() {
       >
         <Paper
           sx={{
-            width: '30%',
+            width: '25%',
             overflowY: 'auto',
             maxHeight: 'calc(100vh - 66px)', // Subtract the Toolbar height (default is 64px)
             bgcolor: 'white',
@@ -200,7 +197,7 @@ function StudentResourceDashboard() {
 
         <Paper
           sx={{
-            width: '70%',
+            width: '75%',
             overflowY: 'auto',
             maxHeight: 'calc(100vh - 66px)', // Subtract the Toolbar height (default is 64px)
             bgcolor: '#EDEDED',
