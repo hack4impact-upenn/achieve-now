@@ -19,7 +19,6 @@ function UpdatesComponent(props: any) {
       const response = await axios.get(
         `http://localhost:4000/api/student/student/${studentID}`,
       );
-      console.log(response.data);
       setUpdateText(response?.data.updates);
     };
 
