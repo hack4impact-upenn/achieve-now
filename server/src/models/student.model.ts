@@ -79,6 +79,10 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  updates: {
+    type: String,
+    required: false,
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -99,6 +103,7 @@ interface IStudent extends mongoose.Document {
   personality: string;
   media_waiver: boolean;
   work_habits: string;
+  updates: string;
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
