@@ -26,6 +26,11 @@ function CoachLandingPage() {
   const [coach, setCoach] = useState<any>({});
   const [student, setStudent] = useState<any>({});
 
+  function zoomLink() {
+    console.log(student.zoom_link)
+    location.href = student.zoom_link;
+  }
+
   useEffect(() => {
     if (!params.id) {
       return;
@@ -58,12 +63,17 @@ function CoachLandingPage() {
         `http://localhost:4000/api/school/${res.data.school_id}`,
       );
 
+      const blockRes = await axios.get(
+        `http://localhost:4000/api/block/student/${res.data.user_id}`,
+      );
+
       setStudent({
         ...res.data,
         ...res2.data,
         school_name: schoolRes.data.name,
         school_info: schoolRes.data.info,
         teacher: `${teacherRes.data.firstName} ${teacherRes.data.lastName}`,
+        zoom_link: blockRes.data.zoom,
       });
     };
 
@@ -88,7 +98,7 @@ function CoachLandingPage() {
           }}
         >
           <Typography variant="h3">{student.firstName}</Typography>
-          <Button variant="outlined">Zoom</Button>
+          <Button variant="outlined" onClick={zoomLink}>{student.zoom_link}</Button>
         </Box>
         <Card
           variant="outlined"
