@@ -79,7 +79,7 @@ function CoachAttendancePage() {
           `http://localhost:4000/api/coach/blocks/${coach.user_id}`,
         );
         coaches[index] = {
-          ...coach,
+          ...coaches[index],
           blocks: res.data,
         };
         res.data.forEach((block: string) => {
