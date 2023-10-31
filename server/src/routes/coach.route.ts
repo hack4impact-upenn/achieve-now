@@ -8,6 +8,8 @@ import {
   getAllCoaches,
   getCoachBlocksById,
   updateCoachAttendance,
+  getStudentFromCoachById,
+  getCoachById,
 } from '../controllers/coach.controller';
 
 const coachRouter = Router();
@@ -33,5 +35,9 @@ coachRouter.put(
 );
 
 coachRouter.get('/blocks/:id', isAuthenticated, isAdmin, getCoachBlocksById);
+
+coachRouter.get('/student/:id', isAuthenticated, getStudentFromCoachById);
+
+coachRouter.get('/:id', isAuthenticated, getCoachById);
 
 export default coachRouter;
