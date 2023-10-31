@@ -2,15 +2,16 @@
 import { CardActionArea, CardContent, Typography, Card } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../../util/api';
+import { useData } from '../util/api';
 
 type StudentCardProps = {
   studentID: string;
   lesson: string;
 };
 
-function StudentCard({ studentID, lesson }: StudentCardProps) {
+function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
   const navigate = useNavigate();
+
   const user = useData(`user/${studentID}`);
   let label = 'Name';
   if (user) {
@@ -47,4 +48,41 @@ function StudentCard({ studentID, lesson }: StudentCardProps) {
   );
 }
 
-export default StudentCard;
+interface StudentCardFromObjProps {
+  studentObj: any;
+}
+
+function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
+  const navigate = useNavigate();
+  const studentID = studentObj.studentId;
+  const label = `${studentObj.firstName} ${studentObj.lastName}`;
+
+  function handleClick() {
+    const s = `/resources/${studentID}`;
+    navigate(s);
+  }
+
+  return (
+    <Card sx={{ p: 0.1, bgcolor: '#EDEDED', mb: 1, borderRadius: '8px' }}>
+      <CardActionArea onClick={handleClick}>
+        <CardContent>
+          <Typography variant="body1">{label}</Typography>
+          <Typography
+            sx={{
+              color: '#0175C0',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            variant="subtitle1"
+          >
+            <b>
+              <i>{studentObj.lessonNumber}</i>
+            </b>
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+}
+
+export { StudentCardFromID, StudentCardFromObj };

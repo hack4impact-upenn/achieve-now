@@ -9,7 +9,7 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
-import FamilyLessonsPage from './Family/FamilyLessonsPage';
+import LessonsPage from './Lessons/LessonsPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import {
   UnauthenticatedRoutesWrapper,
@@ -24,10 +24,10 @@ import EmailResetPasswordPage from './Authentication/EmailResetPasswordPage';
 import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
-import Header from './components/PageHeader';
 import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
-import ResourceDashboard from './ResourceDashboard';
+import StudentResourceDashboard from './Admin/StudentResourceDashboard';
+import LessonResourceDashboard from './Admin/LessonResourceDashboard';
 
 function App() {
   return (
@@ -39,15 +39,11 @@ function App() {
               <CssBaseline>
                 <AlertPopup />
                 <Routes>
+                  <Route path="/lessons/:studentID" element={<LessonsPage />} />
+
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/teacher" element={<TeacherDashboard />} />
-                    <Route path="/resource" element={<ResourceDashboard />} />
-                    <Route
-                      path="/resource/:id"
-                      element={<ResourceDashboard />}
-                    />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                       path="/verify-account/:token"
@@ -66,7 +62,6 @@ function App() {
                     path="/invite/:token"
                     element={<InviteRegisterPage />}
                   />
-                  <Route path="/header" element={<Header />} />
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/home" element={<HomePage />} />
@@ -74,15 +69,19 @@ function App() {
                       path="/onboarding/student"
                       element={<OnboardingPage />}
                     />
+                    <Route path="/teacher" element={<TeacherDashboard />} />
+                    {/* <Route path="/lessons/:id" element={<LessonsPage />} /> */}
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
-                  </Route>
-
-                  <Route element={<ProtectedRoutesWrapper />}>
-                    <Route path="/lessons" element={<FamilyLessonsPage />} />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/resources/:studentId"
+                      element={<StudentResourceDashboard />}
+                    />
+                    <Route
+                      path="/lessons/:lessonId"
+                      element={<LessonResourceDashboard />}
+                    />
                     <Route
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}

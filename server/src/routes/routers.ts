@@ -36,6 +36,10 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
     prefix: '/api/resources',
     router: resourceRouter,
   },
+  {
+    prefix: '/api/thumbnail',
+    router: thumbnailRouter,
+  },
 ];
 
 export default prefixToRouterMap;
