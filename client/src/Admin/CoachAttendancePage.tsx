@@ -76,7 +76,8 @@ function CoachAttendancePage() {
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
         res = await axios.get(
-          `http://localhost:4000/api/coach/blocks/${coach.user_id}`,
+          // eslint-disable-next-line no-underscore-dangle
+          `http://localhost:4000/api/coach/blocks/${coach._id}`,
         );
         coaches[index] = {
           ...coaches[index],
