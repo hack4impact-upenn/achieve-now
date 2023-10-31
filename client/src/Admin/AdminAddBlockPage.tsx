@@ -133,7 +133,9 @@ function AdminAddBlockPage() {
       <Header />
       <ScreenGrid>
         <FormGrid>
-          <Typography variant="h4">Add Block</Typography>
+          <Typography variant="h4" sx={{ textAlign: 'center' }}>
+            Add Block
+          </Typography>
           <FormCol>
             <Grid item width="1">
               <Typography variant="subtitle1">Day</Typography>
@@ -327,7 +329,7 @@ function AdminAddBlockPage() {
             {error && (
               <Grid item container justifyContent="center">
                 <Typography justifyContent="center" color="red">
-                  Please fill out all fields
+                  Please fill out all fields.
                 </Typography>
               </Grid>
             )}

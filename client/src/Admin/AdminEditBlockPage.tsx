@@ -185,7 +185,9 @@ function AdminEditBlockPage() {
       <Header />
       <ScreenGrid>
         <FormGrid>
-          <Typography variant="h4">Edit Block</Typography>
+          <Typography variant="h4" sx={{ textAlign: 'center' }}>
+            Edit Block
+          </Typography>
           <FormCol>
             <Grid item width="1">
               <Typography variant="subtitle1">Day</Typography>
