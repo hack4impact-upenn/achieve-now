@@ -79,7 +79,7 @@ function StudentAttendancePage() {
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
 
-  const fetchData = async () => {
+  const fetchData = async (curSearch: string, curBlock: string) => {
     const result = await axios.get('http://localhost:4000/api/student/all');
     const students = result.data as any[];
     const studentBlocks: string[] = [];
@@ -121,22 +121,27 @@ function StudentAttendancePage() {
       });
     });
 
-    console.log(attendances);
-
     setRawData({ dates, attendance: attendances });
-    setData({ dates, attendance: attendances });
+    setData({
+      dates,
+      attendance: attendances.filter(
+        (student) =>
+          (student.blockName === curBlock || curBlock === 'All Blocks') &&
+          student.name.toLowerCase().includes(curSearch),
+      ),
+    });
     setBlocks(studentBlocks);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData('', 'All Blocks');
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchFilter = e.target.value.toLowerCase();
     const newData = rawData.attendance.filter(
       (student) =>
-        student.name.toLowerCase().includes(search) &&
+        student.name.toLowerCase().includes(searchFilter) &&
         (block === 'All Blocks' || student.blockName === block),
     );
     setSearch(searchFilter);
@@ -158,14 +163,14 @@ function StudentAttendancePage() {
     await axios.put('http://localhost:4000/api/student/attendance/create', {
       date,
     });
-    fetchData();
+    fetchData(search, block);
   };
 
   const deleteDate = async (date: number) => {
     await axios.put('http://localhost:4000/api/student/attendance/delete', {
       date,
     });
-    fetchData();
+    fetchData(search, block);
   };
 
   const handleChangeAttendance = async (
@@ -178,7 +183,7 @@ function StudentAttendancePage() {
       date,
       attendance,
     });
-    fetchData();
+    fetchData(search, block);
   };
 
   return (
