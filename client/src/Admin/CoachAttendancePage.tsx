@@ -190,7 +190,7 @@ function CoachAttendancePage() {
         <Typography variant="h3">Coach Attendance</Typography>
         <Stack direction="row" spacing={2}>
           <TextField
-            label="search"
+            label="Search"
             placeholder="Enter a Name..."
             variant="outlined"
             onChange={handleSearch}
