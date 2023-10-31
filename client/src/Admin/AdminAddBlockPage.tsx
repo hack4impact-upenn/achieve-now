@@ -29,11 +29,11 @@ function AdminAddBlockPage() {
   const [name, setName] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [blockNumber, setBlockNumber] = useState('');
   const [zoom, setZoom] = useState('');
   const [teachers, setTeachers] = useState<IUser[]>([]);
   const [coaches, setCoaches] = useState([]);
   const [students, setStudents] = useState([]);
+  const [allUsers, setAllUsers] = useState<IUser[]>([]);
   const [teacher, setTeacher] = useState<IUser | null>(null);
 
   const [pairs, setPairs] = useState<[IUser | null, IStudent | null][]>([
@@ -49,6 +49,7 @@ function AdminAddBlockPage() {
     const data = users?.data || [];
     setTeachers(data.filter((user: IUser) => user.role === 'teacher'));
     setCoaches(data.filter((user: IUser) => user.role === 'coach'));
+    setAllUsers(data);
   }, [users]);
 
   useEffect(() => {
@@ -77,20 +78,23 @@ function AdminAddBlockPage() {
     setEndTime(event.target.value as string);
   };
 
-  const handleBlockNumberChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    setBlockNumber(event.target.value as string);
-  };
-
   const handleZoomChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     setZoom(event.target.value as string);
   };
 
-  const displayName = (user: IUser) => {
+  const displayName = (user: IUser | null) => {
+    if (user === null) {
+      return '';
+    }
     return `${user.firstName} ${user.lastName}`;
+  };
+
+  const getStudentName = (stud: IStudent) => {
+    return displayName(
+      allUsers.find((user: IUser) => user._id === stud.user_id) || null,
+    );
   };
 
   const handleDeleteRow = (index: number) => {
@@ -118,18 +122,18 @@ function AdminAddBlockPage() {
       name,
       startTime,
       endTime,
-      ...(blockNumber && { block: Number(blockNumber) }),
       zoom,
       pairs,
     });
+    window.location.reload();
   };
 
   return (
     <div>
       <Header />
       <ScreenGrid>
-        <Typography variant="h4">Add Block</Typography>
         <FormGrid>
+          <Typography variant="h4">Add Block</Typography>
           <FormCol>
             <Grid item width="1">
               <Typography variant="subtitle1">Day</Typography>
@@ -154,7 +158,6 @@ function AdminAddBlockPage() {
                 value={name}
                 onChange={handleNameChange}
                 label="Name"
-                required
                 variant="standard"
                 placeholder="Name"
               />
@@ -167,7 +170,6 @@ function AdminAddBlockPage() {
                 onChange={handleStartTimeChange}
                 type="time"
                 variant="standard"
-                required
               />
             </Grid>
             <Grid item width="1">
@@ -178,23 +180,11 @@ function AdminAddBlockPage() {
                 onChange={handleEndTimeChange}
                 type="time"
                 variant="standard"
-                required
               />
             </Grid>
             <Grid item width="1">
               <TextField
                 fullWidth
-                value={blockNumber}
-                onChange={handleBlockNumberChange}
-                label="Block number"
-                variant="standard"
-                placeholder="Block number"
-              />
-            </Grid>
-            <Grid item width="1">
-              <TextField
-                fullWidth
-                required
                 value={zoom}
                 onChange={handleZoomChange}
                 label="Zoom link"
@@ -271,8 +261,8 @@ function AdminAddBlockPage() {
                             );
                           },
                         )
-                        .map((student: IStudent) => student.user_id)}
-                      value={pair[1] && pair[1].user_id}
+                        .map((student: IStudent) => getStudentName(student))}
+                      value={pair[1] && getStudentName(pair[1])}
                       renderInput={(params) => (
                         /* eslint-disable react/jsx-props-no-spreading */
                         <TextField {...params} label="Student" />
@@ -280,7 +270,8 @@ function AdminAddBlockPage() {
                       onChange={(event: any, newValue: string | null) => {
                         const curr: IStudent | null =
                           students.find(
-                            (student: IStudent) => student.user_id === newValue,
+                            (student: IStudent) =>
+                              getStudentName(student) === newValue,
                           ) || null;
                         setPairs((prev) => [
                           ...prev.slice(0, index),

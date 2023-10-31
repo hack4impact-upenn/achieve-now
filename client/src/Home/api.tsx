@@ -54,7 +54,6 @@ async function addBlock(values: any) {
     name,
     startTime,
     endTime,
-    ...(values.block && { block: values.block }),
     zoom,
     students: Array.from(students),
   });
@@ -91,7 +90,6 @@ async function editBlock(values: any) {
     name,
     startTime,
     endTime,
-    ...(values.block && { block: values.block }),
     zoom,
     students: Array.from(students),
   });
