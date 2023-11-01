@@ -92,9 +92,9 @@ function StudentAttendancePage() {
           ...student,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
-        if (res.data.block_id) {
+        if (student.block_id) {
           res = await axios.get(
-            `http://localhost:4000/api/block/block-info-id/${res.data.block_id}`,
+            `http://localhost:4000/api/block/block-info-id/${student.block_id}`,
           );
           if (!studentBlocks.includes(res.data.name)) {
             studentBlocks.push(res.data.name);
