@@ -8,6 +8,7 @@ import Header from '../components/PageHeader';
 import { useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
+import AddDateNotesDialog from './AddDateNotesDialog';
 import DeleteDateDialog from './DeleteDateDialog';
 
 interface IAdminNotesTable {
@@ -52,6 +53,7 @@ const initialTableData = [
 
 function AdminSessionsPage() {
   const [tableData, setTableData] = useState(initialTableData);
+  const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
   const [data, setData] = useState<IAdminNotesTable>({
@@ -71,19 +73,6 @@ function AdminSessionsPage() {
     { id: 'coachObservations', label: 'Coach Observations' },
     { id: 'coachNextSteps', label: 'Coach Next Steps' },
   ];
-
-  const handleAddEntry = () => {
-    const dummyData = {
-      key: 'dummyKey',
-      date: new Date().toLocaleDateString(),
-      studentObservations: 'Dummy Student Observations',
-      studentNextSteps: 'Dummy Student Next Steps',
-      coachObservations: 'Dummy Coach Observations',
-      coachNextSteps: 'Dummy Coach Next Steps',
-    };
-
-    setTableData([...tableData, dummyData]);
-  };
 
   // Used to create the data type to create a row in the table
   function createAdminNotesRow(
@@ -106,9 +95,6 @@ function AdminSessionsPage() {
 
   const deleteDate = (date: number) => {
     try {
-      // if use backend use this instead
-      // await axios.put('http://localhost:4000/api/coach/attendance/delete', { date });
-
       // updating local tableData very jank :')
       const dateStr = new Date(date).toLocaleDateString('en-US');
       const updatedTableData = tableData.filter(
@@ -121,8 +107,38 @@ function AdminSessionsPage() {
     }
   };
 
+  const addDate = async (
+    date: number,
+    studentObservations: string,
+    studentNextSteps: string,
+    coachObservations: string,
+    coachNextSteps: string,
+  ) => {
+    try {
+      console.log(date);
+      // updating local tableData very jank :')
+      const dummyData = {
+        key: 'dummyKey',
+        date: new Date(date).toLocaleDateString('en-US'),
+        studentObservations,
+        studentNextSteps,
+        coachObservations,
+        coachNextSteps,
+      };
+
+      setTableData([...tableData, dummyData]);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
+  };
+
   return (
     <div>
+      <AddDateNotesDialog
+        open={dateDialogOpen}
+        setOpen={() => setDateDialogOpen(false)}
+        addDate={addDate}
+      />
       <DeleteDateDialog
         open={deleteDateDialogOpen}
         setOpen={() => setDeleteDateDialogOpen(false)}
@@ -176,7 +192,7 @@ function AdminSessionsPage() {
         >
           <Button
             variant="outlined"
-            onClick={handleAddEntry}
+            onClick={() => setDateDialogOpen(true)}
             sx={{
               backgroundColor: 'white',
               borderColor: 'black',
