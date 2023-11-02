@@ -26,10 +26,9 @@ function CoachLandingPage() {
   const [coach, setCoach] = useState<any>({});
   const [student, setStudent] = useState<any>({});
 
-  function zoomLink() {
-    console.log(student.zoom_link)
-    location.href = student.zoom_link;
-  }
+  const zoomLink = () => {
+    window.open(student.zoom_link);
+  };
 
   useEffect(() => {
     if (!params.id) {
@@ -98,7 +97,9 @@ function CoachLandingPage() {
           }}
         >
           <Typography variant="h3">{student.firstName}</Typography>
-          <Button variant="outlined" onClick={zoomLink}>{student.zoom_link}</Button>
+          <Button variant="outlined" onClick={zoomLink}>
+            Zoom
+          </Button>
         </Box>
         <Card
           variant="outlined"
