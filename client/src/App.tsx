@@ -33,6 +33,7 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import CoachLandingPage from './Coach/CoachLandingPage';
 
 function App() {
   return (
@@ -115,6 +116,12 @@ function App() {
                     <Route
                       path="/admin-coach-attendance"
                       element={<CoachAttendancePage />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/coach-landing/:id"
+                      element={<CoachLandingPage />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}

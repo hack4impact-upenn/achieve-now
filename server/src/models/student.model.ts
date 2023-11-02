@@ -79,7 +79,35 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  updates: {
+  grade: {
+    type: String,
+    required: false,
+  },
+  family: {
+    type: String,
+    required: false,
+  },
+  favorite_food: {
+    type: String,
+    required: false,
+  },
+  likes: {
+    type: String,
+    required: false,
+  },
+  dislikes: {
+    type: String,
+    required: false,
+  },
+  what_motivates_them: {
+    type: String,
+    required: false,
+  },
+  what_reading_strategies_worked: {
+    type: String,
+    required: false,
+  },
+  what_reading_strategies_didnt_work: {
     type: String,
     required: false,
   },
@@ -103,7 +131,14 @@ interface IStudent extends mongoose.Document {
   personality: string;
   media_waiver: boolean;
   work_habits: string;
-  updates: string;
+  grade: string;
+  family: string;
+  favorite_food: string;
+  likes: string;
+  dislikes: string;
+  what_motivates_them: string;
+  what_reading_strategies_worked: string;
+  what_reading_strategies_didnt_work: string;
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
