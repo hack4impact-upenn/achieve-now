@@ -131,12 +131,35 @@ function AdminSessionsPage() {
           >
             Notes
           </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'right',
+            width: '80%',
+            padding: `0 ${theme.spacing(2)}`,
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={handleAddEntry}
+            sx={{
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+              marginRight: theme.spacing(2),
+            }}
+          >
+            Add Entry
+          </Button>
           <Button
             variant="outlined"
             onClick={handleDeleteEntry}
             sx={{
-              position: 'absolute',
-              right: '15%',
               backgroundColor: 'white',
               borderColor: 'black',
               '&:hover': {
@@ -147,26 +170,10 @@ function AdminSessionsPage() {
           >
             Delete Entry
           </Button>
-          <Button
-            variant="outlined"
-            onClick={handleAddEntry}
-            sx={{
-              position: 'absolute',
-              right: '0%',
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-            }}
-          >
-            Add Entry
-          </Button>
         </Box>
+
         <Box
           sx={{
-            marginTop: theme.spacing(5),
             width: '80%',
             padding: theme.spacing(2),
           }}
