@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import { Button, Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
@@ -7,8 +8,13 @@ import Header from '../components/PageHeader';
 import { useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
+import DeleteDateDialog from './DeleteDateDialog';
 
-interface AdminNotesRow {
+interface IAdminNotesTable {
+  dates: number[];
+}
+
+interface IAdminNotesRow {
   key: string;
   date: string;
   studentObservations: string;
@@ -20,7 +26,7 @@ interface AdminNotesRow {
 const initialTableData = [
   {
     key: '1',
-    date: '10/05/2023',
+    date: '10/5/2023',
     studentObservations: 'Worked on vowels today.',
     studentNextSteps: 'Maria was a little distracted...',
     coachObservations: 'Cell',
@@ -28,7 +34,7 @@ const initialTableData = [
   },
   {
     key: '2',
-    date: '10/03/2023',
+    date: '10/3/2023',
     studentObservations: 'Did great, made a lot of progress!',
     studentNextSteps: 'Cell',
     coachObservations: 'Cell',
@@ -36,7 +42,7 @@ const initialTableData = [
   },
   {
     key: '3',
-    date: '10/02/2023',
+    date: '10/2/2023',
     studentObservations: 'Practiced reading comprehension.',
     studentNextSteps: 'Struggled with longer sentences.',
     coachObservations: 'Cell',
@@ -46,6 +52,17 @@ const initialTableData = [
 
 function AdminSessionsPage() {
   const [tableData, setTableData] = useState(initialTableData);
+  const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
+    useState<boolean>(false);
+  const [data, setData] = useState<IAdminNotesTable>({
+    dates: [] as number[],
+  });
+
+  useEffect(() => {
+    const dates = tableData.map((item) => new Date(item.date).getTime());
+    console.log(dates);
+    setData((prevData) => ({ ...prevData, dates }));
+  }, [tableData]);
 
   const columns: TColumn[] = [
     { id: 'date', label: 'Date' },
@@ -54,13 +71,6 @@ function AdminSessionsPage() {
     { id: 'coachObservations', label: 'Coach Observations' },
     { id: 'coachNextSteps', label: 'Coach Next Steps' },
   ];
-
-  // for the buttons
-  const handleDeleteEntry = () => {
-    if (tableData.length === 0) return;
-    const updatedTableData = tableData.slice(0, -1); // take out last one
-    setTableData(updatedTableData);
-  };
 
   const handleAddEntry = () => {
     const dummyData = {
@@ -83,7 +93,7 @@ function AdminSessionsPage() {
     studentNextSteps: string,
     coachObservations: string,
     coachNextSteps: string,
-  ): AdminNotesRow {
+  ): IAdminNotesRow {
     return {
       key,
       date,
@@ -94,8 +104,31 @@ function AdminSessionsPage() {
     };
   }
 
+  const deleteDate = (date: number) => {
+    try {
+      // if use backend use this instead
+      // await axios.put('http://localhost:4000/api/coach/attendance/delete', { date });
+
+      // updating local tableData very jank :')
+      const dateStr = new Date(date).toLocaleDateString('en-US');
+      const updatedTableData = tableData.filter(
+        (item) => item.date !== dateStr,
+      );
+
+      setTableData(updatedTableData);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
+  };
+
   return (
     <div>
+      <DeleteDateDialog
+        open={deleteDateDialogOpen}
+        setOpen={() => setDeleteDateDialogOpen(false)}
+        options={data.dates}
+        deleteDate={deleteDate}
+      />
       <Header />
       <Box
         sx={{
@@ -158,7 +191,7 @@ function AdminSessionsPage() {
           </Button>
           <Button
             variant="outlined"
-            onClick={handleDeleteEntry}
+            onClick={() => setDeleteDateDialogOpen(true)}
             sx={{
               backgroundColor: 'white',
               borderColor: 'black',
@@ -180,14 +213,14 @@ function AdminSessionsPage() {
         >
           {tableData && (
             <PaginationTable
-              rows={tableData.map((data) =>
+              rows={tableData.map((rowData) =>
                 createAdminNotesRow(
-                  data.key,
-                  data.date,
-                  data.studentObservations,
-                  data.studentNextSteps,
-                  data.coachObservations,
-                  data.coachNextSteps,
+                  rowData.key,
+                  rowData.date,
+                  rowData.studentObservations,
+                  rowData.studentNextSteps,
+                  rowData.coachObservations,
+                  rowData.coachNextSteps,
                 ),
               )}
               columns={columns}
