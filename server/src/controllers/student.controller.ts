@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * All the controller functions containing the logic for routes relating to
  * student users.
@@ -123,9 +124,11 @@ const getStudentResources = async (
   const resources = [];
 
   if (student.parent_additional_resources) {
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < student.parent_additional_resources.length; i++) {
       const resource_id = student.parent_additional_resources[i];
-      let res = await getResourceByID(resource_id);
+      // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-shadow
+      const res = await getResourceByID(resource_id);
       resources.push(res);
     }
   }
@@ -172,9 +175,10 @@ const deleteResource = async (
     (item) => item !== resource,
   );
 
-  console.log('updated: ' + updated_resources);
+  console.log(`updated: ${updated_resources}`);
 
   updateResourcesByID(id, updated_resources)
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     .then((student) => res.status(StatusCode.OK).send(student))
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
@@ -215,14 +219,15 @@ const updateResource = async (
   } else {
     resources.push('');
   }
-  console.log('original: ' + resources);
+  console.log(`original: ${resources}`);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const student_id = student._id;
 
   resources.push(resource);
 
   const updated_resources = resources.filter((item) => item !== '');
 
-  console.log('updated: ' + updated_resources);
+  console.log(`updated: ${updated_resources}`);
 
   updateResourcesByID(id, updated_resources)
     .then(() => res.sendStatus(StatusCode.OK))

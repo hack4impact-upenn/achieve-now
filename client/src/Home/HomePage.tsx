@@ -8,6 +8,7 @@ import { logout as logoutApi } from './api';
 import ScreenGrid from '../components/ScreenGrid';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import RoleDropdown from '../components/buttons/RoleDropdown';
+import Attendance from '../components/Attendance';
 
 interface ChooseRoleProps {
   role: string | null;
@@ -66,6 +67,9 @@ function HomePage() {
       </Grid>
       <Grid item container justifyContent="center">
         <Button onClick={handleLogout}>Logout</Button>
+      </Grid>
+      <Grid item>
+        <Attendance studentId="6542ff49847aec52d90a8c7e" />
       </Grid>
     </ScreenGrid>
   );

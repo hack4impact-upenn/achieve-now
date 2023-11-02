@@ -11,9 +11,9 @@ import {
   Typography,
 } from '@mui/material';
 /* eslint-disable import/no-extraneous-dependencies */
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+// import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 /* eslint-disable import/no-extraneous-dependencies */
-import InsertLinkIcon from '@mui/icons-material/InsertLink';
+// import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 
@@ -112,7 +112,7 @@ function FamilyLessonsPage() {
                   <Box sx={{ borderBottom: '1px solid black' }} />
                   <CardContent>
                     <Box display="flex" alignItems="center">
-                      <PlayCircleOutlineIcon />
+                      {/* <PlayCircleOutlineIcon /> */}
                       <Typography
                         gutterBottom
                         variant="h5"
@@ -171,7 +171,7 @@ function FamilyLessonsPage() {
                   >
                     <CardContent>
                       <Box display="flex" alignItems="center">
-                        <InsertLinkIcon />
+                        {/* <InsertLinkIcon /> */}
                         <Typography
                           gutterBottom
                           variant="h5"

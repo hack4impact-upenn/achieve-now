@@ -52,6 +52,6 @@ router.put('/assign-resource', isAuthenticated, isAdmin, updateResource);
  */
 router.get('/teacher/:id', getStudentsFromTeacherId);
 
-router.get('/student/:id', getStudent);
+router.get('/:id', getStudent);
 
 export default router;

@@ -28,12 +28,26 @@ const getAllStudentsFromDB = async () => {
  * @param id The id of the user to get.
  * @returns The {@link Student} or null if the student was not found.
  */
-const getStudentByID = async (id: string) => {
-  const user = await Student.findOne({ id })
+const getStudentByID = async (_id: string) => {
+  const user = await Student.findOne({ _id })
     .select(removeSensitiveDataQuery)
     .exec();
+
+  console.log(user);
   return user;
 };
+
+// /**
+//  * Gets the progress statistics for a student by its id
+//  * @param id The id of the student
+//  * @returns the {@link progress_stats} field or null if no such field
+//  */
+// const getProgressStats = async (id: string) => {
+//   const fields = ['progress_stats', '-_id'].concat(removeSensitiveDataQuery);
+//   const progressStats = await Student.findOne({ id }).select(fields).exec();
+
+//   return progressStats;
+// };
 
 /**
  * Gets a resource from the database by its id.
