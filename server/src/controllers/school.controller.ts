@@ -62,12 +62,16 @@ const createSchool = async (
     next(ApiError.missingFields(['info']));
     return;
   }
+  let temp_admin_name = ''
+  if(admin_name) {
+    temp_admin_name = admin_name
+  }
 
   const school = await createSchoolInDB(
     name,
     teachers,
     info,
-    admin_name,
+    temp_admin_name,
     admin_content,
     calendar_link,
     school_start_time,
@@ -77,6 +81,8 @@ const createSchool = async (
     second_grade_lunch_start_time,
     second_grade_lunch_end_time,
   );
+  console.log('logged here')
+  console.log(school)
 
   res.status(StatusCode.OK).send(school);
 };

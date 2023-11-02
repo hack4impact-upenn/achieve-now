@@ -11,15 +11,16 @@ import {
 const schoolRouter = Router();
 
 //get all schools
-schoolRouter.get('/all', isAuthenticated, isAdmin, getAllSchools);
+schoolRouter.get('/all', getAllSchools);
+//isAuthenticated, isAdmin, 
 
 //create school
-schoolRouter.post('/', isAuthenticated, isAdmin, createSchool);
+schoolRouter.post('/create', createSchool);
 
 //delete school
-schoolRouter.put('/delete', isAuthenticated, isAdmin, deleteSchool);
+schoolRouter.put('/delete', deleteSchool);
 
 //update school
-schoolRouter.put('/update', isAuthenticated, isAdmin, updateSchool);
+schoolRouter.put('/update', updateSchool);
 
 export default schoolRouter;

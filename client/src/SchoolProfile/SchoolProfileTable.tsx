@@ -8,7 +8,7 @@ import { PaginationTable, TColumn } from '../components/PaginationTable';
 import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
-import IUser from '../util/types/user';
+import ISchool from '../util/types/school'; 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -16,12 +16,20 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
-interface AdminDashboardRow {
+interface SchoolDashboardRow {
   key: string;
-  first: string;
-  last: string;
-  email: string;
-  role: string;
+  name: string;
+  teachers: string;
+  info: string;
+  admin_name: string;
+  admin_content: string;
+  calendar_link: string;
+  school_start_time: Date;
+  school_end_time: Date;
+  first_grade_lunch_start_time: Date;
+  first_grade_lunch_end_time: Date;
+  second_grade_lunch_start_time: Date;
+  second_grade_lunch_end_time: Date;
 }
 
 /**
@@ -31,64 +39,52 @@ interface AdminDashboardRow {
 function SchoolProfileTable() {
   // define columns for the table
   const columns: TColumn[] = [
-    { id: 'first', label: 'First Name' },
-    { id: 'last', label: 'Last Name' },
-    { id: 'email', label: 'Email' },
-    { id: 'role', label: 'Role' },
+    { id: 'name', label: 'Name' },
+    { id: 'teachers', label: 'Teachers' },
+    { id: 'info', label: 'Info' },
+    { id: 'admin_name', label: 'Admin Name' },
+    { id: 'admin_content', label: 'Admin Content' },
+    { id: 'calendar_link', label: 'Calendar Link' },
+    { id: 'school_start_time', label: 'School Start Time' },
+    { id: 'school_end_time', label: 'School End Time' },
+    { id: 'first_grade_lunch_start_time', label: 'First Grade Lunch Start Time' },
+    { id: 'first_grade_lunch_end_time', label: 'First Grade Lunch End Time' },
+    { id: 'second_grade_lunch_start_time', label: 'Second Grade Lunch Start Time' },
+    { id: 'second_grade_lunch_end_time', label: 'Second Grade Lunch End Time' },
   ];
 
   // Used to create the data type to create a row in the table
-  function createAdminDashboardRow(user: IUser): AdminDashboardRow {
-    const { _id, firstName, lastName, email, role } = user;
+  function createAdminDashboardRow(school: ISchool): SchoolDashboardRow {
+    const { _id, name, teachers, info, admin_name, admin_content, calendar_link, school_start_time, school_end_time,
+    first_grade_lunch_start_time, first_grade_lunch_end_time, second_grade_lunch_start_time, second_grade_lunch_end_time } = school;
     return {
       key: _id,
-      first: firstName,
-      last: lastName,
-      email,
-      role,
+      name,
+      teachers,
+      info,
+      admin_name, 
+      admin_content, 
+      calendar_link, 
+      school_start_time, 
+      school_end_time,
+      first_grade_lunch_start_time, 
+      first_grade_lunch_end_time, 
+      second_grade_lunch_start_time, 
+      second_grade_lunch_end_time
     };
   }
 
-  const [userList, setUserList] = useState<IUser[]>([]);
-  const users = useData('admin/all');
+  const [schoolList, setSchoolList] = useState<ISchool[]>([]);
+  const schools = useData('school/all');
   const self = useAppSelector(selectUser);
 
-  const [role, setRole] = React.useState('');
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setUserList(users?.data.filter((entry: IUser) => entry.role === role));
-    setRole(event.target.value as string);
-  };
-
-  // Upon getting the list of users for the database, set the state of the userList to contain all users except for logged in user
   useEffect(() => {
-    if (role === '') {
-      setUserList(
-        users?.data.filter(
-          (entry: IUser) => entry && entry.email && entry.email !== self.email,
-        ),
-      );
-    } else {
-      setUserList(
-        users?.data.filter(
-          (entry: IUser) =>
-            entry &&
-            entry.email &&
-            entry.email !== self.email &&
-            entry.role === self.role,
-        ),
-      );
-    }
-  }, [users, self]);
+    setSchoolList(schools?.data);
+  }, [schools]);
+
 
   // Search bar
-  const userData = users?.data ?? [];
-  const idNameMapping = new Map<string, string>();
-  for (let i = 0; i < userData.length; i += 1) {
-    const user = userData[i];
-    const name = `${user.firstName} ${user.lastName}`;
-    idNameMapping.set(user._id, name);
-  }
 
   const [searchInput, setSearchInput] = React.useState('');
 
@@ -101,24 +97,20 @@ function SchoolProfileTable() {
   };
 
   useEffect(() => {
-    let filteredUsers = users?.data || [];
+    let filteredSchools = schools?.data || [];
 
     if (searchInput) {
       const searchQuery = searchInput.toLowerCase();
-      filteredUsers = filteredUsers.filter((user: IUser) => {
-        const name = `${user.firstName} ${user.lastName}`.toLowerCase();
+      filteredSchools = filteredSchools.filter((school: ISchool) => {
+        const name = `${school.name}`.toLowerCase();
         return name.includes(searchQuery);
       });
     }
-
-    if (role) {
-      filteredUsers = filteredUsers.filter((user: IUser) => user.role === role);
-    }
-    setUserList(filteredUsers);
-  }, [searchInput, role, users, self]);
+    setSchoolList(filteredSchools);
+  }, [searchInput, schools]);
 
   // if the userlist is not yet populated, display a loading spinner
-  if (!userList) {
+  if (!schoolList) {
     return (
       <div style={{ width: '0', margin: 'auto' }}>
         <CircularProgress size={80} />
@@ -129,21 +121,12 @@ function SchoolProfileTable() {
     <Box>
       <TextField
         label="Search"
-        defaultValue="Name"
+        defaultValue="School Name"
         onChange={handleSearch}
         value={searchInput}
       />
-      <FormControl>
-        <InputLabel>Attribute</InputLabel>
-        <Select value={role} label="Role" onChange={handleChange}>
-          <MenuItem value={'student'}>Student</MenuItem>
-          <MenuItem value={'coach'}>Coach</MenuItem>
-          <MenuItem value={'teacher'}>Teacher</MenuItem>
-          <MenuItem value={'admin'}>Admin</MenuItem>
-        </Select>
-      </FormControl>
       <PaginationTable
-        rows={userList.map((user: IUser) => createAdminDashboardRow(user))}
+        rows={schoolList.map((school: ISchool) => createAdminDashboardRow(school))}
         columns={columns}
       />
     </Box>
