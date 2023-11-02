@@ -68,9 +68,6 @@ function HomePage() {
       <Grid item container justifyContent="center">
         <Button onClick={handleLogout}>Logout</Button>
       </Grid>
-      <Grid item>
-        <Attendance studentId="6542ff49847aec52d90a8c7e" />
-      </Grid>
     </ScreenGrid>
   );
 }
