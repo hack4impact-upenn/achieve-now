@@ -4,13 +4,11 @@ import dayjs from 'dayjs';
 import { Button, Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Key } from '@mui/icons-material';
 import { setegid } from 'process';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import { getData, useData } from '../util/api';
 import theme from '../assets/theme';
-import ScreenGrid from '../components/ScreenGrid';
 import AddDateNotesDialog from './AddDateNotesDialog';
 import DeleteDateDialog from './DeleteDateDialog';
 import IStudent from '../util/types/student';
@@ -29,16 +27,10 @@ interface IAdminNotesRow {
   coachNextSteps: string;
 }
 
-interface ResolvedReq {
-  data: any | null;
-  error: Error | any | null;
-}
-
 function AdminSessionsPage() {
   const { studentId } = useParams<{ studentId: string }>();
   const studentData = useData(`student/student/${studentId}`);
   const [student, setStudent] = useState<IStudent | null>(null);
-  const [coachData, setCoachData] = useState<ResolvedReq>();
   const [coach, setCoach] = useState<ICoach | null>(null);
   const [tableData, setTableData] = useState<IAdminNotesRow[]>([]);
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
@@ -49,7 +41,7 @@ function AdminSessionsPage() {
   });
 
   useEffect(() => {
-    const dates = tableData.map((item) => parseInt(item.date, 10));
+    const dates = tableData.map((item) => Number(new Date(item.date)));
     console.log(dates);
     setData((prevData) => ({ ...prevData, dates }));
   }, [tableData]);
@@ -65,7 +57,6 @@ function AdminSessionsPage() {
   async function getCoach(id: string) {
     const res = await getData(`coach/${id}`);
     if (!res.error) {
-      console.log(res);
       setCoach(res.data);
     }
   }
@@ -73,7 +64,6 @@ function AdminSessionsPage() {
   useEffect(() => {
     const rawStudentData = studentData?.data;
     if (rawStudentData) {
-      console.log(rawStudentData);
       setStudent(rawStudentData);
       if (rawStudentData.coach_id && rawStudentData.coach_id.length >= 1) {
         getCoach(rawStudentData.coach_id[0]);
@@ -84,7 +74,6 @@ function AdminSessionsPage() {
   useEffect(() => {
     if (student && coach) {
       const bigMap = new Map();
-      console.log(student.progress_stats);
       Object.entries(student.progress_stats).forEach(([key, innerMap]) => {
         if (key === 'student_next_steps' || key === 'student_observations') {
           Object.entries(innerMap).forEach(([date, comments]) => {
@@ -106,7 +95,6 @@ function AdminSessionsPage() {
           });
         }
       });
-      console.log(bigMap);
 
       const bigTable: IAdminNotesRow[] = [];
       Array.from(bigMap.entries()).forEach(([date, obj], index) => {
@@ -145,7 +133,7 @@ function AdminSessionsPage() {
   const deleteDate = (date: number) => {
     try {
       // updating local tableData very jank :')
-      const dateStr = new Date(date).toLocaleDateString('en-US');
+      const dateStr = new Date(date).toLocaleDateString();
       const updatedTableData = tableData.filter(
         (item) => item.date !== dateStr,
       );
@@ -164,7 +152,6 @@ function AdminSessionsPage() {
     coachNextSteps: string,
   ) => {
     try {
-      console.log(date);
       // updating local tableData very jank :')
       const dummyData = {
         key: 'dummyKey',

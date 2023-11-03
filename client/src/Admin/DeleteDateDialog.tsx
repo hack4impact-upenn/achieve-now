@@ -53,7 +53,7 @@ function DeleteDateDialog({
           >
             {options.map((option) => (
               <MenuItem value={option}>
-                {dayjs.unix(option).format('MM/DD/YY')}
+                {new Date(option).toLocaleDateString()}
               </MenuItem>
             ))}
           </Select>

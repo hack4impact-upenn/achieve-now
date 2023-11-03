@@ -25,7 +25,7 @@ function AddDateNotesDialog({ open, setOpen, addDate }: AddDateProps) {
     if (!date) {
       return;
     }
-    addDate(date.unix(), 'dummy', 'dummy', 'dummy', 'dummy');
+    addDate(Number(date), 'dummy', 'dummy', 'dummy', 'dummy');
     setOpen(false);
   };
 
