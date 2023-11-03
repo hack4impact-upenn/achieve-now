@@ -3,6 +3,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { Button, Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import { useData } from '../util/api';
@@ -52,6 +53,10 @@ const initialTableData = [
 ];
 
 function AdminSessionsPage() {
+  const { studentId } = useParams<{ studentId: string }>();
+  const studentData = useData(`student/student/${studentId}`);
+  const [student, setStudent] = useState(null);
+  const [coach, setCoach] = useState(null);
   const [tableData, setTableData] = useState(initialTableData);
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
@@ -59,6 +64,12 @@ function AdminSessionsPage() {
   const [data, setData] = useState<IAdminNotesTable>({
     dates: [] as number[],
   });
+
+  useEffect(() => {
+    const rawStudentData = studentData?.data;
+    console.log(rawStudentData);
+    rawStudentData.coach_id[0];
+  }, [studentData]);
 
   useEffect(() => {
     const dates = tableData.map((item) => new Date(item.date).getTime());
