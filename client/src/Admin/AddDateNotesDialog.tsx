@@ -1,4 +1,11 @@
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Grid,
+  TextField,
+} from '@mui/material';
 import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
@@ -20,28 +27,79 @@ interface AddDateProps {
 
 function AddDateNotesDialog({ open, setOpen, addDate }: AddDateProps) {
   const [date, setDate] = useState<Dayjs | null>(null);
+  const [studentObservations, setStudentObservations] = useState('');
+  const [studentNextSteps, setStudentNextSteps] = useState('');
+  const [coachObservations, setCoachObservations] = useState('');
+  const [coachNextSteps, setCoachNextSteps] = useState('');
 
   const handleSubmit = () => {
     if (!date) {
       return;
     }
-    addDate(Number(date), 'dummy', 'dummy', 'dummy', 'dummy');
+    addDate(
+      Number(date),
+      studentObservations,
+      studentNextSteps,
+      coachObservations,
+      coachNextSteps,
+    );
+    setDate(null);
+    setStudentObservations('');
+    setStudentNextSteps('');
+    setCoachObservations('');
+    setCoachNextSteps('');
+    setOpen(false);
+  };
+
+  const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle sx={{ textAlign: 'center' }}>Add Date</DialogTitle>
+    <Dialog open={open} onClose={handleClose} fullWidth>
+      <DialogTitle sx={{ textAlign: 'center' }}>Add Entry</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack direction="row" spacing={2}>
+        <Stack direction="column" spacing={2}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               value={date}
               onChange={(newValue) => setDate(newValue)}
             />
           </LocalizationProvider>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              label="Student Observations"
+              value={studentObservations}
+              onChange={(event) => setStudentObservations(event.target.value)}
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              label="Student Next Steps"
+              value={studentNextSteps}
+              onChange={(event) => setStudentNextSteps(event.target.value)}
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              label="Coach Observations"
+              value={coachObservations}
+              onChange={(event) => setCoachObservations(event.target.value)}
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              label="Coach Next Steps"
+              value={coachNextSteps}
+              onChange={(event) => setCoachNextSteps(event.target.value)}
+            />
+          </Grid>
           <Button variant="outlined" onClick={handleSubmit}>
             Submit
           </Button>
