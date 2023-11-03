@@ -3,6 +3,8 @@ import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import React, { useState } from 'react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 interface AddDateProps {
   open: boolean;
@@ -34,7 +36,12 @@ function AddDateNotesDialog({ open, setOpen, addDate }: AddDateProps) {
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
         <Stack direction="row" spacing={2}>
-          <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              value={date}
+              onChange={(newValue) => setDate(newValue)}
+            />
+          </LocalizationProvider>
           <Button variant="outlined" onClick={handleSubmit}>
             Submit
           </Button>
