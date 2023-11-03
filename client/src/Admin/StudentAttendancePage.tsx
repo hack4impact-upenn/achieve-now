@@ -18,7 +18,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddDateDialog from './AddDateDialog';
+import AddDateDialog from './AddDateNotesDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
 

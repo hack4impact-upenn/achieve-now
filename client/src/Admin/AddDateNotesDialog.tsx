@@ -3,21 +3,29 @@ import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import React, { useState } from 'react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 interface AddDateProps {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  addDate: (date: number) => void;
+  addDate: (
+    date: number,
+    studentObservations: string,
+    studentNextSteps: string,
+    coachObservations: string,
+    coachNextSteps: string,
+  ) => void;
 }
 
-function AddDateDialog({ open, setOpen, addDate }: AddDateProps) {
+function AddDateNotesDialog({ open, setOpen, addDate }: AddDateProps) {
   const [date, setDate] = useState<Dayjs | null>(null);
 
   const handleSubmit = () => {
     if (!date) {
       return;
     }
-    addDate(date.unix());
+    addDate(date.unix(), 'dummy', 'dummy', 'dummy', 'dummy');
     setOpen(false);
   };
 
@@ -28,7 +36,12 @@ function AddDateDialog({ open, setOpen, addDate }: AddDateProps) {
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
         <Stack direction="row" spacing={2}>
-          <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              value={date}
+              onChange={(newValue) => setDate(newValue)}
+            />
+          </LocalizationProvider>
           <Button variant="outlined" onClick={handleSubmit}>
             Submit
           </Button>
@@ -38,4 +51,4 @@ function AddDateDialog({ open, setOpen, addDate }: AddDateProps) {
   );
 }
 
-export default AddDateDialog;
+export default AddDateNotesDialog;

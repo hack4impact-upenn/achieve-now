@@ -104,6 +104,12 @@ const getBlockInfoByStudentId = async (
   }
   const block = await getBlockByStudentId(id);
   res.status(StatusCode.OK).send(block);
-}
+};
 
-export { getBlockInfoById, getBlockInfo, putAddBlock, putEditBlock, getBlockInfoByStudentId };
+export {
+  getBlockInfoById,
+  getBlockInfo,
+  putAddBlock,
+  putEditBlock,
+  getBlockInfoByStudentId,
+};
