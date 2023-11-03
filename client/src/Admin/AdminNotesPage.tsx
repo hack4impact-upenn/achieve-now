@@ -10,7 +10,7 @@ import Header from '../components/PageHeader';
 import { getData, useData } from '../util/api';
 import theme from '../assets/theme';
 import AddDateNotesDialog from './AddDateNotesDialog';
-import DeleteDateDialog from './DeleteDateDialog';
+import DeleteDateDialog from './DeleteDateNotesDialog';
 import IStudent from '../util/types/student';
 import ICoach from '../util/types/coach';
 
@@ -154,7 +154,7 @@ function AdminSessionsPage() {
     try {
       // updating local tableData very jank :')
       const dummyData = {
-        key: 'dummyKey',
+        key: date.toString(),
         date: new Date(date).toLocaleDateString('en-US'),
         studentObservations,
         studentNextSteps,
@@ -174,6 +174,8 @@ function AdminSessionsPage() {
         open={dateDialogOpen}
         setOpen={() => setDateDialogOpen(false)}
         addDate={addDate}
+        student={student}
+        coach={coach}
       />
       <DeleteDateDialog
         open={deleteDateDialogOpen}

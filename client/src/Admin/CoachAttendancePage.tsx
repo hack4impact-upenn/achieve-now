@@ -16,9 +16,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddDateDialog from './AddDateNotesDialog';
+import AddDateDialog from './AddDateAttendanceDialog';
 import Header from '../components/PageHeader';
-import DeleteDateDialog from './DeleteDateDialog';
+import DeleteDateDialog from './DeleteDateAttendanceDialog';
 
 const coachStatusOptions = [
   'Planned Absence',
