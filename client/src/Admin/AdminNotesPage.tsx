@@ -4,13 +4,17 @@ import dayjs from 'dayjs';
 import { Button, Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Key } from '@mui/icons-material';
+import { setegid } from 'process';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { useData } from '../util/api';
+import { getData, useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 import AddDateNotesDialog from './AddDateNotesDialog';
 import DeleteDateDialog from './DeleteDateDialog';
+import IStudent from '../util/types/student';
+import ICoach from '../util/types/coach';
 
 interface IAdminNotesTable {
   dates: number[];
@@ -25,39 +29,18 @@ interface IAdminNotesRow {
   coachNextSteps: string;
 }
 
-const initialTableData = [
-  {
-    key: '1',
-    date: '10/5/2023',
-    studentObservations: 'Worked on vowels today.',
-    studentNextSteps: 'Maria was a little distracted...',
-    coachObservations: 'Cell',
-    coachNextSteps: 'Cell',
-  },
-  {
-    key: '2',
-    date: '10/3/2023',
-    studentObservations: 'Did great, made a lot of progress!',
-    studentNextSteps: 'Cell',
-    coachObservations: 'Cell',
-    coachNextSteps: 'Cell',
-  },
-  {
-    key: '3',
-    date: '10/2/2023',
-    studentObservations: 'Practiced reading comprehension.',
-    studentNextSteps: 'Struggled with longer sentences.',
-    coachObservations: 'Cell',
-    coachNextSteps: 'Cell',
-  },
-];
+interface ResolvedReq {
+  data: any | null;
+  error: Error | any | null;
+}
 
 function AdminSessionsPage() {
   const { studentId } = useParams<{ studentId: string }>();
   const studentData = useData(`student/student/${studentId}`);
-  const [student, setStudent] = useState(null);
-  const [coach, setCoach] = useState(null);
-  const [tableData, setTableData] = useState(initialTableData);
+  const [student, setStudent] = useState<IStudent | null>(null);
+  const [coachData, setCoachData] = useState<ResolvedReq>();
+  const [coach, setCoach] = useState<ICoach | null>(null);
+  const [tableData, setTableData] = useState<IAdminNotesRow[]>([]);
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
@@ -66,13 +49,7 @@ function AdminSessionsPage() {
   });
 
   useEffect(() => {
-    const rawStudentData = studentData?.data;
-    console.log(rawStudentData);
-    // rawStudentData.coach_id[0];
-  }, [studentData]);
-
-  useEffect(() => {
-    const dates = tableData.map((item) => new Date(item.date).getTime());
+    const dates = tableData.map((item) => parseInt(item.date, 10));
     console.log(dates);
     setData((prevData) => ({ ...prevData, dates }));
   }, [tableData]);
@@ -84,6 +61,67 @@ function AdminSessionsPage() {
     { id: 'coachObservations', label: 'Coach Observations' },
     { id: 'coachNextSteps', label: 'Coach Next Steps' },
   ];
+
+  async function getCoach(id: string) {
+    const res = await getData(`coach/${id}`);
+    if (!res.error) {
+      console.log(res);
+      setCoach(res.data);
+    }
+  }
+
+  useEffect(() => {
+    const rawStudentData = studentData?.data;
+    if (rawStudentData) {
+      console.log(rawStudentData);
+      setStudent(rawStudentData);
+      if (rawStudentData.coach_id && rawStudentData.coach_id.length >= 1) {
+        getCoach(rawStudentData.coach_id[0]);
+      }
+    }
+  }, [studentData]);
+
+  useEffect(() => {
+    if (student && coach) {
+      const bigMap = new Map();
+      console.log(student.progress_stats);
+      Object.entries(student.progress_stats).forEach(([key, innerMap]) => {
+        if (key === 'student_next_steps' || key === 'student_observations') {
+          Object.entries(innerMap).forEach(([date, comments]) => {
+            if (!bigMap.has(date)) {
+              bigMap.set(date, {});
+            }
+            bigMap.get(date)[key] = comments;
+          });
+        }
+      });
+
+      Object.entries(coach.progress_stats).forEach(([key, innerMap]) => {
+        if (key === 'coach_next_steps' || key === 'coach_observations') {
+          Object.entries(innerMap).forEach(([date, comments]) => {
+            if (!bigMap.has(date)) {
+              bigMap.set(date, {});
+            }
+            bigMap.get(date)[key] = comments;
+          });
+        }
+      });
+      console.log(bigMap);
+
+      const bigTable: IAdminNotesRow[] = [];
+      Array.from(bigMap.entries()).forEach(([date, obj], index) => {
+        bigTable.push({
+          key: index.toString(),
+          date: new Date(parseInt(date, 10)).toLocaleDateString(),
+          studentObservations: obj.student_observations || '',
+          studentNextSteps: obj.student_next_steps || '',
+          coachObservations: obj.coach_observations || '',
+          coachNextSteps: obj.coach_next_steps || '',
+        });
+      });
+      setTableData(bigTable);
+    }
+  }, [student, coach]);
 
   // Used to create the data type to create a row in the table
   function createAdminNotesRow(
