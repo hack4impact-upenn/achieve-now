@@ -22,25 +22,30 @@ interface ICard extends IResource {
 /**
  * The Lessons Page displays each lesson w/ the lesson number,
  * followed by a screengrid of lesson materials (cards linking to websites, videos, documents)
- * for students and coaches to reference. We pull from diff backends based on the user's role
+ * for students and coaches to reference.
  */
 function LessonsPage() {
   const { studentID } = useParams();
-  console.log(studentID);
   // const user = useAppSelector(selectUser);
   const user = {
-    role: 'student',
+    role: 'parent',
   };
   const { role } = user;
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
   const [addCardsWithImages, setAddCardsWithImages] = useState<ICard[]>([]);
-  const resources = useData('resources/all');
-  const addResources = useData(`student/resource/${studentID}`);
+  const [lessonNumber, setLessonNumber] = useState<string>('');
 
   useEffect(() => {
     const fetchResources = async () => {
+      const resources = await postData(`student/resource/all/${studentID}`, {
+        role,
+      });
+      const lessonResources = resources?.data.resources || [];
+      const addResources = resources?.data.additional_resources || [];
+      const num = resources?.data.lesson_level || '';
+      setLessonNumber(num);
       const updatedCards = await Promise.all(
-        resources?.data.map(async (card: ICard) => {
+        lessonResources.map(async (card: ICard) => {
           if (card.link) {
             try {
               const resp = await postData('thumbnail', {
@@ -56,38 +61,28 @@ function LessonsPage() {
           return card;
         }),
       );
+      const updatedAddCards = await Promise.all(
+        addResources.map(async (card: ICard) => {
+          if (card.link) {
+            try {
+              const resp = await postData('thumbnail', {
+                url: card.link,
+              });
+              if (resp.data && resp.data.url) {
+                return { ...card, image: resp.data.url };
+              }
+            } catch (error) {
+              console.error('Error fetching thumbnail:', error);
+            }
+          }
+          return card;
+        }),
+      );
+      setAddCardsWithImages(updatedAddCards);
       setCardsWithImages(updatedCards);
     };
-
-    const fetchAddResources = async () => {
-      const resourceData: ICard[] =
-        role === 'student'
-          ? addResources?.data.parent_additional_resources
-          : addResources?.data.coach_additional_resources;
-
-      const updatedCards = await Promise.all(
-        resourceData.map(async (card: ICard) => {
-          if (card.link) {
-            try {
-              const resp = await postData('thumbnail', {
-                url: card.link,
-              });
-              if (resp.data && resp.data.url) {
-                return { ...card, image: resp.data.url };
-              }
-            } catch (error) {
-              console.error('Error fetching thumbnail:', error);
-            }
-          }
-          return card;
-        }),
-      );
-      setAddCardsWithImages(updatedCards);
-    };
-
     fetchResources();
-    fetchAddResources();
-  }, [resources, addResources, role]);
+  }, [role, studentID]);
 
   return (
     <div>
@@ -107,7 +102,7 @@ function LessonsPage() {
             variant="h2"
             sx={{ fontWeight: theme.typography.fontWeightBold }}
           >
-            Lesson
+            Lesson {lessonNumber}
           </Typography>
           <Box sx={{ marginTop: theme.spacing(-3) }}>
             <hr />

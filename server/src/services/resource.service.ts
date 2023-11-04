@@ -2,7 +2,6 @@
  * All the functions for interacting with student data in the MongoDB database
  */
 import mongoose from 'mongoose';
-import { Lesson } from '../models/lesson.model';
 import { IResource, Resource } from '../models/resource.model';
 
 /**
@@ -11,11 +10,6 @@ import { IResource, Resource } from '../models/resource.model';
 const getAllResourcesFromDB = async () => {
   const userList = await Resource.find({}).exec();
   return userList;
-};
-
-const getLessonById = async (lessonId: string) => {
-  const lesson = await Lesson.findById(lessonId).exec();
-  return lesson;
 };
 
 const updateResource = async (resourceId: string, resource: IResource) => {
@@ -35,4 +29,4 @@ const createResource = async (resource: IResource) => {
   return newResource;
 };
 
-export { getAllResourcesFromDB, getLessonById, updateResource, createResource };
+export { getAllResourcesFromDB, updateResource, createResource };

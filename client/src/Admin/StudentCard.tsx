@@ -70,6 +70,9 @@ function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            '@media (max-width: 150px)': {
+              flexDirection: 'column',
+            },
           }}
         >
           <Typography variant="body1">{label}</Typography>

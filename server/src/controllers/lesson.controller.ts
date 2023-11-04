@@ -5,8 +5,8 @@
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import { getLessonById } from '../services/resource.service';
 import {
+  getLessonById,
   deleteResource,
   addResource,
   getAllLessonsFromDB,

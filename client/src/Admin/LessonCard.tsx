@@ -8,7 +8,8 @@ interface LessonCardFromObjProps {
 
 function LessonCardFromObj({ lessonObj }: LessonCardFromObjProps) {
   const navigate = useNavigate();
-  const lessonID = lessonObj.lessonId;
+  // eslint-disable-next-line no-underscore-dangle
+  const lessonID = lessonObj._id;
 
   function handleClick() {
     const s = `/resources/lesson/${lessonID}`;
@@ -17,7 +18,7 @@ function LessonCardFromObj({ lessonObj }: LessonCardFromObjProps) {
 
   return (
     <Card sx={{ p: 0.1, bgcolor: '#EDEDED', mb: 1, borderRadius: '8px' }}>
-      <CardActionArea onClick={() => handleClick}>
+      <CardActionArea onClick={() => handleClick()}>
         <CardContent>
           <Typography variant="body1">Lesson {lessonObj.number}</Typography>
         </CardContent>

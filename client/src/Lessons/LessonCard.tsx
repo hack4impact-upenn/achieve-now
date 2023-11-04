@@ -46,32 +46,31 @@ function LessonCard({ card }: LessonCardProps) {
       ) : null}
       <Box sx={{ borderBottom: '1px solid black' }} />
       <CardContent>
-        <Box display="flex" alignItems="center">
-          <PlayCircleOutline />
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="div"
-            sx={{
-              marginLeft: theme.spacing(1),
-              marginRight: theme.spacing(1),
-            }}
-          >
-            {card.title}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              marginLeft: theme.spacing(1),
-              marginRight: theme.spacing(1),
-            }}
-          >
+        <Box display="flex" flexDirection="column" alignItems="start">
+          <Box display="flex" flexDirection="row" alignItems="center">
+            <PlayCircleOutline />
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              sx={{
+                marginLeft: theme.spacing(1),
+                marginRight: theme.spacing(1),
+              }}
+            >
+              {card.title}
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary">
             {card.description}
           </Typography>
         </Box>
         {card.link && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ marginTop: theme.spacing(1) }}
+          >
             <a href={card.link} target="_blank" rel="noopener noreferrer">
               {card.link}
             </a>

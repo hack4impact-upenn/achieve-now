@@ -103,7 +103,7 @@ const getAllStudents = async (
 };
 
 /**
- * Get all students and for each studnet, all of their information including from
+ * Get all students and for each student, all of their information including from
  * the user object and their lesson number.
  */
 const getAllStudentsWithUserLesson = async (
@@ -115,16 +115,16 @@ const getAllStudentsWithUserLesson = async (
   const lessonPromises = students.map((student) =>
     getLessonById(student.lesson_level),
   );
-  const userPromises = students.map((student) => getUserById(student.user_id));
+  const userPromises: any = students.map((student) =>
+    getUserById(student.user_id),
+  );
   Promise.all(lessonPromises)
     .then((lessons) => {
-      console.log(lessons);
       Promise.all(userPromises)
         .then((users) => {
           const response = students.map((student, index) => {
             const user = users[index];
             const lesson = lessons[index];
-            console.log(lesson);
             return {
               studentId: student._id,
               firstName: user?.firstName,
@@ -168,11 +168,15 @@ const getAdditionalStudentResources = async (
   }
 
   if (role === 'coach' && student.coach_additional_resources) {
-    const coachPromises = student.coach_additional_resources.map(
+    const coachPromises: any = student.coach_additional_resources.map(
       (resource_id) => getResourceByID(resource_id),
     );
     Promise.all(coachPromises)
       .then((resources) => {
+        if (!resources) {
+          next(ApiError.notFound(`Student does not have any coach resources.`));
+          return;
+        }
         res.status(StatusCode.OK).send(resources);
       })
       .catch((err) => {
@@ -225,7 +229,7 @@ const getAllStudentResources = async (
   if (!lesson) {
     next(
       ApiError.notFound(
-        `Lesson with level ${student.lesson_level} does not exist`,
+        `Lesson with id ${student.lesson_level} does not exist`,
       ),
     );
     return;
@@ -234,25 +238,25 @@ const getAllStudentResources = async (
   try {
     if (role === 'coach') {
       const coachPromises = lesson.coach_resources.map((resource_id: string) =>
-        getResourceByID(resource_id),
+        getResourceByID(resource_id.toString()),
       );
       Promise.all(coachPromises)
         .then((resources) => {
           if (!student.coach_additional_resources) {
             const responseObj = {
-              lesson_level: student.lesson_level,
+              lesson_level: lesson.number,
               resources,
               additional_resources: [],
             };
             res.status(StatusCode.OK).send(responseObj);
           } else {
             const addPromises = student.coach_additional_resources.map(
-              (resource_id) => getResourceByID(resource_id),
+              (resource_id) => getResourceByID(resource_id.toString()),
             );
             Promise.all(addPromises)
               .then((addResources) => {
                 const responseObj = {
-                  lesson_level: student.lesson_level,
+                  lesson_level: lesson.number,
                   resources,
                   additional_resources: addResources,
                 };
@@ -272,27 +276,27 @@ const getAllStudentResources = async (
           console.log(err);
           next(ApiError.internal('Unable to retrieve coach resources'));
         });
-    } else if (role === 'student') {
+    } else if (role === 'parent') {
       const studentPromises = lesson.parent_resources.map(
-        (resource_id: string) => getResourceByID(resource_id),
+        (resource_id: string) => getResourceByID(resource_id.toString()),
       );
       Promise.all(studentPromises)
         .then((resources) => {
           if (!student.parent_additional_resources) {
             const responseObj = {
-              lesson_level: student.lesson_level,
+              lesson_level: lesson.number,
               resources,
               additional_resources: [],
             };
             res.status(StatusCode.OK).send(responseObj);
           } else {
-            const addPromises = student.parent_additional_resources.map(
-              (resource_id) => getResourceByID(resource_id),
+            const addPromises: any[] = student.parent_additional_resources.map(
+              (resource_id) => getResourceByID(resource_id.toString()),
             );
             Promise.all(addPromises)
               .then((addResources) => {
                 const responseObj = {
-                  lesson_level: student.lesson_level,
+                  lesson_level: lesson.number,
                   resources,
                   additional_resources: addResources,
                 };
@@ -312,6 +316,8 @@ const getAllStudentResources = async (
           console.log(err);
           next(ApiError.internal('Unable to retrieve parent resources'));
         });
+    } else {
+      next(ApiError.internal('Invalid role'));
     }
   } catch (err) {
     console.log(err);

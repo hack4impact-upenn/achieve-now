@@ -20,7 +20,7 @@ import 'dotenv/config';
 const router = express.Router();
 
 /**
- * A GET route to get role-based additional resources for a given student.
+ * A POST route to get role-based additional resources for a given student.
  * Expects the following fields in the URL:
  * id (string) - The student id of the particular student
  * In the body:
@@ -39,7 +39,7 @@ router.post(
  * In the url:
  * id (string) - The student id of the particular student
  */
-router.post('/resources/all/:id', isAuthenticated, getAllStudentResources);
+router.post('/resource/all/:id', getAllStudentResources);
 
 /**
  * A GET route to get all students.

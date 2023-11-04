@@ -30,8 +30,11 @@ function LessonResourceDashboard() {
 
   useEffect(() => {
     const allLessonData = lessonsRes?.data || [];
-    setAllLessons(allLessonData || []);
-    setCurrLessons(allLessonData || []);
+    const sortedLessonData = allLessonData.sort((a: any, b: any) => {
+      return a.number - b.number;
+    });
+    setAllLessons(sortedLessonData);
+    setCurrLessons(sortedLessonData);
   }, [lessonId, lessonsRes]);
 
   const resourcesRes = useData(`resources/all`);

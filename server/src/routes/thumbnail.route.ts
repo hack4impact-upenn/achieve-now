@@ -1,7 +1,6 @@
 import { RequestHandler, Router } from 'express';
 import axios from 'axios';
 import DomParser from 'dom-parser';
-import { isAuthenticated } from '../controllers/auth.middleware';
 
 const thumbnailRouter = Router();
 
@@ -69,11 +68,11 @@ const retrieveThumbnail: RequestHandler = async (req, res) => {
     return res.status(200).json({ url: getYoutubeThumbnailUrl(id) });
   }
 
-  // We try and scrape the thumbnail url from the page
-  const thumbnailUrl = await getPageThumbnailUrl(url);
-  if (thumbnailUrl) {
-    return res.status(200).json({ url: thumbnailUrl });
-  }
+  // // We try and scrape the thumbnail url from the page
+  // const thumbnailUrl = await getPageThumbnailUrl(url);
+  // if (thumbnailUrl) {
+  //   return res.status(200).json({ url: thumbnailUrl });
+  // }
 
   // Fallthrough
   // In this case, we just return the Achieve Now logo
@@ -82,6 +81,6 @@ const retrieveThumbnail: RequestHandler = async (req, res) => {
   });
 };
 
-thumbnailRouter.post('/', isAuthenticated, retrieveThumbnail);
+thumbnailRouter.post('', retrieveThumbnail);
 
 export default thumbnailRouter;

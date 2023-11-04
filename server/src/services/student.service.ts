@@ -18,8 +18,8 @@ const getAllStudentsFromDB = async () => {
  * @returns The {@link Student} or null if the student was not found.
  */
 const getStudentByID = async (id: string) => {
-  const user = await Student.findById(id).exec();
-  return user;
+  const student = await Student.findById(id).exec();
+  return student;
 };
 
 /**
@@ -28,8 +28,8 @@ const getStudentByID = async (id: string) => {
  * @returns The {@link Resource} or null if the user was not found.
  */
 const getResourceByID = async (id: string) => {
-  const user = await Resource.findById(id).exec();
-  return user;
+  const resource = await Resource.findById(id).exec();
+  return resource;
 };
 
 /**
