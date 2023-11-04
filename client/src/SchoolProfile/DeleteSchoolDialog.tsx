@@ -1,70 +1,68 @@
 import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogTitle,
-    MenuItem,
-    Select,
-    Stack,
-  } from '@mui/material';
-  import dayjs from 'dayjs';
-  import React, { useState } from 'react';
-  
-  interface DeleteSchoolDialogProps {
-    open: boolean;
-    setOpen: (newOpen: boolean) => void;
-    options: string[];
-    deleteSchool: (name: String) => void;
-  }
-  
-  function DeleteSchoolDialog({
-    open,
-    setOpen,
-    options,
-    deleteSchool,
-  }: DeleteSchoolDialogProps) {
-    const [school, setSchool] = useState<string | null>(null);
-  
-    const handleSubmit = () => {
-      if (!name) {
-        return;
-      }
-      deleteSchool(name);
-      setOpen(false);
-    };
-  
-    return (
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle sx={{ textAlign: 'center' }}>Delete School</DialogTitle>
-        <DialogActions
-          sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  MenuItem,
+  Select,
+  Stack,
+} from '@mui/material';
+import React, { useState } from 'react';
+import ISchool from '../util/types/school';
+
+interface DeleteSchoolDialogProps {
+  open: boolean;
+  setOpen: (newOpen: boolean) => void;
+  // options: { id: string; schoolName: string }[];
+  options: ISchool[];
+  deleteSchool: (id: string) => void;
+}
+
+function DeleteSchoolDialog({
+  open,
+  setOpen,
+  options,
+  deleteSchool,
+}: DeleteSchoolDialogProps) {
+  const [schoolId, setSchool] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    if (!schoolId) {
+      return;
+    }
+    deleteSchool(schoolId);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle sx={{ textAlign: 'center' }}>Delete School</DialogTitle>
+      <DialogActions
+        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ width: '100%', justifyContent: 'space-between' }}
         >
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{ width: '100%', justifyContent: 'space-between' }}
+          <Select
+            value={schoolId}
+            sx={{
+              minWidth: 150,
+            }}
+            onChange={(event) => setSchool(event.target.value as string)}
           >
-            <Select
-              value={name}
-              sx={{
-                minWidth: 150,
-              }}
-              onChange={(event) => setSchool(event.target.value as string)}
-            >
-              {options.map((option) => (
-                <MenuItem value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-            <Button variant="outlined" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </Stack>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-  
-  export default DeleteDateDialog;
-  
+            {options.map((option) => (
+              <MenuItem value={option._id}>{option.name}</MenuItem>
+            ))}
+          </Select>
+          <Button variant="outlined" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Stack>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export default DeleteSchoolDialog;
