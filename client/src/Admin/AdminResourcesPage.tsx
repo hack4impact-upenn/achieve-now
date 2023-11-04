@@ -18,6 +18,7 @@ import { useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 import DeleteResourceDialog from './DeleteResourceDialog';
+import AddResourceDialog from './AddResourceDialog';
 
 interface IAdminResourcesTable {
   titles: string[];
@@ -69,6 +70,8 @@ function AdminResourcesPage() {
   const [resourceType, setResourceType] = useState<string[]>([]);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
+  const [addResourceDialogOpen, setAddResourceDialogOpen] =
+    useState<boolean>(false);
   const [data, setData] = useState<IAdminResourcesTable>({
     titles: [] as string[],
   });
@@ -93,16 +96,26 @@ function AdminResourcesPage() {
     }
   };
 
-  const handleAddEntry = () => {
-    const dummyData = {
-      key: Date.now().toString(),
-      title: 'Dummy Test',
-      description: 'Dummy desc',
-      link: 'Dummy link',
-      type: 'Video',
-    };
+  const addResource = async (
+    title: string,
+    description: string,
+    link: string,
+    type: string,
+  ) => {
+    try {
+      // updating local tableData very jank :')
+      const dummyData = {
+        key: Date.now().toString(),
+        title,
+        description,
+        link,
+        type,
+      };
 
-    setTableData([...tableData, dummyData]);
+      setTableData([...tableData, dummyData]);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,7 +179,11 @@ function AdminResourcesPage() {
         options={data.titles}
         deleteResource={deleteResource}
       />
-
+      <AddResourceDialog
+        open={addResourceDialogOpen}
+        setOpen={() => setAddResourceDialogOpen(false)}
+        addResource={addResource}
+      />
       <Header />
       <Box
         sx={{
@@ -210,7 +227,7 @@ function AdminResourcesPage() {
         >
           <Button
             variant="outlined"
-            onClick={handleAddEntry}
+            onClick={() => setAddResourceDialogOpen(true)}
             sx={{
               backgroundColor: 'white',
               borderColor: 'black',
