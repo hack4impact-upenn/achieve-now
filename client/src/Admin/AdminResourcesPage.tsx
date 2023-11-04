@@ -60,7 +60,7 @@ const initialTableData = [
 function AdminResourcesPage() {
   const [tableData, setTableData] = useState(initialTableData);
   const [filteredTableData, setFilteredTableData] = useState(initialTableData);
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [resourceType, setResourceType] = useState<string[]>([]);
 
   const columns: TColumn[] = [
@@ -89,6 +89,10 @@ function AdminResourcesPage() {
     setTableData([...tableData, dummyData]);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
   // Used to create the data type to create a row in the table
   function createAdminResourcesRow(
     key: string,
@@ -106,17 +110,6 @@ function AdminResourcesPage() {
     };
   }
 
-  useEffect(() => {
-    if (resourceType.length !== 0) {
-      setFilteredTableData(
-        tableData.filter((row: AdminResourcesRow) =>
-          resourceType.includes(row.type),
-        ),
-      );
-    } else {
-      setFilteredTableData(tableData);
-    }
-  }, [resourceType, tableData]);
   const selectChangeHandler = (e: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
@@ -126,6 +119,25 @@ function AdminResourcesPage() {
       typeof value === 'string' ? value.split(',') : value,
     );
   };
+
+  useEffect(() => {
+    const filteredByType =
+      resourceType.length !== 0
+        ? tableData.filter((row: AdminResourcesRow) =>
+            resourceType.includes(row.type),
+          )
+        : tableData;
+
+    const filteredBySearch = searchTerm
+      ? filteredByType.filter(
+          (row: AdminResourcesRow) =>
+            row.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            row.description.toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+      : filteredByType;
+
+    setFilteredTableData(filteredBySearch);
+  }, [resourceType, tableData, searchTerm]);
 
   return (
     <div>
@@ -207,6 +219,21 @@ function AdminResourcesPage() {
           }}
         >
           <Box sx={{ paddingBottom: theme.spacing(2) }}>
+            <FormControl
+              variant="outlined"
+              sx={{
+                marginRight: theme.spacing(2),
+              }}
+            >
+              <InputLabel htmlFor="search-field">Search</InputLabel>
+              <OutlinedInput
+                id="search-field"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                label="Search"
+              />
+            </FormControl>
+
             <FormControl>
               <InputLabel id="resource-type-label">Type</InputLabel>
               <Select
