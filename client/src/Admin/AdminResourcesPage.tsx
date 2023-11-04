@@ -17,6 +17,11 @@ import Header from '../components/PageHeader';
 import { useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
+import DeleteResourceDialog from './DeleteResourceDialog';
+
+interface IAdminResourcesTable {
+  titles: string[];
+}
 
 interface AdminResourcesRow {
   key: string;
@@ -29,28 +34,28 @@ interface AdminResourcesRow {
 const initialTableData = [
   {
     key: '1',
-    title: 'Test',
+    title: 'test1',
     description: 'desc',
     link: 'http:google.com',
     type: 'Video',
   },
   {
     key: '2',
-    title: 'Test',
+    title: 'test2',
     description: 'desc',
     link: 'http:google.com',
     type: 'Slides',
   },
   {
     key: '3',
-    title: 'Test',
+    title: 'test3',
     description: 'desc',
     link: 'http:google.com',
     type: 'Article',
   },
   {
     key: '4',
-    title: 'Test',
+    title: 'test4',
     description: 'desc',
     link: 'http:google.com',
     type: 'Video',
@@ -62,6 +67,11 @@ function AdminResourcesPage() {
   const [filteredTableData, setFilteredTableData] = useState(initialTableData);
   const [searchTerm, setSearchTerm] = useState('');
   const [resourceType, setResourceType] = useState<string[]>([]);
+  const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
+    useState<boolean>(false);
+  const [data, setData] = useState<IAdminResourcesTable>({
+    titles: [] as string[],
+  });
 
   const columns: TColumn[] = [
     { id: 'title', label: 'Title' },
@@ -71,10 +81,16 @@ function AdminResourcesPage() {
   ];
 
   // for the buttons
-  const handleDeleteEntry = () => {
-    if (tableData.length === 0) return;
-    const updatedTableData = tableData.slice(0, -1); // take out last one
-    setTableData(updatedTableData);
+  const deleteResource = async (r: string) => {
+    try {
+      // updating local tableData very jank :')
+      const title = r;
+      const updatedTableData = tableData.filter((item) => item.title !== r);
+
+      setTableData(updatedTableData);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
   };
 
   const handleAddEntry = () => {
@@ -121,6 +137,9 @@ function AdminResourcesPage() {
   };
 
   useEffect(() => {
+    const titles = tableData.map((item) => item.title);
+    setData((prevData) => ({ ...prevData, titles }));
+
     const filteredByType =
       resourceType.length !== 0
         ? tableData.filter((row: AdminResourcesRow) =>
@@ -140,7 +159,14 @@ function AdminResourcesPage() {
   }, [resourceType, tableData, searchTerm]);
 
   return (
-    <div>
+    <>
+      <DeleteResourceDialog
+        open={deleteDateDialogOpen}
+        setOpen={() => setDeleteDateDialogOpen(false)}
+        options={data.titles}
+        deleteResource={deleteResource}
+      />
+
       <Header />
       <Box
         sx={{
@@ -199,7 +225,8 @@ function AdminResourcesPage() {
           </Button>
           <Button
             variant="outlined"
-            onClick={handleDeleteEntry}
+            // onClick={handleDeleteEntry}
+            onClick={() => setDeleteDateDialogOpen(true)}
             sx={{
               backgroundColor: 'white',
               borderColor: 'black',
@@ -252,13 +279,13 @@ function AdminResourcesPage() {
           </Box>
           {filteredTableData && (
             <PaginationTable
-              rows={filteredTableData.map((data) =>
+              rows={filteredTableData.map((resourceData) =>
                 createAdminResourcesRow(
-                  data.key,
-                  data.title,
-                  data.description,
-                  data.link,
-                  data.type,
+                  resourceData.key,
+                  resourceData.title,
+                  resourceData.description,
+                  resourceData.link,
+                  resourceData.type,
                 ),
               )}
               columns={columns}
@@ -269,7 +296,7 @@ function AdminResourcesPage() {
           Submit
         </Button>
       </Box>
-    </div>
+    </>
   );
 }
 
