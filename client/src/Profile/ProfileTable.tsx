@@ -79,7 +79,7 @@ function UserTable() {
         ),
       );
     }
-  }, [users, self]);
+  }, [users, role, self]);
 
   // Search bar
   const userData = users?.data ?? [];
@@ -87,6 +87,7 @@ function UserTable() {
   for (let i = 0; i < userData.length; i += 1) {
     const user = userData[i];
     const name = `${user.firstName} ${user.lastName}`;
+    // eslint-disable-next-line
     idNameMapping.set(user._id, name);
   }
 

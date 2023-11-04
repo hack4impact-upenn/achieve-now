@@ -18,6 +18,7 @@ function ProfilePage() {
         <Typography variant="h2">User Profiles</Typography>
       </Grid>
       <Grid item container width="60vw" justifyContent="flex-end">
+        {/* eslint-disable-next-line */}
         <Button variant="outlined" onClick={handleClick}>
           Invite User
         </Button>

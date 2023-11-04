@@ -13,12 +13,6 @@ const removeSensitiveDataQuery = [
   '-resetPasswordTokenExpiryDate',
 ];
 
-const removeSensitiveDataQueryKeepPassword = [
-  '-verificationToken',
-  '-resetPasswordToken',
-  '-resetPasswordTokenExpiryDate',
-];
-
 /**
  * @returns All the {@link Resource}s in the database without their passwords.
  */

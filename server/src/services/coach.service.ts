@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import mongoose from 'mongoose';
 import { Coach } from '../models/coach.model';
 import { IStudent, Student } from '../models/student.model';
 import { getAllBlocksfromDB } from './block.service';
