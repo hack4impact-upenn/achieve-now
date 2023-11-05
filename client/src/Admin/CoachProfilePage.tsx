@@ -21,93 +21,49 @@ function CoachProfilePage() {
   // Default values for state
   const defaultValues = {
     school: '',
-    teacher: '',
-    lessonLevel: '',
+    partnerSite: '',
     grade: '',
     phone: '',
     email: '',
-    parentName: '',
-    bestDay: '',
-    bestTime: '',
-    contactMethod: '',
+    mailingAddress: '',
     mediaWaiver: '',
-    adminUpdates: '',
-    workHabits: '',
-    personality: '',
-    family: '',
-    favFood: '',
-    likes: '',
-    dislikes: '',
-    motivation: '',
-    goodStrategies: '',
-    badStrategies: '',
-    badges: '',
+    updates: '',
   };
 
   const defaultShowErrors = {
     school: false,
-    teacher: false,
-    lessonLevel: false,
+    partnerSite: false,
     grade: false,
     phone: false,
     email: false,
-    parentName: false,
-    bestDay: false,
-    bestTime: false,
-    contactMethod: false,
+    mailingAddress: false,
     mediaWaiver: false,
-    adminUpdates: false,
-    workHabits: false,
-    personality: false,
-    family: false,
-    favFood: false,
-    likes: false,
-    dislikes: false,
-    motivation: false,
-    goodStrategies: false,
-    badStrategies: false,
-    badges: false,
+    updates: false,
     alert: false,
   };
 
   const defaultErrorMessages = {
     school: '',
-    teacher: '',
-    lessonLevel: '',
+    partnerSite: '',
     grade: '',
     phone: '',
     email: '',
-    parentName: '',
-    bestDay: '',
-    bestTime: '',
-    contactMethod: '',
+    mailingAddress: '',
     mediaWaiver: '',
-    adminUpdates: '',
-    workHabits: '',
-    personality: '',
-    family: '',
-    favFood: '',
-    likes: '',
-    dislikes: '',
-    motivation: '',
-    goodStrategies: '',
-    badStrategies: '',
-    badges: '',
+    updates: '',
     alert: '',
   };
 
   // Rest of your component code
-
   type ValueType = keyof typeof values;
 
   // State values and hooks
   const [values, setValueState] = useState(defaultValues);
   const [showError, setShowErrorState] = useState(defaultShowErrors);
   const [errorMessage, setErrorMessageState] = useState(defaultErrorMessages);
-  const [allTeachers, setAllTeachersState] = useState([]);
-  const [allLessons, setAllLessonsState] = useState([]);
+  const [allPartnerSites, setAllPartnerSites] = useState([]);
   const [allSchools, setAllSchoolsState] = useState([]);
-  const [studentName, setStudentNameState] = useState('');
+  const [coachName, setCoachName] = useState('');
 
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
@@ -163,7 +119,7 @@ function CoachProfilePage() {
         setErrorMessage('alert', 'No user is defined');
         return;
       }
-      postData(`student/allInfo/${id}`, { values })
+      postData(`coach/allInfo/${id}`, { values })
         .then(() => {
           setShowError('alert', true);
           setErrorMessage('alert', 'Successfully updated!');
@@ -175,9 +131,8 @@ function CoachProfilePage() {
     }
   }
 
-  const info = useData(`student/allInfo/${id}`);
-  const lessonInfo = useData(`lesson/all`);
-  const teacherInfo = useData(`user/allTeachers`);
+  const info = useData(`coach/allInfo/${id}`);
+  const partnerSiteInfo = useData(`partnerSite/all`);
   const schoolInfo = useData(`school/all`);
 
   useEffect(() => {
@@ -185,57 +140,31 @@ function CoachProfilePage() {
     if (!infoData) {
       return;
     }
-    const lessonData = lessonInfo?.data;
-    if (!lessonData) {
+    const partnerSiteData = partnerSiteInfo?.data;
+    if (!partnerSiteData) {
       return;
     }
-    const teacherData = teacherInfo?.data;
-    if (!teacherData) {
-      return;
-    }
-
     const schoolData = schoolInfo?.data;
     if (!schoolData) {
       return;
     }
 
-    const { student, user, lesson } = infoData;
+    const { coach, user, student } = infoData;
     const newValue = {
-      school: student.school_id,
-      teacher: student.teacher_id,
-      lessonLevel: lesson.number,
+      school: user.school_id,
+      partnerSite: coach.partner_site,
       grade: student.grade,
       phone: user.phone,
       email: user.email,
-      parentName: student.parent_name,
-      bestDay: student.parent_communication_days,
-      bestTime: student.parent_communication_times,
-      contactMethod: student.best_communication_method,
-      mediaWaiver: student.media_waiver,
-      adminUpdates: student.admin_updates,
-      workHabits: student.work_habits,
-      personality: student.personality,
-      family: student.family,
-      favFood: student.fav_food,
-      likes: student.likes,
-      dislikes: student.dislikes,
-      motivation: student.motivation,
-      goodStrategies: student.good_strategies,
-      badStrategies: student.bad_strategies,
-      badges: student.badges,
+      mailingAddress: coach.mailing_address,
+      mediaWaiver: coach.media_waiver,
+      updates: coach.updates,
     };
-    const newLessons = lessonData.map((lessonObj: any) => {
-      return {
-        id: lessonObj.id,
-        number: lessonObj.number,
-      };
-    });
 
-    const newTeachers = teacherData.map((teacherObj: any) => {
+    const newPartnerSites = partnerSiteData.map((partnerSiteObj: any) => {
       return {
-        id: teacherObj.id,
-        firstName: teacherObj.firstName,
-        lastName: teacherObj.lastName,
+        id: partnerSiteObj.id,
+        partnerSiteName: partnerSiteObj.siteName,
       };
     });
 
@@ -247,11 +176,9 @@ function CoachProfilePage() {
     });
 
     setValueState(newValue);
-    setAllLessonsState(newLessons);
-    setAllTeachersState(newTeachers);
-    setStudentNameState(`${user.firstName} ${user.lastName}`);
-    setAllTeachersState(newTeachers);
-  }, [info?.data, lessonInfo?.data, teacherInfo?.data, schoolInfo?.data]);
+    setAllSchoolsState(newSchools);
+    setAllPartnerSites(newPartnerSites);
+  }, [info?.data, partnerSiteInfo?.data, schoolInfo?.data]);
 
   return (
     <>
@@ -267,7 +194,7 @@ function CoachProfilePage() {
       >
         <Grid item container justifyContent="center">
           <Typography variant="h2" mb={0}>
-            {studentName} (Coach)
+            {coachName} (Coach)
           </Typography>
         </Grid>
         <Grid item width="1">
@@ -294,14 +221,14 @@ function CoachProfilePage() {
             <InputLabel>Partner Site</InputLabel>
             <Select
               fullWidth
-              error={showError.teacher}
+              error={showError.partnerSite}
               //   helperText={errorMessage.contactMethod}
               required
               label="Partner Site"
-              value={values.teacher}
+              value={values.partnerSite}
               onChange={(e) => setValue('Partner Site', e.target.value)}
             >
-              {allTeachers.map((teacher: any) => {
+              {allPartnerSites.map((teacher: any) => {
                 return (
                   <MenuItem
                     value={teacher.id}
@@ -317,14 +244,14 @@ function CoachProfilePage() {
             <InputLabel>Grade</InputLabel>
             <Select
               fullWidth
-              error={showError.lessonLevel}
+              error={showError.grade}
               //   helperText={errorMessage.contactMethod}
               required
               label="Lesson Level"
-              value={values.lessonLevel}
+              value={values.grade}
               onChange={(e) => setValue('lessonLevel', e.target.value)}
             >
-              {allLessons.map((lesson: any) => {
+              {allSchools.map((lesson: any) => {
                 return <MenuItem value={lesson.id}>{lesson.number}</MenuItem>;
               })}
             </Select>
@@ -360,11 +287,11 @@ function CoachProfilePage() {
         <Grid item xs={6}>
           <TextField
             fullWidth
-            error={showError.parentName}
-            helperText={errorMessage.parentName}
+            error={showError.mailingAddress}
+            helperText={errorMessage.mailingAddress}
             required
             label="Mailing Address"
-            value={values.parentName}
+            value={values.mailingAddress}
             onChange={(e) => setValue('mailing address', e.target.value)}
           />
         </Grid>
@@ -390,11 +317,11 @@ function CoachProfilePage() {
         <Grid item width="1">
           <TextField
             fullWidth
-            error={showError.adminUpdates}
-            helperText={errorMessage.adminUpdates}
+            error={showError.updates}
+            helperText={errorMessage.updates}
             required
             label="Notes / Updates"
-            value={values.adminUpdates}
+            value={values.updates}
             onChange={(e) => setValue('updates', e.target.value)}
           />
         </Grid>
