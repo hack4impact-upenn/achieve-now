@@ -37,6 +37,10 @@ function UserTable() {
     { id: 'role', label: 'Role' },
   ];
 
+  function capitalizeFirstLetter(str: any) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   // Used to create the data type to create a row in the table
   function createAdminDashboardRow(user: IUser): AdminDashboardRow {
     const { _id, firstName, lastName, email, role } = user;
@@ -45,7 +49,7 @@ function UserTable() {
       first: firstName,
       last: lastName,
       email,
-      role,
+      role: capitalizeFirstLetter(role),
     };
   }
 
