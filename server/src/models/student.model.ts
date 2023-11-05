@@ -111,6 +111,16 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  progressFlag: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  attendanceFlag: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -139,6 +149,8 @@ interface IStudent extends mongoose.Document {
   what_motivates_them: string;
   what_reading_strategies_worked: string;
   what_reading_strategies_didnt_work: string;
+  progressFlag: boolean;
+  academicFlag: boolean;
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
