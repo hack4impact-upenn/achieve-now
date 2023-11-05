@@ -8,6 +8,7 @@ import { logout as logoutApi } from './api';
 import ScreenGrid from '../components/ScreenGrid';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import RoleDropdown from '../components/buttons/RoleDropdown';
+import Phonetics from '../components/Phonetics';
 
 interface ChooseRoleProps {
   role: string | null;
