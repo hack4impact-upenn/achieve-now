@@ -6,30 +6,36 @@ import {
   Select,
   MenuItem,
   TextField,
+  FormControlLabel,
+  Switch,
+  Slider,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAppSelector } from '../util/redux/hooks';
-import { selectUser } from '../util/redux/userSlice';
-import { useData } from '../util/api';
+import { useParams } from 'react-router-dom';
+import { postData, useData } from '../util/api';
+import AlertDialog from '../components/AlertDialog';
+import PrimaryButton from '../components/buttons/PrimaryButton';
+import MultipleSelectCheckmarks from '../components/form/MultipleSelect';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 function StudentProfilePage() {
+  const { setAlert } = useAlert();
   const { id } = useParams();
-  const navigate = useNavigate();
-  const user = useAppSelector(selectUser);
 
   // Default values for state
   const defaultValues = {
-    school: '',
-    teacher: '',
+    school: [''],
+    teacher: [''],
     lessonLevel: '',
+    grade: '',
     phone: '',
     email: '',
     parentName: '',
     bestDay: '',
     bestTime: '',
     contactMethod: '',
-    mediaWaiver: '',
+    mediaWaiver: false,
     adminUpdates: '',
     workHabits: '',
     personality: '',
@@ -40,13 +46,24 @@ function StudentProfilePage() {
     motivation: '',
     goodStrategies: '',
     badStrategies: '',
-    progressStats: '',
+    badges: [],
+    risingReadersScore: {
+      start: 0,
+      mid: 0,
+    },
+    generalProgramScore: {
+      start: 0,
+      mid: 0,
+    },
+    progressFlag: false,
+    attendanceFlag: false,
   };
 
   const defaultShowErrors = {
     school: false,
     teacher: false,
     lessonLevel: false,
+    grade: false,
     phone: false,
     email: false,
     parentName: false,
@@ -64,13 +81,19 @@ function StudentProfilePage() {
     motivation: false,
     goodStrategies: false,
     badStrategies: false,
-    progressStats: false,
+    badges: false,
+    risingReaderScore: false,
+    generalProgramScore: false,
+    progressFlag: false,
+    attendanceFlag: false,
+    alert: false,
   };
 
   const defaultErrorMessages = {
     school: '',
     teacher: '',
     lessonLevel: '',
+    grade: '',
     phone: '',
     email: '',
     parentName: '',
@@ -88,7 +111,12 @@ function StudentProfilePage() {
     motivation: '',
     goodStrategies: '',
     badStrategies: '',
-    progressStats: '',
+    badges: '',
+    risingReaderScore: '',
+    generalProgramScore: '',
+    progressFlag: '',
+    attendanceFlag: '',
+    alert: '',
   };
 
   // Rest of your component code
@@ -99,14 +127,23 @@ function StudentProfilePage() {
   const [values, setValueState] = useState(defaultValues);
   const [showError, setShowErrorState] = useState(defaultShowErrors);
   const [errorMessage, setErrorMessageState] = useState(defaultErrorMessages);
+  const [allTeachers, setAllTeachersState] = useState([]);
+  const [allLessons, setAllLessonsState] = useState([]);
+  const [allSchools, setAllSchoolsState] = useState([]);
+  const [studentName, setStudentNameState] = useState('');
 
   // Helper functions for changing only one field in a state object
-  const setValue = (field: string, value: string) => {
+  const setValue = (field: string, value: any) => {
     setValueState((prevState) => ({
       ...prevState,
-      ...{ [field]: value },
+      [field]: value,
     }));
   };
+
+  useEffect(() => {
+    console.log(values);
+  }, [values]);
+
   const setShowError = (field: string, show: boolean) => {
     setShowErrorState((prevState) => ({
       ...prevState,
@@ -130,39 +167,158 @@ function StudentProfilePage() {
     setErrorMessageState(defaultErrorMessages);
   };
 
+  const validateInputs = () => {
+    clearErrorMessages();
+    const isValid = true;
+
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    // for (const valueTypeString in values) {
+    //   const valueType = valueTypeString as ValueType;
+    //   if (!values[valueType]) {
+    //     setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
+    //     setShowError(valueTypeString, true);
+    //     isValid = false;
+    //   }
+    // }
+
+    return isValid;
+  };
+
+  async function handleSubmit() {
+    if (validateInputs()) {
+      if (!id) {
+        setShowError('alert', true);
+        setErrorMessage('alert', 'No user is defined');
+        return;
+      }
+      postData(`student/allInfo/${id}`, { ...values })
+        .then((res) => {
+          if (res.error) {
+            setShowError('alert', true);
+            setErrorMessage('alert', res.error.message);
+          } else {
+            setAlert(
+              'Student profile updated successfully!',
+              AlertType.SUCCESS,
+            );
+          }
+        })
+        .catch((e: any) => {
+          setShowError('alert', true);
+          setErrorMessage('alert', e.message);
+        });
+    }
+  }
+
   const info = useData(`student/allInfo/${id}`);
+  const lessonInfo = useData(`lesson/all`);
+  const teacherInfo = useData(`user/allTeachers`);
+  const schoolInfo = useData(`school/all`);
 
   useEffect(() => {
     const infoData = info?.data;
     if (!infoData) {
       return;
     }
-    const { student } = infoData;
+    const lessonData = lessonInfo?.data;
+    if (!lessonData) {
+      return;
+    }
+    const teacherData = teacherInfo?.data;
+    if (!teacherData) {
+      return;
+    }
+
+    const schoolData = schoolInfo?.data;
+    if (!schoolData) {
+      return;
+    }
+
+    const { student, user } = infoData;
     const newValue = {
-      school: student.school,
-      teacher: student.teacher,
-      lessonLevel: student.lessonLevel,
-      phone: student.phone,
-      email: student.email,
-      parentName: student.parentName,
-      bestDay: student.bestDay,
-      bestTime: student.bestTime,
-      contactMethod: student.contactMethod,
-      mediaWaiver: student.mediaWaiver,
-      adminUpdates: student.adminUpdates,
-      workHabits: student.workHabits,
-      personality: student.personality,
-      family: student.family,
-      favFood: student.favFood,
-      likes: student.likes,
-      dislikes: student.dislikes,
-      motivation: student.motivation,
-      goodStrategies: student.goodStrategies,
-      badStrategies: student.badStrategies,
-      progressStats: student.progressStats,
+      school:
+        student.school_id && student.school_id[0] ? student.school_id : [''],
+      teacher:
+        student.teacher_id && student.teacher_id[0] ? student.teacher_id : [''],
+      lessonLevel: student.lesson_id || '',
+      grade: student.grade || '',
+      phone: user.phone || '',
+      email: user.email || '',
+      parentName: student.parent_name || '',
+      bestDay: student.parent_communication_days || '',
+      bestTime: student.parent_communication_times || '',
+      contactMethod: student.best_communication_method || '',
+      mediaWaiver: student.media_waiver || false,
+      adminUpdates: student.admin_updates || '',
+      workHabits: student.work_habits || '',
+      personality: student.personality || '',
+      family: student.family || '',
+      favFood: student.fav_food || '',
+      likes: student.likes || '',
+      dislikes: student.dislikes || '',
+      motivation: student.motivation || '',
+      goodStrategies: student.good_strategies || '',
+      badStrategies: student.bad_strategies || '',
+      badges: student.badges || [],
+      risingReadersScore: {
+        start: student.risingReadersScore
+          ? student.risingReadersScore[0] || 0
+          : 0,
+        mid: student.risingReadersScore
+          ? student.risingReadersScore[1] || 0
+          : 0,
+      },
+      generalProgramScore: {
+        start: student.generalProgramScore
+          ? student.generalProgramScore[0] || 0
+          : 0,
+        mid: student.generalProgramScore
+          ? student.generalProgramScore[1] || 0
+          : 0,
+      },
+      progressFlag: student.progressFlag || false,
+      attendanceFlag: student.attendanceFlag || false,
     };
+
+    const sortedLessonData = lessonData.sort((a: any, b: any) => {
+      return a.number - b.number;
+    });
+    const newLessons = sortedLessonData.map((lessonObj: any) => {
+      return {
+        // eslint-disable-next-line no-underscore-dangle
+        id: lessonObj._id,
+        number: lessonObj.number,
+      };
+    });
+
+    const newTeachers = teacherData.map((teacherObj: any) => {
+      return {
+        // eslint-disable-next-line no-underscore-dangle
+        id: teacherObj._id,
+        firstName: teacherObj.firstName,
+        lastName: teacherObj.lastName,
+      };
+    });
+
+    const newSchools = schoolData.map((schoolObj: any) => {
+      return {
+        // eslint-disable-next-line no-underscore-dangle
+        id: schoolObj._id,
+        name: schoolObj.name,
+      };
+    });
+
     setValueState(newValue);
-  }, [info?.data]);
+    setAllLessonsState(newLessons);
+    setAllTeachersState(newTeachers);
+    setAllSchoolsState(newSchools);
+    setStudentNameState(
+      user.firstName || user.lastName
+        ? `${user.firstName} ${user.lastName}`
+        : '',
+    );
+    setAllTeachersState(newTeachers);
+  }, [info?.data, lessonInfo?.data, teacherInfo?.data, schoolInfo?.data]);
 
   return (
     <Grid
@@ -176,7 +332,7 @@ function StudentProfilePage() {
     >
       <Grid item container justifyContent="center">
         <Typography variant="h2" mb={0}>
-          Anna Bay (Student)
+          {studentName} (Student)
         </Typography>
       </Grid>
       <Grid item width="1">
@@ -188,12 +344,13 @@ function StudentProfilePage() {
             //   helperText={errorMessage.contactMethod}
             required
             label="School"
-            value={values.school}
-            onChange={(e) => setValue('School', e.target.value)}
+            value={values.school[0]}
+            onChange={(e) => setValue('school', [e.target.value])}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
           >
-            <MenuItem value="School A">School</MenuItem>
-            <MenuItem value="School B">School</MenuItem>
-            <MenuItem value="School C">School</MenuItem>
+            {allSchools.map((school: any) => {
+              return <MenuItem value={school.id}>{school.name}</MenuItem>;
+            })}
           </Select>
         </FormControl>
       </Grid>
@@ -203,21 +360,27 @@ function StudentProfilePage() {
           <Select
             fullWidth
             error={showError.teacher}
-            //   helperText={errorMessage.contactMethod}
             required
             label="Teacher"
-            value={values.teacher}
-            onChange={(e) => setValue('Teacher', e.target.value)}
+            value={values.teacher[0]}
+            onChange={(e) => setValue('teacher', [e.target.value])}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
           >
-            <MenuItem value="Teacher A">Teacher</MenuItem>
-            <MenuItem value="Teacher B">Teacher</MenuItem>
-            <MenuItem value="Teacher C">Teacher</MenuItem>
+            {allTeachers.map((teacher: any) => {
+              return (
+                <MenuItem value={teacher.id}>
+                  {teacher.firstName && teacher.lastName
+                    ? `${teacher.firstName} ${teacher.lastName}`
+                    : ''}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
       </Grid>
       <Grid item width="1">
         <FormControl fullWidth>
-          <InputLabel>lessonLevel</InputLabel>
+          <InputLabel>Lesson Level</InputLabel>
           <Select
             fullWidth
             error={showError.lessonLevel}
@@ -226,10 +389,34 @@ function StudentProfilePage() {
             label="Lesson Level"
             value={values.lessonLevel}
             onChange={(e) => setValue('lessonLevel', e.target.value)}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
           >
-            <MenuItem value="1">lessonLevel</MenuItem>
-            <MenuItem value="2">lessonLevel</MenuItem>
-            <MenuItem value="3">lessonLevel</MenuItem>
+            {allLessons.map((lesson: any) => {
+              return (
+                <MenuItem
+                  value={lesson.id}
+                >{`Lesson ${lesson.number} `}</MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item width="1">
+        <FormControl fullWidth>
+          <InputLabel>Grade Level</InputLabel>
+          <Select
+            fullWidth
+            error={showError.grade}
+            //   helperText={errorMessage.contactMethod}
+            required
+            label="Grade Level"
+            value={values.grade}
+            onChange={(e) => setValue('grade', e.target.value)}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
+          >
+            {Array.from(Array(12).keys()).map((num) => {
+              return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
+            })}
           </Select>
         </FormControl>
       </Grid>
@@ -241,6 +428,7 @@ function StudentProfilePage() {
           required
           label="Phone Number"
           value={values.phone}
+          type="phone"
           onChange={(e) => setValue('phone', e.target.value)}
         />
       </Grid>
@@ -252,6 +440,7 @@ function StudentProfilePage() {
           required
           label="Email"
           value={values.email}
+          type="email"
           onChange={(e) => setValue('email', e.target.value)}
         />
       </Grid>
@@ -273,7 +462,7 @@ function StudentProfilePage() {
             error={showError.bestDay}
             //   helperText={errorMessage.bestDay}
             required
-            label="Parent/Guardian Communication Preferences Days"
+            label="Best Days to Contact"
             value={values.bestDay}
             onChange={(e) => setValue('bestDay', e.target.value)}
           >
@@ -290,7 +479,7 @@ function StudentProfilePage() {
             error={showError.bestTime}
             //   helperText={errorMessage.bestTime}
             required
-            label="Parent/Guardian Communication Preferences Times"
+            label="Best Time to Contact"
             value={values.bestTime}
             onChange={(e) => setValue('bestTime', e.target.value)}
           >
@@ -308,7 +497,7 @@ function StudentProfilePage() {
             error={showError.contactMethod}
             //   helperText={errorMessage.contactMethod}
             required
-            label="Parent/Guardian Communication Preferences Methods"
+            label="Preferred Contact Method"
             value={values.contactMethod}
             onChange={(e) => setValue('contactMethod', e.target.value)}
           >
@@ -319,21 +508,17 @@ function StudentProfilePage() {
         </FormControl>
       </Grid>
       <Grid item width="1">
-        <FormControl fullWidth>
-          <InputLabel>Media Waiver</InputLabel>
-          <Select
-            fullWidth
-            error={showError.mediaWaiver}
-            //   helperText={errorMessage.contactMethod}
-            required
-            label="Media Waiver"
-            value={values.mediaWaiver}
-            onChange={(e) => setValue('mediaWaiver', e.target.value)}
-          >
-            <MenuItem value="true">Complete</MenuItem>
-            <MenuItem value="false">Incomplete</MenuItem>
-          </Select>
-        </FormControl>
+        <FormControlLabel
+          value={values.mediaWaiver}
+          onChange={() => setValue('mediaWaiver', !values.mediaWaiver)}
+          control={
+            <Switch
+              checked={values.mediaWaiver}
+              onChange={() => setValue('mediaWaiver', !values.mediaWaiver)}
+            />
+          }
+          label="Signed Media Waiver?"
+        />
       </Grid>
       <Grid item width="1">
         <TextField
@@ -374,7 +559,7 @@ function StudentProfilePage() {
           error={showError.family}
           helperText={errorMessage.family}
           required
-          label="Family"
+          label="Notes on Family"
           value={values.family}
           onChange={(e) => setValue('family', e.target.value)}
         />
@@ -446,14 +631,160 @@ function StudentProfilePage() {
         />
       </Grid>
       <Grid item width="1">
-        <TextField
+        <MultipleSelectCheckmarks
+          values={values.badges}
+          setValues={(newValues) => setValue('badges', newValues)}
+          label="Badges"
+          allValues={['Badge 1', 'Badge 2', 'Badge 3']}
+        />
+      </Grid>
+      <Grid
+        item
+        container
+        direction="row"
+        justifyContent="space-between"
+        width="1"
+        spacing={3}
+      >
+        <Grid item justifyContent="center" xs={12}>
+          <Typography>Rising Readers Assessment</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.risingReadersScore.start}
+            onChange={(e, newValue) =>
+              setValue('risingReadersScore', {
+                ...values.risingReadersScore,
+                start: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={78}
+            valueLabelDisplay="on"
+          />
+          <Typography>Start of Year</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.risingReadersScore.mid}
+            onChange={(e, newValue) =>
+              setValue('risingReadersScore', {
+                ...values.risingReadersScore,
+                mid: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={78}
+            valueLabelDisplay="on"
+          />
+          <Typography>Mid Year</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        item
+        container
+        direction="row"
+        justifyContent="space-between"
+        width="1"
+        spacing={3}
+      >
+        <Grid item justifyContent="center" xs={12}>
+          <Typography>General Program Assessment</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.generalProgramScore.start}
+            onChange={(e, newValue) =>
+              setValue('generalProgramScore', {
+                ...values.generalProgramScore,
+                start: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={49}
+            valueLabelDisplay="on"
+          />
+          <Typography>Start of Year</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.generalProgramScore.mid}
+            onChange={(e, newValue) =>
+              setValue('generalProgramScore', {
+                ...values.generalProgramScore,
+                mid: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={78}
+            valueLabelDisplay="on"
+          />
+          <Typography>Mid Year</Typography>
+        </Grid>
+      </Grid>
+      <Grid item container direction="row" justifyContent="space-between">
+        <FormControlLabel
+          value={values.progressFlag}
+          onChange={() => setValue('progressFlag', !values.progressFlag)}
+          control={
+            <Switch
+              checked={values.progressFlag}
+              onChange={() => setValue('progressFlag', !values.progressFlag)}
+            />
+          }
+          label="Performance Flag"
+        />
+        <FormControlLabel
+          value={values.attendanceFlag}
+          onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
+          control={
+            <Switch
+              checked={values.attendanceFlag}
+              onChange={() =>
+                setValue('attendanceFlag', !values.attendanceFlag)
+              }
+            />
+          }
+          label="Attendance Flag"
+        />
+      </Grid>
+      <Grid item container justifyContent="center">
+        <PrimaryButton
           fullWidth
-          error={showError.progressStats}
-          helperText={errorMessage.progressStats}
-          required
-          label="Progress Stats"
-          value={values.progressStats}
-          onChange={(e) => setValue('progressStats', e.target.value)}
+          type="submit"
+          variant="contained"
+          onClick={() => handleSubmit()}
+        >
+          Submit
+        </PrimaryButton>
+      </Grid>
+      {/* The alert that pops up */}
+      <Grid item>
+        <AlertDialog
+          showAlert={showError.alert}
+          title={alertTitle}
+          message={errorMessage.alert}
+          onClose={handleAlertClose}
         />
       </Grid>
     </Grid>
