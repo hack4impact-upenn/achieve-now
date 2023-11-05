@@ -14,6 +14,7 @@ import FamilyLessonsPage from './Family/FamilyLessonsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
+import CoachProfilePage from './Admin/CoachProfilePage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -122,6 +123,12 @@ function App() {
                     <Route
                       path="/coach-landing/:id"
                       element={<CoachLandingPage />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/admin/coach/profile/:id"
+                      element={<CoachProfilePage />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
