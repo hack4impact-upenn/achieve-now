@@ -75,6 +75,16 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  academic_red_flag: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  attendance_red_flag: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   work_habits: {
     type: String,
     required: false,
@@ -98,6 +108,8 @@ interface IStudent extends mongoose.Document {
   best_communication_method: string;
   personality: string;
   media_waiver: boolean;
+  academic_red_flag: boolean;
+  attendance_red_flag: boolean;
   work_habits: string;
 }
 
