@@ -11,7 +11,6 @@ import {
   InputLabel,
   FormControl,
 } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import { useData } from '../util/api';
