@@ -2,19 +2,16 @@
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
  */
+/* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { PaginationTable, TColumn } from '../components/PaginationTable';
-import { useData } from '../util/api';
-import { useAppSelector } from '../util/redux/hooks';
-import { selectUser } from '../util/redux/userSlice';
-import ISchool from '../util/types/school'; 
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import ISchool from '../util/types/school';
+import { selectUser } from '../util/redux/userSlice';
+import { useAppSelector } from '../util/redux/hooks';
+import { useData } from '../util/api';
+import { PaginationTable, TColumn } from '../components/PaginationTable';
 
 interface SchoolDashboardRow {
   key: string;
@@ -47,30 +44,49 @@ function SchoolProfileTable() {
     { id: 'calendar_link', label: 'Calendar Link' },
     { id: 'school_start_time', label: 'School Start Time' },
     { id: 'school_end_time', label: 'School End Time' },
-    { id: 'first_grade_lunch_start_time', label: 'First Grade Lunch Start Time' },
+    {
+      id: 'first_grade_lunch_start_time',
+      label: 'First Grade Lunch Start Time',
+    },
     { id: 'first_grade_lunch_end_time', label: 'First Grade Lunch End Time' },
-    { id: 'second_grade_lunch_start_time', label: 'Second Grade Lunch Start Time' },
+    {
+      id: 'second_grade_lunch_start_time',
+      label: 'Second Grade Lunch Start Time',
+    },
     { id: 'second_grade_lunch_end_time', label: 'Second Grade Lunch End Time' },
   ];
 
   // Used to create the data type to create a row in the table
   function createAdminDashboardRow(school: ISchool): SchoolDashboardRow {
-    const { _id, name, teachers, info, admin_name, admin_content, calendar_link, school_start_time, school_end_time,
-    first_grade_lunch_start_time, first_grade_lunch_end_time, second_grade_lunch_start_time, second_grade_lunch_end_time } = school;
+    const {
+      _id,
+      name,
+      teachers,
+      info,
+      admin_name,
+      admin_content,
+      calendar_link,
+      school_start_time,
+      school_end_time,
+      first_grade_lunch_start_time,
+      first_grade_lunch_end_time,
+      second_grade_lunch_start_time,
+      second_grade_lunch_end_time,
+    } = school;
     return {
       key: _id,
       name,
       teachers,
       info,
-      admin_name, 
-      admin_content, 
-      calendar_link, 
-      school_start_time, 
+      admin_name,
+      admin_content,
+      calendar_link,
+      school_start_time,
       school_end_time,
-      first_grade_lunch_start_time, 
-      first_grade_lunch_end_time, 
-      second_grade_lunch_start_time, 
-      second_grade_lunch_end_time
+      first_grade_lunch_start_time,
+      first_grade_lunch_end_time,
+      second_grade_lunch_start_time,
+      second_grade_lunch_end_time,
     };
   }
 
@@ -78,11 +94,9 @@ function SchoolProfileTable() {
   const schools = useData('school/all');
   const self = useAppSelector(selectUser);
 
-
   useEffect(() => {
     setSchoolList(schools?.data);
   }, [schools]);
-
 
   // Search bar
 
@@ -126,7 +140,9 @@ function SchoolProfileTable() {
         value={searchInput}
       />
       <PaginationTable
-        rows={schoolList.map((school: ISchool) => createAdminDashboardRow(school))}
+        rows={schoolList.map((school: ISchool) =>
+          createAdminDashboardRow(school),
+        )}
         columns={columns}
       />
     </Box>

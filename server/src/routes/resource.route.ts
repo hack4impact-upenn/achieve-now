@@ -2,8 +2,6 @@
  * Specifies the middleware and controller functions to call for each route
  * relating to admin users.
  */
-import express from 'express';
-import { isAdmin } from '../controllers/admin.middleware';
 import 'dotenv/config';
 import { Router } from 'express';
 import {

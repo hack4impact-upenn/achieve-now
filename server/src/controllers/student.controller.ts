@@ -2,6 +2,7 @@
  * All the controller functions containing the logic for routes relating to
  * student users.
  */
+/* eslint-disable camelcase */
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
@@ -126,10 +127,11 @@ const getStudentResources = async (
   const resources = [];
 
   if (student.parent_additional_resources) {
-    for (let i = 0; i < student.parent_additional_resources.length; i++) {
+    for (let i = 0; i < student.parent_additional_resources.length; i += 1) {
       const resource_id = student.parent_additional_resources[i];
-      const res = await getResourceByID(resource_id);
-      resources.push(res);
+      // eslint-disable-next-line
+      const res2 = await getResourceByID(resource_id);
+      resources.push(res2);
     }
   }
 
@@ -178,7 +180,7 @@ const deleteResource = async (
   console.log(`updated: ${updated_resources}`);
 
   updateResourcesByID(id, updated_resources)
-    .then((student) => res.status(StatusCode.OK).send(student))
+    .then((s) => res.status(StatusCode.OK).send(s))
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
       next(ApiError.internal('Failed to delete resource.'));
@@ -219,8 +221,6 @@ const updateResource = async (
     resources.push('');
   }
   console.log(`original: ${resources}`);
-  const student_id = student._id;
-
   resources.push(resource);
 
   const updated_resources = resources.filter((item) => item !== '');

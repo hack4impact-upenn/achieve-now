@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import express from 'express';
 import ApiError from '../util/apiError';
 import {
@@ -62,9 +63,9 @@ const createSchool = async (
     next(ApiError.missingFields(['info']));
     return;
   }
-  let temp_admin_name = ''
-  if(admin_name) {
-    temp_admin_name = admin_name
+  let temp_admin_name = '';
+  if (admin_name) {
+    temp_admin_name = admin_name;
   }
 
   const school = await createSchoolInDB(
@@ -81,8 +82,8 @@ const createSchool = async (
     second_grade_lunch_start_time,
     second_grade_lunch_end_time,
   );
-  console.log('logged here')
-  console.log(school)
+  console.log('logged here');
+  console.log(school);
 
   res.status(StatusCode.OK).send(school);
 };
