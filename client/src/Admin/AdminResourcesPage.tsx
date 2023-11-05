@@ -18,6 +18,7 @@ import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 import DeleteResourceDialog from './DeleteResourceDialog';
 import AddResourceDialog from './AddResourceDialog';
+import EditResourceDialog from './EditResourceDialog';
 
 interface IAdminResourcesTable {
   titles: string[];
@@ -62,14 +63,25 @@ const initialTableData = [
   },
 ];
 
+interface Resource {
+  key: string;
+  title: string;
+  description: string;
+  link: string;
+  type: string;
+}
+
 function AdminResourcesPage() {
-  const [tableData, setTableData] = useState(initialTableData);
-  const [filteredTableData, setFilteredTableData] = useState(initialTableData);
+  const [tableData, setTableData] = useState<Resource[]>(initialTableData);
+  const [filteredTableData, setFilteredTableData] =
+    useState<Resource[]>(initialTableData);
   const [searchTerm, setSearchTerm] = useState('');
   const [resourceType, setResourceType] = useState<string[]>([]);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
   const [addResourceDialogOpen, setAddResourceDialogOpen] =
+    useState<boolean>(false);
+  const [editResourceDialogOpen, setEditResourceDialogOpen] =
     useState<boolean>(false);
   const [data, setData] = useState<IAdminResourcesTable>({
     titles: [] as string[],
@@ -96,6 +108,28 @@ function AdminResourcesPage() {
   };
 
   const addResource = async (
+    title: string,
+    description: string,
+    link: string,
+    type: string,
+  ) => {
+    try {
+      // updating local tableData very jank :')
+      const dummyData = {
+        key: Date.now().toString(),
+        title,
+        description,
+        link,
+        type,
+      };
+
+      setTableData([...tableData, dummyData]);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
+  };
+
+  const editResource = async (
     title: string,
     description: string,
     link: string,
@@ -183,6 +217,12 @@ function AdminResourcesPage() {
         setOpen={() => setAddResourceDialogOpen(false)}
         addResource={addResource}
       />
+      <EditResourceDialog
+        open={editResourceDialogOpen}
+        setOpen={() => setEditResourceDialogOpen(false)}
+        editResource={editResource}
+        resources={tableData}
+      />
       <Header />
       <Box
         sx={{
@@ -250,9 +290,24 @@ function AdminResourcesPage() {
                 backgroundColor: 'grey.200',
               },
               width: theme.spacing(20),
+              marginRight: theme.spacing(2),
             }}
           >
             Delete Entry
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setEditResourceDialogOpen(true)}
+            sx={{
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+            }}
+          >
+            Edit Entry
           </Button>
         </Box>
         <Box
