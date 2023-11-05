@@ -139,10 +139,8 @@ const deleteAttendanceOnDate = async (date: number) => {
  */
 const updateStudentInfo = async (
   id: string,
+  grade: number,
   parentName: string,
-  parentCommunicationTimes: string,
-  parentCommunicationDays: string,
-  bestCommunicationMethod: string,
   personality: string,
   school: string,
   teacher: string,
@@ -167,6 +165,8 @@ const updateStudentInfo = async (
   const student = await Student.findByIdAndUpdate(
     id,
     {
+      grade,
+      email,
       parent_name: parentName,
       parent_communication_times: bestTime,
       parent_communication_days: bestDay,

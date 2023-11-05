@@ -8,21 +8,21 @@ import {
   TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAppSelector } from '../util/redux/hooks';
-import { selectUser } from '../util/redux/userSlice';
-import { useData } from '../util/api';
+import { useParams } from 'react-router-dom';
+import { postData, useData } from '../util/api';
+import AlertDialog from '../components/AlertDialog';
+import PrimaryButton from '../components/buttons/PrimaryButton';
+import { InputErrorMessage } from '../util/inputvalidation';
 
 function StudentProfilePage() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const user = useAppSelector(selectUser);
 
   // Default values for state
   const defaultValues = {
     school: '',
     teacher: '',
     lessonLevel: '',
+    grade: '',
     phone: '',
     email: '',
     parentName: '',
@@ -40,13 +40,14 @@ function StudentProfilePage() {
     motivation: '',
     goodStrategies: '',
     badStrategies: '',
-    progressStats: '',
+    badges: '',
   };
 
   const defaultShowErrors = {
     school: false,
     teacher: false,
     lessonLevel: false,
+    grade: false,
     phone: false,
     email: false,
     parentName: false,
@@ -64,13 +65,15 @@ function StudentProfilePage() {
     motivation: false,
     goodStrategies: false,
     badStrategies: false,
-    progressStats: false,
+    badges: false,
+    alert: false,
   };
 
   const defaultErrorMessages = {
     school: '',
     teacher: '',
     lessonLevel: '',
+    grade: '',
     phone: '',
     email: '',
     parentName: '',
@@ -88,7 +91,8 @@ function StudentProfilePage() {
     motivation: '',
     goodStrategies: '',
     badStrategies: '',
-    progressStats: '',
+    badges: '',
+    alert: '',
   };
 
   // Rest of your component code
@@ -99,6 +103,10 @@ function StudentProfilePage() {
   const [values, setValueState] = useState(defaultValues);
   const [showError, setShowErrorState] = useState(defaultShowErrors);
   const [errorMessage, setErrorMessageState] = useState(defaultErrorMessages);
+  const [allTeachers, setAllTeachersState] = useState([]);
+  const [allLessons, setAllLessonsState] = useState([]);
+  const [allSchools, setAllSchoolsState] = useState([]);
+  const [studentName, setStudentNameState] = useState('');
 
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
@@ -130,39 +138,119 @@ function StudentProfilePage() {
     setErrorMessageState(defaultErrorMessages);
   };
 
+  const validateInputs = () => {
+    clearErrorMessages();
+    let isValid = true;
+
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const valueTypeString in values) {
+      const valueType = valueTypeString as ValueType;
+      if (!values[valueType]) {
+        setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
+        setShowError(valueTypeString, true);
+        isValid = false;
+      }
+    }
+
+    return isValid;
+  };
+
+  async function handleSubmit() {
+    if (validateInputs()) {
+      if (!id) {
+        setShowError('alert', true);
+        setErrorMessage('alert', 'No user is defined');
+        return;
+      }
+      postData(`student/allInfo/${id}`, { values })
+        .then(() => {
+          setShowError('alert', true);
+          setErrorMessage('alert', 'Successfully updated!');
+        })
+        .catch((e: any) => {
+          setShowError('alert', true);
+          setErrorMessage('alert', e.message);
+        });
+    }
+  }
+
   const info = useData(`student/allInfo/${id}`);
+  const lessonInfo = useData(`lesson/all`);
+  const teacherInfo = useData(`user/allTeachers`);
+  const schoolInfo = useData(`school/all`);
 
   useEffect(() => {
     const infoData = info?.data;
     if (!infoData) {
       return;
     }
-    const { student } = infoData;
+    const lessonData = lessonInfo?.data;
+    if (!lessonData) {
+      return;
+    }
+    const teacherData = teacherInfo?.data;
+    if (!teacherData) {
+      return;
+    }
+
+    const schoolData = schoolInfo?.data;
+    if (!schoolData) {
+      return;
+    }
+
+    const { student, user, lesson } = infoData;
     const newValue = {
-      school: student.school,
-      teacher: student.teacher,
-      lessonLevel: student.lessonLevel,
-      phone: student.phone,
-      email: student.email,
-      parentName: student.parentName,
-      bestDay: student.bestDay,
-      bestTime: student.bestTime,
-      contactMethod: student.contactMethod,
-      mediaWaiver: student.mediaWaiver,
-      adminUpdates: student.adminUpdates,
-      workHabits: student.workHabits,
+      school: student.school_id,
+      teacher: student.teacher_id,
+      lessonLevel: lesson.number,
+      grade: student.grade,
+      phone: user.phone,
+      email: user.email,
+      parentName: student.parent_name,
+      bestDay: student.parent_communication_days,
+      bestTime: student.parent_communication_times,
+      contactMethod: student.best_communication_method,
+      mediaWaiver: student.media_waiver,
+      adminUpdates: student.admin_updates,
+      workHabits: student.work_habits,
       personality: student.personality,
       family: student.family,
-      favFood: student.favFood,
+      favFood: student.fav_food,
       likes: student.likes,
       dislikes: student.dislikes,
       motivation: student.motivation,
-      goodStrategies: student.goodStrategies,
-      badStrategies: student.badStrategies,
-      progressStats: student.progressStats,
+      goodStrategies: student.good_strategies,
+      badStrategies: student.bad_strategies,
+      badges: student.badges,
     };
+    const newLessons = lessonData.map((lessonObj: any) => {
+      return {
+        id: lessonObj.id,
+        number: lessonObj.number,
+      };
+    });
+
+    const newTeachers = teacherData.map((teacherObj: any) => {
+      return {
+        id: teacherObj.id,
+        firstName: teacherObj.firstName,
+        lastName: teacherObj.lastName,
+      };
+    });
+
+    const newSchools = schoolData.map((schoolObj: any) => {
+      return {
+        id: schoolObj.id,
+        name: schoolObj.name,
+      };
+    });
+
     setValueState(newValue);
-  }, [info?.data]);
+    setAllLessonsState(newLessons);
+    setAllTeachersState(newTeachers);
+    setStudentNameState(`${user.firstName} ${user.lastName}`);
+    setAllTeachersState(newTeachers);
+  }, [info?.data, lessonInfo?.data, teacherInfo?.data, schoolInfo?.data]);
 
   return (
     <Grid
@@ -176,7 +264,7 @@ function StudentProfilePage() {
     >
       <Grid item container justifyContent="center">
         <Typography variant="h2" mb={0}>
-          Anna Bay (Student)
+          {studentName} (Student)
         </Typography>
       </Grid>
       <Grid item width="1">
@@ -191,9 +279,9 @@ function StudentProfilePage() {
             value={values.school}
             onChange={(e) => setValue('School', e.target.value)}
           >
-            <MenuItem value="School A">School</MenuItem>
-            <MenuItem value="School B">School</MenuItem>
-            <MenuItem value="School C">School</MenuItem>
+            {allSchools.map((school: any) => {
+              return <MenuItem value={school.id}>{school.number}</MenuItem>;
+            })}
           </Select>
         </FormControl>
       </Grid>
@@ -209,9 +297,13 @@ function StudentProfilePage() {
             value={values.teacher}
             onChange={(e) => setValue('Teacher', e.target.value)}
           >
-            <MenuItem value="Teacher A">Teacher</MenuItem>
-            <MenuItem value="Teacher B">Teacher</MenuItem>
-            <MenuItem value="Teacher C">Teacher</MenuItem>
+            {allTeachers.map((teacher: any) => {
+              return (
+                <MenuItem
+                  value={teacher.id}
+                >{`${teacher.firstName} ${teacher.lastName}`}</MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
       </Grid>
@@ -227,9 +319,27 @@ function StudentProfilePage() {
             value={values.lessonLevel}
             onChange={(e) => setValue('lessonLevel', e.target.value)}
           >
-            <MenuItem value="1">lessonLevel</MenuItem>
-            <MenuItem value="2">lessonLevel</MenuItem>
-            <MenuItem value="3">lessonLevel</MenuItem>
+            {allLessons.map((lesson: any) => {
+              return <MenuItem value={lesson.id}>{lesson.number}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item width="1">
+        <FormControl fullWidth>
+          <InputLabel>lessonLevel</InputLabel>
+          <Select
+            fullWidth
+            error={showError.lessonLevel}
+            //   helperText={errorMessage.contactMethod}
+            required
+            label="Lesson Level"
+            value={values.grade}
+            onChange={(e) => setValue('lessonLevel', e.target.value)}
+          >
+            {Array.from(Array(12).keys()).map((num) => {
+              return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
+            })}
           </Select>
         </FormControl>
       </Grid>
@@ -241,6 +351,7 @@ function StudentProfilePage() {
           required
           label="Phone Number"
           value={values.phone}
+          type="phone"
           onChange={(e) => setValue('phone', e.target.value)}
         />
       </Grid>
@@ -252,6 +363,7 @@ function StudentProfilePage() {
           required
           label="Email"
           value={values.email}
+          type="email"
           onChange={(e) => setValue('email', e.target.value)}
         />
       </Grid>
@@ -448,12 +560,31 @@ function StudentProfilePage() {
       <Grid item width="1">
         <TextField
           fullWidth
-          error={showError.progressStats}
-          helperText={errorMessage.progressStats}
+          error={showError.badges}
+          helperText={errorMessage.badges}
           required
-          label="Progress Stats"
-          value={values.progressStats}
-          onChange={(e) => setValue('progressStats', e.target.value)}
+          label="Badges"
+          value={values.badges}
+          onChange={(e) => setValue('badges', e.target.value)}
+        />
+      </Grid>
+      <Grid item container justifyContent="center">
+        <PrimaryButton
+          fullWidth
+          type="submit"
+          variant="contained"
+          onClick={() => handleSubmit()}
+        >
+          Submit
+        </PrimaryButton>
+      </Grid>
+      {/* The alert that pops up */}
+      <Grid item>
+        <AlertDialog
+          showAlert={showError.alert}
+          title={alertTitle}
+          message={errorMessage.alert}
+          onClose={handleAlertClose}
         />
       </Grid>
     </Grid>

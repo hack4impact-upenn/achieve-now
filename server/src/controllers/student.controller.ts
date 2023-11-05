@@ -27,19 +27,17 @@ const updateStudentInformation = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
+  const { id } = req.params;
   const {
-    id,
     firstName,
     lastName,
     phone,
     parentName,
-    parentCommunicationTimes,
-    parentCommunicationDays,
-    bestCommunicationMethod,
     personality,
     school,
     teacher,
     lessonLevel,
+    grade,
     email,
     bestDay,
     bestTime,
@@ -66,13 +64,11 @@ const updateStudentInformation = async (
   const updatedStudent = await updateStudentInfo(
     id,
     parentName,
-    parentCommunicationTimes,
-    parentCommunicationDays,
-    bestCommunicationMethod,
     personality,
     school,
     teacher,
     lessonLevel,
+    grade,
     phone,
     email,
     bestDay,
@@ -218,17 +214,16 @@ const getStudentResources = async (
     return;
   }
 
-  const resources = [];
-
   if (student.parent_additional_resources) {
-    for (let i = 0; i < student.parent_additional_resources.length; i++) {
-      const resource_id = student.parent_additional_resources[i];
-      const res = await getResourceByID(resource_id);
-      resources.push(res);
-    }
+    const resources = await Promise.all(
+      student.parent_additional_resources.map(async (resourceId: string) => {
+        getResourceByID(resourceId);
+      }),
+    );
+    res.status(StatusCode.OK).send(resources);
+  } else {
+    res.status(StatusCode.OK).send([]);
   }
-
-  res.status(StatusCode.OK).send(resources);
 };
 
 /**
@@ -242,9 +237,6 @@ const deleteResource = async (
   const { id } = req.body;
   const { resource } = req.body;
 
-  console.log('DELETION');
-  console.log(id);
-  console.log(resource);
   if (!id) {
     // next(ApiError.missingFields(['id']));
     return;
@@ -266,14 +258,14 @@ const deleteResource = async (
     return;
   }
 
-  const updated_resources = student.parent_additional_resources.filter(
+  const updatedResources = student.parent_additional_resources.filter(
     (item) => item !== resource,
   );
 
-  console.log(`updated: ${updated_resources}`);
+  console.log(`updated: ${updatedResources}`);
 
-  updateResourcesByID(id, updated_resources)
-    .then((student) => res.status(StatusCode.OK).send(student))
+  updateResourcesByID(id, updatedResources)
+    .then((studentRes) => res.status(StatusCode.OK).send(studentRes))
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
       next(ApiError.internal('Failed to delete resource.'));
@@ -314,15 +306,15 @@ const updateResource = async (
     resources.push('');
   }
   console.log(`original: ${resources}`);
-  const student_id = student._id;
+  const studentId = student._id;
 
   resources.push(resource);
 
-  const updated_resources = resources.filter((item) => item !== '');
+  const updatedResources = resources.filter((item) => item !== '');
 
-  console.log(`updated: ${updated_resources}`);
+  console.log(`updated: ${updatedResources}`);
 
-  updateResourcesByID(id, updated_resources)
+  updateResourcesByID(studentId, updatedResources)
     .then(() => res.sendStatus(StatusCode.OK))
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {

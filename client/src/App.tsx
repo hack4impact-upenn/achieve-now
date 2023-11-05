@@ -32,6 +32,7 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import StudentProfilePage from './Admin/StudentProfilePage';
 
 function App() {
   return (
@@ -97,6 +98,10 @@ function App() {
                       element={<AdminLessonsPage />}
                     />
                     <Route path="/admin-notes" element={<AdminNotesPage />} />
+                    <Route
+                      path="/admin/student/profile/:id"
+                      element={<StudentProfilePage />}
+                    />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route

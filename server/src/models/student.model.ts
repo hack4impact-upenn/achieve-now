@@ -111,6 +111,14 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  badges: {
+    type: String,
+    required: false,
+  },
+  grade: {
+    type: Number,
+    required: false,
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -139,6 +147,8 @@ interface IStudent extends mongoose.Document {
   motivation: string;
   good_strategies: string;
   bad_strategies: string;
+  badges: string;
+  grade: number;
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
