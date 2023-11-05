@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useData } from '../../util/api';
 
 type StudentCardProps = {
-  studentID: string;
-  lesson: string;
+  teacherID: string;
 };
 
-function StudentCard({ studentID, lesson }: StudentCardProps) {
+function TeacherCard({ teacherID }: StudentCardProps) {
   const navigate = useNavigate();
-  const user = useData(`user/${studentID}`);
+  const user = useData(`user/${teacherID}`);
   let label = 'Name';
   if (user) {
     const info = user.data;
@@ -20,7 +19,7 @@ function StudentCard({ studentID, lesson }: StudentCardProps) {
   }
 
   function handleClick() {
-    const s = `/teacher/${studentID}`;
+    const s = `/teacher/${teacherID}`;
     navigate(s);
   }
 
@@ -37,9 +36,6 @@ function StudentCard({ studentID, lesson }: StudentCardProps) {
             }}
             variant="subtitle1"
           >
-            <b>
-              <i>{lesson}</i>
-            </b>
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -47,4 +43,4 @@ function StudentCard({ studentID, lesson }: StudentCardProps) {
   );
 }
 
-export default StudentCard;
+export default TeacherCard;

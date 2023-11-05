@@ -2,10 +2,12 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/system';
+import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
 import { useData } from './util/api';
 import StudentCard from './components/buttons/StudentCard';
 import PageHeader from './components/PageHeader';
+import PhoneticsTable from './components/buttons/PhoneticsTable';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -37,6 +39,12 @@ function SplitGrid() {
   const id = '111';
   const students = useData(`student/teacher/${id}`);
   const studentData = students?.data ?? [];
+
+  const { teacherID } = useParams();
+  let final_id = "";
+  if (teacherID) {
+    final_id = teacherID;
+  }
 
   // const student_users = []
   // for (let i = 0; i < studentData.length; i++) {
@@ -80,6 +88,7 @@ function SplitGrid() {
             square
           >
             <h2>Class Progress</h2>
+            <PhoneticsTable teacherID = {final_id}/>
           </Paper>
         </Box>
       </Box>
