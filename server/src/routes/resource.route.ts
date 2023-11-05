@@ -11,6 +11,7 @@ import {
   getLessonResourcesHandler,
   updateResourceHandler,
   getAllResources,
+  deleteResourceHandler,
 } from '../controllers/resource.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 
@@ -27,5 +28,7 @@ resourceRouter.get(
 resourceRouter.put('/:resourceId', updateResourceHandler);
 
 resourceRouter.post('/', createResourceHandler);
+
+resourceRouter.delete('/:resourceId', deleteResourceHandler);
 
 export default resourceRouter;

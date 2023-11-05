@@ -11,6 +11,7 @@ import {
   createResource,
   getLessonResources,
   updateResource,
+  deleteResource,
 } from '../services/resource.service';
 
 /**
@@ -60,9 +61,18 @@ const createResourceHandler: RequestHandler = async (req, res) => {
   res.status(StatusCode.OK).send(newResource);
 };
 
+const deleteResourceHandler: RequestHandler = async (req, res) => {
+  const { resourceId } = req.params;
+  console.log(resourceId);
+  const deletedResource = await deleteResource(resourceId);
+  console.log(deletedResource);
+  res.status(StatusCode.OK).send(deletedResource);
+};
+
 export {
   getLessonResourcesHandler,
   updateResourceHandler,
   createResourceHandler,
   getAllResources,
+  deleteResourceHandler,
 };
