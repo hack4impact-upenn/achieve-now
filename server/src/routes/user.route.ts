@@ -3,8 +3,7 @@
  * relating to admin users.
  */
 import express from 'express';
-import { isAdmin } from '../controllers/admin.middleware';
-import { getUser } from '../controllers/user.controller';
+import { getAllTeachers, getUser } from '../controllers/user.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
@@ -14,5 +13,10 @@ const router = express.Router();
  * A GET route to get a user by their ID
  */
 router.get('/:id', getUser);
+
+/**
+ * A GET route to get all teachers.
+ */
+router.get('/allTeachers', isAuthenticated, getAllTeachers);
 
 export default router;

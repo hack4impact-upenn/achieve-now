@@ -132,6 +132,67 @@ const deleteAttendanceOnDate = async (date: number) => {
   );
 };
 
+/**
+ * A function that updates student info in the database.
+ * @param id The id of the user to update.
+ * @returns The updated {@link Student}
+ */
+const updateStudentInfo = async (
+  id: string,
+  parentName: string,
+  parentCommunicationTimes: string,
+  parentCommunicationDays: string,
+  bestCommunicationMethod: string,
+  personality: string,
+  school: string,
+  teacher: string,
+  lessonLevel: string,
+  phone: string,
+  email: string,
+  bestDay: string,
+  bestTime: string,
+  contactMethod: string,
+  mediaWaiver: string,
+  adminUpdates: string,
+  workHabits: string,
+  family: string,
+  favFood: string,
+  likes: string,
+  dislikes: string,
+  motivation: string,
+  goodStrategies: string,
+  badStrategies: string,
+  progressStats: string,
+) => {
+  const student = await Student.findByIdAndUpdate(
+    id,
+    {
+      parent_name: parentName,
+      parent_communication_times: bestTime,
+      parent_communication_days: bestDay,
+      best_communication_method: contactMethod,
+      personality,
+      school_id: school,
+      teacher_id: teacher,
+      lesson_level: lessonLevel,
+      parentPhone: phone,
+      media_waiver: mediaWaiver,
+      admin_updates: adminUpdates,
+      work_habits: workHabits,
+      family,
+      fav_food: favFood,
+      likes,
+      dislikes,
+      motivation,
+      good_strategies: goodStrategies,
+      bad_strategies: badStrategies,
+      progress_stats: progressStats,
+    },
+    { new: true },
+  ).exec();
+  return student;
+};
+
 export {
   passwordHashSaltRounds,
   getStudentByID,
@@ -142,4 +203,5 @@ export {
   updateAttendance,
   createAttendanceOnDate,
   deleteAttendanceOnDate,
+  updateStudentInfo,
 };

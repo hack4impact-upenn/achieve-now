@@ -5,27 +5,11 @@ import mongoose from 'mongoose';
 import { Lesson } from '../models/lesson.model';
 import { IResource, Resource } from '../models/resource.model';
 
-const passwordHashSaltRounds = 10;
-const removeSensitiveDataQuery = [
-  '-password',
-  '-verificationToken',
-  '-resetPasswordToken',
-  '-resetPasswordTokenExpiryDate',
-];
-
-const removeSensitiveDataQueryKeepPassword = [
-  '-verificationToken',
-  '-resetPasswordToken',
-  '-resetPasswordTokenExpiryDate',
-];
-
 /**
  * @returns All the {@link Resource}s in the database without their passwords.
  */
 const getAllResourcesFromDB = async () => {
-  const userList = await Resource.find({})
-    .select(removeSensitiveDataQuery)
-    .exec();
+  const userList = await Resource.find({}).exec();
   return userList;
 };
 
@@ -67,7 +51,6 @@ const createResource = async (resource: IResource) => {
 };
 
 export {
-  passwordHashSaltRounds,
   getAllResourcesFromDB,
   getLessonResources,
   updateResource,

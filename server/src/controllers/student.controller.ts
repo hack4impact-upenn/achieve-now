@@ -14,7 +14,102 @@ import {
   updateAttendance,
   deleteAttendanceOnDate,
   createAttendanceOnDate,
+  updateStudentInfo,
 } from '../services/student.service';
+import { getLessonById } from '../services/lesson.service';
+import { getUserById, updateUserInfo } from '../services/user.service';
+
+/**
+ * Update student resource (add specified).
+ */
+const updateStudentInformation = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const {
+    id,
+    firstName,
+    lastName,
+    phone,
+    parentName,
+    parentCommunicationTimes,
+    parentCommunicationDays,
+    bestCommunicationMethod,
+    personality,
+    school,
+    teacher,
+    lessonLevel,
+    email,
+    bestDay,
+    bestTime,
+    contactMethod,
+    mediaWaiver,
+    adminUpdates,
+    workHabits,
+    family,
+    favFood,
+    likes,
+    dislikes,
+    motivation,
+    goodStrategies,
+    badStrategies,
+    progressStats,
+  } = req.body;
+
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  // Call the updateStudentInfo service function with the provided parameters
+  const updatedStudent = await updateStudentInfo(
+    id,
+    parentName,
+    parentCommunicationTimes,
+    parentCommunicationDays,
+    bestCommunicationMethod,
+    personality,
+    school,
+    teacher,
+    lessonLevel,
+    phone,
+    email,
+    bestDay,
+    bestTime,
+    contactMethod,
+    mediaWaiver,
+    adminUpdates,
+    workHabits,
+    family,
+    favFood,
+    likes,
+    dislikes,
+    motivation,
+    goodStrategies,
+    badStrategies,
+    progressStats,
+  );
+
+  if (!updatedStudent) {
+    // If the update was unsuccessful, respond with an error
+    next(ApiError.notFound('Student not found'));
+  }
+
+  const updatedUser = await updateUserInfo(
+    id,
+    firstName,
+    lastName,
+    email,
+    phone,
+  );
+
+  if (!updatedUser) {
+    // If the update was unsuccessful, respond with an error
+    next(ApiError.notFound('User not found'));
+  }
+  res.status(StatusCode.OK);
+};
 
 /**
  * Get students by teacher_id
@@ -288,6 +383,33 @@ const deleteStudentAttendanceByDate = async (
   res.status(StatusCode.OK).send(student);
 };
 
+const getStudentInformation = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const student = await getStudentByID(id);
+  if (!student) {
+    next(ApiError.notFound(`Student with id ${id} does not exist`));
+    return;
+  }
+  const user = await getUserById(student.user_id);
+  if (!user) {
+    next(ApiError.notFound(`User does not exist`));
+  }
+  const lesson = await getLessonById(student.lesson_level);
+  if (!lesson) {
+    next(ApiError.notFound(`Lesson does not exist`));
+  }
+  const response = {
+    student,
+    user,
+    lesson,
+  };
+  res.status(StatusCode.OK).send(response);
+};
+
 export {
   getStudentsFromTeacherId,
   getStudent,
@@ -298,4 +420,6 @@ export {
   updateStudentAttendance,
   createStudentAttendanceByDate,
   deleteStudentAttendanceByDate,
+  getStudentInformation,
+  updateStudentInformation,
 };

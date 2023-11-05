@@ -6,6 +6,7 @@ import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getStudentResources,
+  getStudentInformation,
   deleteResource,
   updateResource,
   getAllStudents,
@@ -14,6 +15,7 @@ import {
   updateStudentAttendance,
   deleteStudentAttendanceByDate,
   createStudentAttendanceByDate,
+  updateStudentInformation,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -26,6 +28,22 @@ const router = express.Router();
  * id (string) - The student id of the particular student
  */
 router.get('/resource/:id', isAuthenticated, getStudentResources);
+
+/**
+ * A GET route to get (both the student obj and the user obj)
+ * of the student’s information by their student ID
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
+ */
+router.get('/student/allInfo/:id', isAuthenticated, getStudentInformation);
+
+/**
+ * A POST route to edit (both the student obj and the user obj)
+ * of the student’s information by their student ID
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
+ */
+router.post('/student/allInfo/:id', isAuthenticated, updateStudentInformation);
 
 /**
  * A GET route to get all students.
