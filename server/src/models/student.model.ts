@@ -79,6 +79,10 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  badges: {
+    type: [String],
+    required: false,
+  },
   grade: {
     type: String,
     required: false,
@@ -131,6 +135,7 @@ interface IStudent extends mongoose.Document {
   personality: string;
   media_waiver: boolean;
   work_habits: string;
+  badges: [string];
   grade: string;
   family: string;
   favorite_food: string;

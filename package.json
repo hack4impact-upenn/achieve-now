@@ -33,10 +33,12 @@
     "axios": "^1.1.2",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
+    "nvm": "^0.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.2.2",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.19",

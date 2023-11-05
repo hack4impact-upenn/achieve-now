@@ -48,7 +48,7 @@ export default function Phonetics() {
     }
 
     return (
-        <Box sx={{ width: 400, height: 175, border: '1px solid black', borderRadius: '10px', padding: '16px' }}>
+        <Box sx={{ width: '100%', height: '100%', border: '1px solid black', borderRadius: '10px', padding: '16px' }}>
             <Typography variant="h6" fontWeight={700}>
                 {levels[level][0]}
             </Typography>
