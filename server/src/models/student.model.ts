@@ -80,7 +80,7 @@ const StudentSchema = new mongoose.Schema({
     required: false,
   },
   grade: {
-    type: String,
+    type: Number,
     required: false,
   },
   admin_updates: {
@@ -160,7 +160,7 @@ interface IStudent extends mongoose.Document {
   personality: string;
   media_waiver: boolean;
   work_habits: string;
-  grade: string;
+  grade: number;
   progressFlag: boolean;
   academicFlag: boolean;
   admin_updates: string;
