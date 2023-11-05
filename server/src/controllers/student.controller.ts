@@ -32,18 +32,6 @@ const getStudentsFromTeacherId = async (
     next(ApiError.internal('Request must include a valid teacher_id param'));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function hasTeacher(student: IStudent) {
-    const teachers = student.teacher_id;
-    for (let i = 0; i < teachers.length; i += 1) {
-      const teacher = teachers[i];
-      if (teacher === id) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   return (
     getAllStudentsFromDB()
       .then((studentList) => {
@@ -125,16 +113,22 @@ const getStudentResources = async (
     return;
   }
 
-  const resources = [];
+  // const resources = [];
 
-  if (student.parent_additional_resources) {
-    for (let i = 0; i < student.parent_additional_resources.length; i += 1) {
-      const resource_id = student.parent_additional_resources[i];
+  // if (student.parent_additional_resources) {
+  //   for (let i = 0; i < student.parent_additional_resources.length; i += 1) {
+  //     const resource_id = student.parent_additional_resources[i];
+  //     // eslint-disable-next-line
+  //     const result = await getResourceByID(resource_id);
+  //     resources.push(result);
+  //   }
+  // }
+  const resources = (student.parent_additional_resources || []).map(
+    async (resource_id) => {
       // eslint-disable-next-line
-      const result = await getResourceByID(resource_id);
-      resources.push(result);
-    }
-  }
+      return await getResourceByID(resource_id);
+    },
+  );
 
   res.status(StatusCode.OK).send(resources);
 };

@@ -83,13 +83,13 @@ function UserTable() {
 
   // Search bar
   const userData = users?.data ?? [];
-  const idNameMapping = new Map<string, string>();
-  for (let i = 0; i < userData.length; i += 1) {
-    const user = userData[i];
-    const name = `${user.firstName} ${user.lastName}`;
-    // eslint-disable-next-line
-    idNameMapping.set(user._id, name);
-  }
+  const idNameMapping = new Map<string, string>(
+    userData.map((user: any) => [
+      // eslint-disable-next-line
+      user._id,
+      `${user.firstName} ${user.lastName}`,
+    ]),
+  );
 
   const [searchInput, setSearchInput] = React.useState('');
 
@@ -128,25 +128,35 @@ function UserTable() {
   }
   return (
     <Box>
-      <TextField
-        label="Search"
-        defaultValue="Name"
-        onChange={handleSearch}
-        value={searchInput}
-      />
-      <FormControl>
-        <InputLabel>Attribute</InputLabel>
-        <Select value={role} label="Role" onChange={handleChange}>
-          <MenuItem value="student">Student</MenuItem>
-          <MenuItem value="coach">Coach</MenuItem>
-          <MenuItem value="teacher">Teacher</MenuItem>
-          <MenuItem value="admin">Admin</MenuItem>
-        </Select>
-      </FormControl>
-      <PaginationTable
-        rows={userList.map((user: IUser) => createAdminDashboardRow(user))}
-        columns={columns}
-      />
+      <Box display="flex">
+        <TextField
+          sx={{ m: 1 }}
+          label="Search"
+          defaultValue="Name"
+          onChange={handleSearch}
+          value={searchInput}
+        />
+        <FormControl>
+          <InputLabel>Attribute</InputLabel>
+          <Select
+            value={role}
+            sx={{ m: 1, minWidth: 120 }}
+            label="Role"
+            onChange={handleChange}
+          >
+            <MenuItem value="student">Student</MenuItem>
+            <MenuItem value="coach">Coach</MenuItem>
+            <MenuItem value="teacher">Teacher</MenuItem>
+            <MenuItem value="admin">Admin</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <Box sx={{ pb: 30 }}>
+        <PaginationTable
+          rows={userList.map((user: IUser) => createAdminDashboardRow(user))}
+          columns={columns}
+        />
+      </Box>
     </Box>
   );
 }
