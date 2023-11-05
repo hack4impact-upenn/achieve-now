@@ -18,9 +18,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddDateDialog from './AddDateAttendanceDialog';
+import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
-import DeleteDateDialog from './DeleteDateAttendanceDialog';
+import DeleteDateDialog from './DeleteDateDialog';
 
 const studentStatusOptions = [
   'No Session',
