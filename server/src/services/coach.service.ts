@@ -12,6 +12,11 @@ const getAllCoachesFromDB = async () => {
   return userList;
 };
 
+const getAllSitesInDB = async () => {
+  const siteList = await Coach.find({ partner_site: { $exists: true, $ne: null } }).exec();
+  return siteList;
+};
+
 /**
  * createCoach creates a student in the database
  * @returns the newly created coach
@@ -140,4 +145,5 @@ export {
   getCoachBlocks,
   getStudentFromCoach,
   getCoach,
+  getAllSitesInDB,
 };

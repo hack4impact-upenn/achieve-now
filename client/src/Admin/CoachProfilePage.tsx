@@ -132,7 +132,7 @@ function CoachProfilePage() {
   }
 
   const info = useData(`coach/allInfo/${id}`);
-  const partnerSiteInfo = useData(`partnerSite/all`);
+  const partnerSiteInfo = useData(`coach/sites`);
   const schoolInfo = useData(`school/all`);
 
   useEffect(() => {
@@ -207,7 +207,7 @@ function CoachProfilePage() {
               required
               label="School"
               value={values.school}
-              onChange={(e) => setValue('School', e.target.value)}
+              onChange={(e) => setValue('school', e.target.value)}
             >
               {allSchools.map((school: any) => {
                 return <MenuItem value={school.id}>{school.number}</MenuItem>;
@@ -226,36 +226,28 @@ function CoachProfilePage() {
               required
               label="Partner Site"
               value={values.partnerSite}
-              onChange={(e) => setValue('Partner Site', e.target.value)}
+              onChange={(e) => setValue('partnerSite', e.target.value)}
             >
-              {allPartnerSites.map((teacher: any) => {
+              {allPartnerSites.map((partnerSite: any) => {
                 return (
-                  <MenuItem
-                    value={teacher.id}
-                  >{`${teacher.firstName} ${teacher.lastName}`}</MenuItem>
+                  <MenuItem value={partnerSite.id}>{partnerSite.name}</MenuItem>
                 );
               })}
             </Select>
           </FormControl>
         </Grid>
 
-        <Grid item width="1">
-          <FormControl fullWidth>
-            <InputLabel>Grade</InputLabel>
-            <Select
-              fullWidth
-              error={showError.grade}
-              //   helperText={errorMessage.contactMethod}
-              required
-              label="Lesson Level"
-              value={values.grade}
-              onChange={(e) => setValue('lessonLevel', e.target.value)}
-            >
-              {allSchools.map((lesson: any) => {
-                return <MenuItem value={lesson.id}>{lesson.number}</MenuItem>;
-              })}
-            </Select>
-          </FormControl>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            error={showError.grade}
+            helperText={errorMessage.grade}
+            required
+            label="Grade"
+            value={values.grade}
+            type="grade"
+            onChange={(e) => setValue('grade', e.target.value)}
+          />
         </Grid>
 
         <Grid item xs={6}>
@@ -292,7 +284,7 @@ function CoachProfilePage() {
             required
             label="Mailing Address"
             value={values.mailingAddress}
-            onChange={(e) => setValue('mailing address', e.target.value)}
+            onChange={(e) => setValue('mailingAddress', e.target.value)}
           />
         </Grid>
 
