@@ -26,6 +26,10 @@ const CoachSchema = new mongoose.Schema({
     },
     required: true,
   },
+  updates: {
+    type: String,
+    required: false,
+  },
 });
 
 interface ICoach extends mongoose.Document {
@@ -35,6 +39,9 @@ interface ICoach extends mongoose.Document {
   mailing_address: string;
   media_waiver: boolean;
   progress_stats: Map<string, Map<string, any>>;
+  updates: string;
 }
 
-export default mongoose.model<ICoach>('Coach', CoachSchema);
+const Coach = mongoose.model<ICoach>('Coach', CoachSchema);
+
+export { ICoach, Coach };

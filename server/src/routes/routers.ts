@@ -11,10 +11,13 @@ import adminRouter from './admin.route';
 import authRouter from './auth.route';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import thumbnailRouter from './thumbnail.route';
+import blockRouter from './block.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';
 import resourceRouter from './resource.route';
 import lessonRouter from './lesson.route';
+import coachRouter from './coach.route';
+import schoolRouter from './school.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -24,6 +27,10 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
     prefix: '/api/admin',
     router: adminRouter,
+  },
+  {
+    prefix: '/api/coach',
+    router: coachRouter,
   },
   {
     prefix: '/api/student',
@@ -44,6 +51,14 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
     prefix: '/api/lesson',
     router: lessonRouter,
+  },
+  {
+    prefix: '/api/block',
+    router: blockRouter,
+  },
+  {
+    prefix: '/api/school',
+    router: schoolRouter,
   },
 ];
 

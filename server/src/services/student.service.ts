@@ -99,6 +99,59 @@ const createStudent = async (
   return student;
 };
 
+/**
+ * A function that updates a student's attendance
+ * @param id: The id of the student to update
+ * @param date: The timestamp of the date to update attendance for
+ * @param attendance: The new attendance of the student
+ * @returns The updated {@link Student}
+ */
+const updateAttendance = async (
+  id: string,
+  date: number,
+  attendance: string,
+) => {
+  const student = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: { [`progress_stats.attendance.${date}`]: attendance },
+    },
+  ).exec();
+  return student;
+};
+
+/**
+ * A function that creates attendance for all students on a given date
+ * @param date: The timestamp of the date to create attendance for
+ */
+const createAttendanceOnDate = async (date: number) => {
+  await Student.updateMany(
+    {},
+    {
+      $set: {
+        [`progress_stats.attendance.${date}`]: '',
+      },
+    },
+  );
+};
+
+/**
+ * A function that deletes attendance for all students on a given date
+ * @param date: The timestamp of the date to delete attendance for
+ */
+const deleteAttendanceOnDate = async (date: number) => {
+  await Student.updateMany(
+    {},
+    {
+      $unset: {
+        [`progress_stats.attendance.${date}`]: 1,
+      },
+    },
+  );
+};
+
 export {
   getStudentByID,
   getResourceByID,
@@ -110,4 +163,7 @@ export {
   addCoachResourcesByID,
   getAllStudentsFromDB,
   createStudent,
+  updateAttendance,
+  createAttendanceOnDate,
+  deleteAttendanceOnDate,
 };

@@ -10,7 +10,10 @@ import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import LessonsPage from './Lessons/LessonsPage';
+import AdminSessionsPage from './Admin/AdminSessionsPage';
+import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
+import AdminNotesPage from './Admin/AdminNotesPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -28,6 +31,9 @@ import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
 import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
+import CoachAttendancePage from './Admin/CoachAttendancePage';
+import StudentAttendancePage from './Admin/StudentAttendancePage';
+import CoachLandingPage from './Coach/CoachLandingPage';
 
 function App() {
   return (
@@ -70,7 +76,6 @@ function App() {
                       element={<OnboardingPage />}
                     />
                     <Route path="/teacher" element={<TeacherDashboard />} />
-                    {/* <Route path="/lessons/:id" element={<LessonsPage />} /> */}
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
@@ -83,11 +88,37 @@ function App() {
                       element={<LessonResourceDashboard />}
                     />
                     <Route
+                      path="/admin-sessions"
+                      element={<AdminSessionsPage />}
+                    />
+                    <Route
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
                     />
+                    <Route path="/admin-notes" element={<AdminNotesPage />} />
+                    <Route
+                      path="/admin-student-attendance"
+                      element={<StudentAttendancePage />}
+                    />
+                    <Route
+                      path="/admin-coach-attendance"
+                      element={<CoachAttendancePage />}
+                    />
                   </Route>
-
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/lessons/:studentID"
+                      element={<LessonsPage />}
+                    />
+                    <Route
+                      path="/progress"
+                      element={<FamilyProgressSnapshotPage />}
+                    />
+                    <Route
+                      path="/coach-landing/:id"
+                      element={<CoachLandingPage />}
+                    />
+                  </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
                   <Route
                     path="/"
@@ -95,7 +126,6 @@ function App() {
                       <DynamicRedirect unAuthPath="/login" authPath="/home" />
                     }
                   />
-
                   {/* Route which is accessed if no other route is matched */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

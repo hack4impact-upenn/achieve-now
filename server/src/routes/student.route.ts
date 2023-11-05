@@ -13,6 +13,9 @@ import {
   getStudentsFromTeacherId,
   getStudent,
   getAllStudentsWithUserLesson,
+  updateStudentAttendance,
+  deleteStudentAttendanceByDate,
+  createStudentAttendanceByDate,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -77,5 +80,21 @@ router.get('/student/:id', isAuthenticated, getStudent);
  * Checks first if the requestor is authenticated or an admin
  */
 router.get('/all/info', isAuthenticated, isAdmin, getAllStudentsWithUserLesson);
+
+router.put('/attendance', isAuthenticated, isAdmin, updateStudentAttendance);
+
+router.put(
+  '/attendance/create',
+  isAuthenticated,
+  isAdmin,
+  createStudentAttendanceByDate,
+);
+
+router.put(
+  '/attendance/delete',
+  isAuthenticated,
+  isAdmin,
+  deleteStudentAttendanceByDate,
+);
 
 export default router;

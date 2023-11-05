@@ -5,6 +5,8 @@ import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import LessonCard from './LessonCard';
 import { postData, useData } from '../util/api';
+import { useAppSelector } from '../util/redux/hooks';
+import { selectUser } from '../util/redux/userSlice';
 
 interface IResource {
   id: string;
@@ -26,10 +28,10 @@ interface ICard extends IResource {
  */
 function LessonsPage() {
   const { studentID } = useParams();
-  // const user = useAppSelector(selectUser);
-  const user = {
-    role: 'parent',
-  };
+  const user = useAppSelector(selectUser);
+  // const user = {
+  //   role: 'parent',
+  // };
   const { role } = user;
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
   const [addCardsWithImages, setAddCardsWithImages] = useState<ICard[]>([]);
