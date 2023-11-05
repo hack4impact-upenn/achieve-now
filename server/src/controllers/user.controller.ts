@@ -30,4 +30,4 @@ const getUser = async (
   );
 };
 
-export { getUser };
+export default getUser;
