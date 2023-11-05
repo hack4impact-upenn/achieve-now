@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { useData } from '../util/api';
+import { deleteData, postData, putData, useData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 import DeleteResourceDialog from './DeleteResourceDialog';
@@ -32,39 +32,8 @@ interface AdminResourcesRow {
   type: string;
 }
 
-const initialTableData = [
-  {
-    key: '1',
-    title: 'test1',
-    description: 'desc',
-    link: 'http:google.com',
-    type: 'Video',
-  },
-  {
-    key: '2',
-    title: 'test2',
-    description: 'desc',
-    link: 'http:google.com',
-    type: 'Slides',
-  },
-  {
-    key: '3',
-    title: 'test3',
-    description: 'desc',
-    link: 'http:google.com',
-    type: 'Article',
-  },
-  {
-    key: '4',
-    title: 'test4',
-    description: 'desc',
-    link: 'http:google.com',
-    type: 'Video',
-  },
-];
-
 interface Resource {
-  key: string;
+  _id: string /* eslint no-underscore-dangle: 0 */;
   title: string;
   description: string;
   link: string;
@@ -72,9 +41,8 @@ interface Resource {
 }
 
 function AdminResourcesPage() {
-  const [tableData, setTableData] = useState<Resource[]>(initialTableData);
-  const [filteredTableData, setFilteredTableData] =
-    useState<Resource[]>(initialTableData);
+  const [tableData, setTableData] = useState<Resource[]>([]);
+  const [filteredTableData, setFilteredTableData] = useState<Resource[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [resourceType, setResourceType] = useState<string[]>([]);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
@@ -87,6 +55,14 @@ function AdminResourcesPage() {
     titles: [] as string[],
   });
 
+  const rawTableData = useData('resources/all');
+
+  useEffect(() => {
+    const newData = rawTableData?.data || [];
+    console.log(newData);
+    setTableData(newData);
+  }, [rawTableData]);
+
   const columns: TColumn[] = [
     { id: 'title', label: 'Title' },
     { id: 'description', label: 'Description' },
@@ -95,13 +71,15 @@ function AdminResourcesPage() {
   ];
 
   // for the buttons
-  const deleteResource = async (r: string) => {
+  const deleteResource = async (id: string) => {
     try {
       // updating local tableData very jank :')
-      const title = r;
-      const updatedTableData = tableData.filter((item) => item.title !== r);
 
+      const updatedTableData = tableData.filter(
+        (item) => item._id !== id /* eslint no-underscore-dangle: 0 */,
+      );
       setTableData(updatedTableData);
+      deleteData(`resources/${id}`);
     } catch (error) {
       console.error('Error deleting date:', error);
     }
@@ -114,38 +92,36 @@ function AdminResourcesPage() {
     type: string,
   ) => {
     try {
-      // updating local tableData very jank :')
-      const dummyData = {
-        key: Date.now().toString(),
+      const newResource = {
         title,
         description,
         link,
         type,
       };
-
-      setTableData([...tableData, dummyData]);
+      const promise = await postData('resources/', newResource);
+      setTableData([...tableData, promise.data]);
     } catch (error) {
       console.error('Error deleting date:', error);
     }
   };
 
   const editResource = async (
+    id: string,
     title: string,
     description: string,
     link: string,
     type: string,
   ) => {
     try {
-      // updating local tableData very jank :')
-      const dummyData = {
-        key: Date.now().toString(),
+      const newResource = {
         title,
         description,
         link,
         type,
       };
-
-      setTableData([...tableData, dummyData]);
+      const promise = await putData(`resources/${id}`, newResource);
+      const removed = tableData.filter((r: Resource) => r._id !== id);
+      setTableData([promise.data, ...removed]);
     } catch (error) {
       console.error('Error deleting date:', error);
     }
@@ -188,14 +164,12 @@ function AdminResourcesPage() {
 
     const filteredByType =
       resourceType.length !== 0
-        ? tableData.filter((row: AdminResourcesRow) =>
-            resourceType.includes(row.type),
-          )
+        ? tableData.filter((row: Resource) => resourceType.includes(row.type))
         : tableData;
 
     const filteredBySearch = searchTerm
       ? filteredByType.filter(
-          (row: AdminResourcesRow) =>
+          (row: Resource) =>
             row.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             row.description.toLowerCase().includes(searchTerm.toLowerCase()),
         )
@@ -209,7 +183,7 @@ function AdminResourcesPage() {
       <DeleteResourceDialog
         open={deleteDateDialogOpen}
         setOpen={() => setDeleteDateDialogOpen(false)}
-        options={data.titles}
+        resources={tableData}
         deleteResource={deleteResource}
       />
       <AddResourceDialog
@@ -352,7 +326,7 @@ function AdminResourcesPage() {
             <PaginationTable
               rows={filteredTableData.map((resourceData) =>
                 createAdminResourcesRow(
-                  resourceData.key,
+                  resourceData._id,
                   resourceData.title,
                   resourceData.description,
                   resourceData.link,

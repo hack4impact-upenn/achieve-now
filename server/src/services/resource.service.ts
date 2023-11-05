@@ -68,9 +68,7 @@ const createResource = async (resource: IResource) => {
 };
 
 const deleteResource = async (resourceId: string) => {
-  const deletedResource = await Resource.findByIdAndDelete(
-    resourceId
-  );
+  const deletedResource = await Resource.findByIdAndDelete(resourceId);
   return deletedResource;
 };
 

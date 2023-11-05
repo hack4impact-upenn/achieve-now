@@ -15,7 +15,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import theme from '../assets/theme';
 
 interface Resource {
-  key: string;
+  _id: string;
   title: string;
   description: string;
   link: string;
@@ -27,6 +27,7 @@ interface EditResourceProps {
   setOpen: (newOpen: boolean) => void;
   resources: Resource[];
   editResource: (
+    id: string,
     title: string,
     description: string,
     link: string,
@@ -40,6 +41,7 @@ function EditResourceDialog({
   resources,
   editResource,
 }: EditResourceProps) {
+  const [id, setId] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [link, setLink] = useState<string>('');
@@ -48,6 +50,7 @@ function EditResourceDialog({
   useEffect(() => {
     const resource = resources.find((r) => r.title === title);
     if (resource) {
+      setId(resource._id); /* eslint no-underscore-dangle: 0 */
       setDescription(resource.description);
       setLink(resource.link);
       setType(resource.type);
@@ -58,7 +61,7 @@ function EditResourceDialog({
     if (!title || !description || !link || !type) {
       return;
     }
-    editResource(title, description, link, type);
+    editResource(id, title, description, link, type);
     setOpen(false);
   };
 
