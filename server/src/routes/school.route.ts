@@ -4,10 +4,8 @@
  */
 import express from 'express';
 import { getAllResources, getSchool } from '../controllers/school.controller';
-import 'dotenv/config';
 
 const schoolRouter = express.Router();
-
 /**
  * A GET route to get all schools.
  */

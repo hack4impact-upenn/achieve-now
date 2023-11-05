@@ -415,6 +415,7 @@ function StudentProfilePage() {
             MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
           >
             {Array.from(Array(12).keys()).map((num) => {
+              console.log(num);
               return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
             })}
           </Select>
@@ -765,6 +766,20 @@ function StudentProfilePage() {
               }
             />
           }
+          label="Attendance Flag"
+        />
+      </Grid>
+      <Grid item container direction="row" justifyContent="space-between">
+        <FormControlLabel
+          value={values.progressFlag}
+          onChange={() => setValue('progressFlag', !values.progressFlag)}
+          control={<Switch />}
+          label="Performance Flag"
+        />
+        <FormControlLabel
+          value={values.attendanceFlag}
+          onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
+          control={<Switch />}
           label="Attendance Flag"
         />
       </Grid>
