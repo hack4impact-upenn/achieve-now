@@ -6,6 +6,8 @@ import {
   Select,
   MenuItem,
   TextField,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -29,7 +31,7 @@ function StudentProfilePage() {
     bestDay: '',
     bestTime: '',
     contactMethod: '',
-    mediaWaiver: '',
+    mediaWaiver: false,
     adminUpdates: '',
     workHabits: '',
     personality: '',
@@ -41,6 +43,8 @@ function StudentProfilePage() {
     goodStrategies: '',
     badStrategies: '',
     badges: '',
+    progressFlag: false,
+    attendanceFlag: false,
   };
 
   const defaultShowErrors = {
@@ -66,6 +70,8 @@ function StudentProfilePage() {
     goodStrategies: false,
     badStrategies: false,
     badges: false,
+    progressFlag: false,
+    attendanceFlag: false,
     alert: false,
   };
 
@@ -92,6 +98,8 @@ function StudentProfilePage() {
     goodStrategies: '',
     badStrategies: '',
     badges: '',
+    progressFlag: '',
+    attendanceFlag: '',
     alert: '',
   };
 
@@ -109,7 +117,7 @@ function StudentProfilePage() {
   const [studentName, setStudentNameState] = useState('');
 
   // Helper functions for changing only one field in a state object
-  const setValue = (field: string, value: string) => {
+  const setValue = (field: string, value: any) => {
     setValueState((prevState) => ({
       ...prevState,
       ...{ [field]: value },
@@ -200,30 +208,36 @@ function StudentProfilePage() {
 
     const { student, user, lesson } = infoData;
     const newValue = {
-      school: student.school_id,
-      teacher: student.teacher_id,
-      lessonLevel: lesson.number,
-      grade: student.grade,
-      phone: user.phone,
-      email: user.email,
-      parentName: student.parent_name,
-      bestDay: student.parent_communication_days,
-      bestTime: student.parent_communication_times,
-      contactMethod: student.best_communication_method,
-      mediaWaiver: student.media_waiver,
-      adminUpdates: student.admin_updates,
-      workHabits: student.work_habits,
-      personality: student.personality,
-      family: student.family,
-      favFood: student.fav_food,
-      likes: student.likes,
-      dislikes: student.dislikes,
-      motivation: student.motivation,
-      goodStrategies: student.good_strategies,
-      badStrategies: student.bad_strategies,
-      badges: student.badges,
+      school: student.school_id || '',
+      teacher: student.teacher_id || '',
+      lessonLevel: lesson.number || '',
+      grade: student.grade || '',
+      phone: user.phone || '',
+      email: user.email || '',
+      parentName: student.parent_name || '',
+      bestDay: student.parent_communication_days || '',
+      bestTime: student.parent_communication_times || '',
+      contactMethod: student.best_communication_method || '',
+      mediaWaiver: student.media_waiver || false,
+      adminUpdates: student.admin_updates || '',
+      workHabits: student.work_habits || '',
+      personality: student.personality || '',
+      family: student.family || '',
+      favFood: student.fav_food || '',
+      likes: student.likes || '',
+      dislikes: student.dislikes || '',
+      motivation: student.motivation || '',
+      goodStrategies: student.good_strategies || '',
+      badStrategies: student.bad_strategies || '',
+      badges: student.badges || [],
+      progressFlag: student.progress_flag || false,
+      attendanceFlag: student.attendance_flag || false,
     };
-    const newLessons = lessonData.map((lessonObj: any) => {
+
+    const sortedLessonData = lessonData.sort((a: any, b: any) => {
+      return a.number - b.number;
+    });
+    const newLessons = sortedLessonData.map((lessonObj: any) => {
       return {
         id: lessonObj.id,
         number: lessonObj.number,
@@ -248,6 +262,7 @@ function StudentProfilePage() {
     setValueState(newValue);
     setAllLessonsState(newLessons);
     setAllTeachersState(newTeachers);
+    setAllSchoolsState(newSchools);
     setStudentNameState(`${user.firstName} ${user.lastName}`);
     setAllTeachersState(newTeachers);
   }, [info?.data, lessonInfo?.data, teacherInfo?.data, schoolInfo?.data]);
@@ -309,7 +324,7 @@ function StudentProfilePage() {
       </Grid>
       <Grid item width="1">
         <FormControl fullWidth>
-          <InputLabel>lessonLevel</InputLabel>
+          <InputLabel>Lesson Level</InputLabel>
           <Select
             fullWidth
             error={showError.lessonLevel}
@@ -327,17 +342,18 @@ function StudentProfilePage() {
       </Grid>
       <Grid item width="1">
         <FormControl fullWidth>
-          <InputLabel>lessonLevel</InputLabel>
+          <InputLabel>Grade Level</InputLabel>
           <Select
             fullWidth
-            error={showError.lessonLevel}
+            error={showError.grade}
             //   helperText={errorMessage.contactMethod}
             required
-            label="Lesson Level"
+            label="Grade Level"
             value={values.grade}
-            onChange={(e) => setValue('lessonLevel', e.target.value)}
+            onChange={(e) => setValue('grade', e.target.value)}
           >
             {Array.from(Array(12).keys()).map((num) => {
+              console.log(num);
               return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
             })}
           </Select>
@@ -431,21 +447,12 @@ function StudentProfilePage() {
         </FormControl>
       </Grid>
       <Grid item width="1">
-        <FormControl fullWidth>
-          <InputLabel>Media Waiver</InputLabel>
-          <Select
-            fullWidth
-            error={showError.mediaWaiver}
-            //   helperText={errorMessage.contactMethod}
-            required
-            label="Media Waiver"
-            value={values.mediaWaiver}
-            onChange={(e) => setValue('mediaWaiver', e.target.value)}
-          >
-            <MenuItem value="true">Complete</MenuItem>
-            <MenuItem value="false">Incomplete</MenuItem>
-          </Select>
-        </FormControl>
+        <FormControlLabel
+          value={values.mediaWaiver}
+          onChange={() => setValue('mediaWaiver', !values.mediaWaiver)}
+          control={<Switch />}
+          label="Signed Media Waiver?"
+        />
       </Grid>
       <Grid item width="1">
         <TextField
@@ -566,6 +573,20 @@ function StudentProfilePage() {
           label="Badges"
           value={values.badges}
           onChange={(e) => setValue('badges', e.target.value)}
+        />
+      </Grid>
+      <Grid item container direction="row" justifyContent="space-between">
+        <FormControlLabel
+          value={values.progressFlag}
+          onChange={() => setValue('progressFlag', !values.progressFlag)}
+          control={<Switch />}
+          label="Performance Flag"
+        />
+        <FormControlLabel
+          value={values.attendanceFlag}
+          onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
+          control={<Switch />}
+          label="Attendance Flag"
         />
       </Grid>
       <Grid item container justifyContent="center">

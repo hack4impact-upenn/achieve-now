@@ -25,7 +25,7 @@ const getUser = async (
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
-        next(ApiError.internal('Unable to retrieve specified student'));
+        next(ApiError.internal('Unable to retrieve specified user'));
       })
   );
 };

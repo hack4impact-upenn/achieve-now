@@ -35,7 +35,7 @@ router.get('/resource/:id', isAuthenticated, getStudentResources);
  * Expects the following fields in the URL:
  * id (string) - The student id of the particular student
  */
-router.get('/student/allInfo/:id', isAuthenticated, getStudentInformation);
+router.get('/allInfo/:id', getStudentInformation);
 
 /**
  * A POST route to edit (both the student obj and the user obj)
@@ -43,7 +43,7 @@ router.get('/student/allInfo/:id', isAuthenticated, getStudentInformation);
  * Expects the following fields in the URL:
  * id (string) - The student id of the particular student
  */
-router.post('/student/allInfo/:id', isAuthenticated, updateStudentInformation);
+router.post('/allInfo/:id', isAuthenticated, updateStudentInformation);
 
 /**
  * A GET route to get all students.

@@ -161,6 +161,8 @@ const updateStudentInfo = async (
   goodStrategies: string,
   badStrategies: string,
   progressStats: string,
+  progressFlag: boolean,
+  attendanceFlag: boolean,
 ) => {
   const student = await Student.findByIdAndUpdate(
     id,
@@ -187,6 +189,8 @@ const updateStudentInfo = async (
       good_strategies: goodStrategies,
       bad_strategies: badStrategies,
       progress_stats: progressStats,
+      progressFlag,
+      attendanceFlag,
     },
     { new: true },
   ).exec();

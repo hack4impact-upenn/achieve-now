@@ -1,10 +1,11 @@
+import express from 'express';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import getAllLessons from '../controllers/lesson.controller';
-import router from './admin.route';
 
+const lessonRouter = express.Router();
 /**
  * A GET route to get all lessons.
  */
-router.get('/all', isAuthenticated, getAllLessons);
+lessonRouter.get('/all', isAuthenticated, getAllLessons);
 
-export default router;
+export default lessonRouter;

@@ -1,10 +1,11 @@
+import express from 'express';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import getAllSchools from '../controllers/school.controller';
-import router from './admin.route';
 
+const schoolRouter = express.Router();
 /**
  * A GET route to get all schools.
  */
-router.get('/all', isAuthenticated, getAllSchools);
+schoolRouter.get('/all', isAuthenticated, getAllSchools);
 
-export default router;
+export default schoolRouter;

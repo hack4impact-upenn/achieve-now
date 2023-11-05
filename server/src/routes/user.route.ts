@@ -7,16 +7,16 @@ import { getAllTeachers, getUser } from '../controllers/user.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
-const router = express.Router();
-
-/**
- * A GET route to get a user by their ID
- */
-router.get('/:id', getUser);
+const userRouter = express.Router();
 
 /**
  * A GET route to get all teachers.
  */
-router.get('/allTeachers', isAuthenticated, getAllTeachers);
+userRouter.get('/allTeachers', isAuthenticated, getAllTeachers);
 
-export default router;
+/**
+ * A GET route to get a user by their ID
+ */
+userRouter.get('/:id', getUser);
+
+export default userRouter;

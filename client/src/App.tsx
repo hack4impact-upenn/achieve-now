@@ -82,10 +82,10 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
-                  </Route>{' '}
+                  </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/admin-sessions"
+                      path="/admin/sessions"
                       element={<AdminSessionsPage />}
                     />
                   </Route>
@@ -94,7 +94,7 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/admin-lessons"
+                      path="/admin/lessons"
                       element={<AdminLessonsPage />}
                     />
                     <Route path="/admin-notes" element={<AdminNotesPage />} />

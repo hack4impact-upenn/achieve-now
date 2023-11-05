@@ -53,6 +53,8 @@ const updateStudentInformation = async (
     goodStrategies,
     badStrategies,
     progressStats,
+    progressFlag,
+    attendanceFlag,
   } = req.body;
 
   if (!id) {
@@ -85,6 +87,8 @@ const updateStudentInformation = async (
     goodStrategies,
     badStrategies,
     progressStats,
+    progressFlag,
+    attendanceFlag,
   );
 
   if (!updatedStudent) {
@@ -381,6 +385,10 @@ const getStudentInformation = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
   const student = await getStudentByID(id);
   if (!student) {
     next(ApiError.notFound(`Student with id ${id} does not exist`));
