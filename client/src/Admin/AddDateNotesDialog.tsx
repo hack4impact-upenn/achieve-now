@@ -12,8 +12,18 @@ import { Dayjs } from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { number } from 'prop-types';
 import IStudent from '../util/types/student';
 import ICoach from '../util/types/coach';
+
+interface IAdminNotesRow {
+  key: string;
+  date: string;
+  studentObservations: string;
+  studentNextSteps: string;
+  coachObservations: string;
+  coachNextSteps: string;
+}
 
 interface AddDateProps {
   open: boolean;
@@ -25,17 +35,10 @@ interface AddDateProps {
     coachObservations: string,
     coachNextSteps: string,
   ) => void;
-  student: IStudent | null;
-  coach: ICoach | null;
+  table: IAdminNotesRow[];
 }
 
-function AddDateNotesDialog({
-  open,
-  setOpen,
-  addDate,
-  student,
-  coach,
-}: AddDateProps) {
+function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [studentObservations, setStudentObservations] = useState('');
   const [studentNextSteps, setStudentNextSteps] = useState('');
@@ -43,42 +46,17 @@ function AddDateNotesDialog({
   const [coachNextSteps, setCoachNextSteps] = useState('');
 
   useEffect(() => {
-    if (date && student && coach) {
+    if (date) {
       const numberDate = Number(date).toString();
-      if (student.progress_stats !== null) {
-        if (
-          Object.keys(student.progress_stats).includes('student_observations')
-        ) {
-          const innerMap = student.progress_stats.get('student_observations');
-          if (innerMap?.has(numberDate)) {
-            setStudentObservations(innerMap.get(numberDate) || '');
-          }
-        }
-        if (
-          Object.keys(student.progress_stats).includes('student_next_steps')
-        ) {
-          const innerMap = student.progress_stats.get('student_next_steps');
-          if (innerMap?.has(numberDate)) {
-            setStudentNextSteps(innerMap.get(numberDate) || '');
-          }
-        }
-      }
-      if (coach.progress_stats !== null) {
-        if (Object.keys(coach.progress_stats).includes('coach_observations')) {
-          const innerMap = coach.progress_stats.get('coach_observations');
-          if (innerMap?.has(numberDate)) {
-            setCoachObservations(innerMap.get(numberDate) || '');
-          }
-        }
-        if (Object.keys(coach.progress_stats).includes('coach_next_steps')) {
-          const innerMap = coach.progress_stats.get('coach_next_steps');
-          if (innerMap?.has(numberDate)) {
-            setStudentNextSteps(innerMap.get(numberDate) || '');
-          }
-        }
+      const row = table.find((r: IAdminNotesRow) => r.key === numberDate);
+      if (row) {
+        setStudentObservations(row.studentObservations);
+        setStudentNextSteps(row.studentNextSteps);
+        setCoachObservations(row.coachObservations);
+        setCoachNextSteps(row.coachNextSteps);
       }
     }
-  }, [date, coach, student]);
+  }, [date, table]);
 
   const handleSubmit = () => {
     if (!date) {

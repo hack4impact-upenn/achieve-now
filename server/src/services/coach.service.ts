@@ -131,6 +131,43 @@ const getCoach = async (coach_id: string) => {
   return coach;
 };
 
+const updateProgressDate = async (
+  id: string,
+  date: string,
+  observations: string,
+  next_steps: string,
+) => {
+  const coach = await Coach.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        [`progress_stats.coach_observations.${date}`]: observations,
+        [`progress_stats.coach_next_steps.${date}`]: next_steps,
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
+const deleteProgressDate = async (id: string, date: string) => {
+  const coach = await Coach.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $unset: {
+        [`progress_stats.coach_observations.${date}`]: '',
+        [`progress_stats.coach_next_steps.${date}`]: '',
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
 export {
   getAllCoachesFromDB,
   createCoachInDB,
@@ -140,4 +177,6 @@ export {
   getCoachBlocks,
   getStudentFromCoach,
   getCoach,
+  updateProgressDate,
+  deleteProgressDate,
 };

@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { setegid } from 'process';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { getData, useData } from '../util/api';
+import { deleteData, getData, putData, useData } from '../util/api';
 import theme from '../assets/theme';
 import AddDateNotesDialog from './AddDateNotesDialog';
 import DeleteDateDialog from './DeleteDateNotesDialog';
@@ -42,7 +42,6 @@ function AdminSessionsPage() {
 
   useEffect(() => {
     const dates = tableData.map((item) => Number(new Date(item.date)));
-    console.log(dates);
     setData((prevData) => ({ ...prevData, dates }));
   }, [tableData]);
 
@@ -99,7 +98,7 @@ function AdminSessionsPage() {
       const bigTable: IAdminNotesRow[] = [];
       Array.from(bigMap.entries()).forEach(([date, obj], index) => {
         bigTable.push({
-          key: index.toString(),
+          key: date.toString(),
           date: new Date(parseInt(date, 10)).toLocaleDateString(),
           studentObservations: obj.student_observations || '',
           studentNextSteps: obj.student_next_steps || '',
@@ -130,9 +129,16 @@ function AdminSessionsPage() {
     };
   }
 
-  const deleteDate = (date: number) => {
+  const deleteDate = async (date: number) => {
     try {
-      // updating local tableData very jank :')
+      const res = await deleteData(
+        `student/progress/${student?._id}/${date}`,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      deleteData(
+        `coach/progress/${coach?._id}/${date}`,
+      ); /* eslint no-underscore-dangle: 0 */
+
       const dateStr = new Date(date).toLocaleDateString();
       const updatedTableData = tableData.filter(
         (item) => item.date !== dateStr,
@@ -152,8 +158,27 @@ function AdminSessionsPage() {
     coachNextSteps: string,
   ) => {
     try {
-      // updating local tableData very jank :')
-      const dummyData = {
+      const studentComments = {
+        date,
+        observations: studentObservations,
+        next_steps: studentNextSteps,
+      };
+      putData(
+        `student/progress/${student?._id}`,
+        studentComments,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      const coachComments = {
+        date,
+        observations: coachObservations,
+        next_steps: coachNextSteps,
+      };
+      putData(
+        `coach/progress/${coach?._id}`,
+        coachComments,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      const newData = {
         key: date.toString(),
         date: new Date(date).toLocaleDateString('en-US'),
         studentObservations,
@@ -162,7 +187,10 @@ function AdminSessionsPage() {
         coachNextSteps,
       };
 
-      setTableData([...tableData, dummyData]);
+      const oldData = tableData.filter((notesRow: IAdminNotesRow) => {
+        return notesRow.key !== newData.key;
+      });
+      setTableData([newData, ...oldData]);
     } catch (error) {
       console.error('Error deleting date:', error);
     }
@@ -174,8 +202,7 @@ function AdminSessionsPage() {
         open={dateDialogOpen}
         setOpen={() => setDateDialogOpen(false)}
         addDate={addDate}
-        student={student}
-        coach={coach}
+        table={tableData}
       />
       <DeleteDateDialog
         open={deleteDateDialogOpen}
