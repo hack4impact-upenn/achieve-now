@@ -152,6 +152,43 @@ const deleteAttendanceOnDate = async (date: number) => {
   );
 };
 
+const updateProgressDate = async (
+  id: string,
+  date: string,
+  observations: string,
+  next_steps: string,
+) => {
+  const coach = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        [`progress_stats.student_observations.${date}`]: observations,
+        [`progress_stats.student_next_steps.${date}`]: next_steps,
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
+const deleteProgressDate = async (id: string, date: string) => {
+  const coach = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $unset: {
+        [`progress_stats.student_observations.${date}`]: '',
+        [`progress_stats.student_next_steps.${date}`]: '',
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
 export {
   getStudentByID,
   getResourceByID,
@@ -166,4 +203,6 @@ export {
   updateAttendance,
   createAttendanceOnDate,
   deleteAttendanceOnDate,
+  updateProgressDate,
+  deleteProgressDate,
 };

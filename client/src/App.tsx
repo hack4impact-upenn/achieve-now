@@ -95,7 +95,12 @@ function App() {
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
                     />
-                    <Route path="/admin-notes" element={<AdminNotesPage />} />
+                    <Route
+                      path="/admin-notes/:studentId"
+                      element={<AdminNotesPage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-student-attendance"
                       element={<StudentAttendancePage />}

@@ -72,18 +72,16 @@ const getAllBlocksfromDB = async () => {
   return blockList;
 };
 
-const getBlockByStudentId = async (
-  studentId: string
-) => {
+const getBlockByStudentId = async (studentId: string) => {
   const blocks = await Block.find({});
   const filteredBlocks = blocks.filter(
     (blocks: IBlock) =>
       blocks.students &&
       blocks.students.includes &&
       blocks.students.includes(studentId),
-  )
+  );
   return filteredBlocks[0];
-}
+};
 
 export {
   getBlockById,

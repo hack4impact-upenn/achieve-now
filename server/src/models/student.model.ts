@@ -123,7 +123,7 @@ interface IStudent extends mongoose.Document {
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];
-  progress_stats: Map<string, Map<string, number>>;
+  progress_stats: Map<string, Map<string, string>>;
   parent_name: string;
   parent_communication_days: string;
   parent_communication_times: string;
