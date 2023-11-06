@@ -30,5 +30,4 @@ const getUser = async (
   );
 };
 
-// eslint-disable-next-line
-export { getUser };
+export default getUser;

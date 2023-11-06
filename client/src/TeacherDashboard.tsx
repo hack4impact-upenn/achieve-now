@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/system';
 // eslint-disable-next-line
 import { useData } from './util/api';
-import StudentCard from './components/buttons/StudentCard';
+import { StudentCardFromID } from './Admin/StudentCard';
 import PageHeader from './components/PageHeader';
 
 const ScrollableBox = styled(Box)({
@@ -29,7 +29,7 @@ const ScrollableBox = styled(Box)({
 // eslint-disable-next-line
 function createData(data: any) {
   return data.map((student: any) => {
-    return <StudentCard studentID={student.user_id} lesson="Lesson 1" />;
+    return <StudentCardFromID studentID={student.user_id} lesson="Lesson 1" />;
   });
 }
 

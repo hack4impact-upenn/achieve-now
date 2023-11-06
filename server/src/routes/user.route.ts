@@ -3,7 +3,7 @@
  * relating to admin users.
  */
 import express from 'express';
-import { getUser } from '../controllers/user.controller';
+import getUser from '../controllers/user.controller';
 import 'dotenv/config';
 
 const router = express.Router();

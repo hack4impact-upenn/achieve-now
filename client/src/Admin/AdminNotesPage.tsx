@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Button, Box, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { useData } from '../util/api';
+import { deleteData, getData, putData, useData } from '../util/api';
 import theme from '../assets/theme';
-import ScreenGrid from '../components/ScreenGrid';
+import AddDateNotesDialog from './AddDateNotesDialog';
+import DeleteDateDialog from './DeleteDateNotesDialog';
+import IStudent from '../util/types/student';
+import ICoach from '../util/types/coach';
 
-interface AdminNotesRow {
+interface IAdminNotesTable {
+  dates: number[];
+}
+
+interface IAdminNotesRow {
   key: string;
   date: string;
   studentObservations: string;
@@ -17,35 +23,23 @@ interface AdminNotesRow {
   coachNextSteps: string;
 }
 
-const initialTableData = [
-  {
-    key: '1',
-    date: '10/05/2023',
-    studentObservations: 'Worked on vowels today.',
-    studentNextSteps: 'Maria was a little distracted...',
-    coachObservations: 'Cell',
-    coachNextSteps: 'Cell',
-  },
-  {
-    key: '2',
-    date: '10/03/2023',
-    studentObservations: 'Did great, made a lot of progress!',
-    studentNextSteps: 'Cell',
-    coachObservations: 'Cell',
-    coachNextSteps: 'Cell',
-  },
-  {
-    key: '3',
-    date: '10/02/2023',
-    studentObservations: 'Practiced reading comprehension.',
-    studentNextSteps: 'Struggled with longer sentences.',
-    coachObservations: 'Cell',
-    coachNextSteps: 'Cell',
-  },
-];
-
 function AdminSessionsPage() {
-  const [tableData, setTableData] = useState(initialTableData);
+  const { studentId } = useParams<{ studentId: string }>();
+  const studentData = useData(`student/student/${studentId}`);
+  const [student, setStudent] = useState<IStudent | null>(null);
+  const [coach, setCoach] = useState<ICoach | null>(null);
+  const [tableData, setTableData] = useState<IAdminNotesRow[]>([]);
+  const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
+  const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
+    useState<boolean>(false);
+  const [data, setData] = useState<IAdminNotesTable>({
+    dates: [] as number[],
+  });
+
+  useEffect(() => {
+    const dates = tableData.map((item) => Number(new Date(item.date)));
+    setData((prevData) => ({ ...prevData, dates }));
+  }, [tableData]);
 
   const columns: TColumn[] = [
     { id: 'date', label: 'Date' },
@@ -55,25 +49,62 @@ function AdminSessionsPage() {
     { id: 'coachNextSteps', label: 'Coach Next Steps' },
   ];
 
-  // for the buttons
-  const handleDeleteEntry = () => {
-    if (tableData.length === 0) return;
-    const updatedTableData = tableData.slice(0, -1); // take out last one
-    setTableData(updatedTableData);
-  };
+  async function getCoach(id: string) {
+    const res = await getData(`coach/${id}`);
+    if (!res.error) {
+      setCoach(res.data);
+    }
+  }
 
-  const handleAddEntry = () => {
-    const dummyData = {
-      key: 'dummyKey',
-      date: new Date().toLocaleDateString(),
-      studentObservations: 'Dummy Student Observations',
-      studentNextSteps: 'Dummy Student Next Steps',
-      coachObservations: 'Dummy Coach Observations',
-      coachNextSteps: 'Dummy Coach Next Steps',
-    };
+  useEffect(() => {
+    const rawStudentData = studentData?.data;
+    if (rawStudentData) {
+      setStudent(rawStudentData);
+      if (rawStudentData.coach_id && rawStudentData.coach_id.length >= 1) {
+        getCoach(rawStudentData.coach_id[0]);
+      }
+    }
+  }, [studentData]);
 
-    setTableData([...tableData, dummyData]);
-  };
+  useEffect(() => {
+    if (student && coach) {
+      const bigMap = new Map();
+      Object.entries(student.progress_stats).forEach(([key, innerMap]) => {
+        if (key === 'student_next_steps' || key === 'student_observations') {
+          Object.entries(innerMap).forEach(([date, comments]) => {
+            if (!bigMap.has(date)) {
+              bigMap.set(date, {});
+            }
+            bigMap.get(date)[key] = comments;
+          });
+        }
+      });
+
+      Object.entries(coach.progress_stats).forEach(([key, innerMap]) => {
+        if (key === 'coach_next_steps' || key === 'coach_observations') {
+          Object.entries(innerMap).forEach(([date, comments]) => {
+            if (!bigMap.has(date)) {
+              bigMap.set(date, {});
+            }
+            bigMap.get(date)[key] = comments;
+          });
+        }
+      });
+
+      const bigTable: IAdminNotesRow[] = [];
+      Array.from(bigMap.entries()).forEach(([date, obj], index) => {
+        bigTable.push({
+          key: date.toString(),
+          date: new Date(parseInt(date, 10)).toLocaleDateString(),
+          studentObservations: obj.student_observations || '',
+          studentNextSteps: obj.student_next_steps || '',
+          coachObservations: obj.coach_observations || '',
+          coachNextSteps: obj.coach_next_steps || '',
+        });
+      });
+      setTableData(bigTable);
+    }
+  }, [student, coach]);
 
   // Used to create the data type to create a row in the table
   function createAdminNotesRow(
@@ -83,7 +114,7 @@ function AdminSessionsPage() {
     studentNextSteps: string,
     coachObservations: string,
     coachNextSteps: string,
-  ): AdminNotesRow {
+  ): IAdminNotesRow {
     return {
       key,
       date,
@@ -94,8 +125,87 @@ function AdminSessionsPage() {
     };
   }
 
+  const deleteDate = async (date: number) => {
+    try {
+      const res = await deleteData(
+        `student/progress/${student?._id}/${date}`,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      deleteData(
+        `coach/progress/${coach?._id}/${date}`,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      const dateStr = new Date(date).toLocaleDateString();
+      const updatedTableData = tableData.filter(
+        (item) => item.date !== dateStr,
+      );
+
+      setTableData(updatedTableData);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
+  };
+
+  const addDate = async (
+    date: number,
+    studentObservations: string,
+    studentNextSteps: string,
+    coachObservations: string,
+    coachNextSteps: string,
+  ) => {
+    try {
+      const studentComments = {
+        date,
+        observations: studentObservations,
+        next_steps: studentNextSteps,
+      };
+      putData(
+        `student/progress/${student?._id}`,
+        studentComments,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      const coachComments = {
+        date,
+        observations: coachObservations,
+        next_steps: coachNextSteps,
+      };
+      putData(
+        `coach/progress/${coach?._id}`,
+        coachComments,
+      ); /* eslint no-underscore-dangle: 0 */
+
+      const newData = {
+        key: date.toString(),
+        date: new Date(date).toLocaleDateString('en-US'),
+        studentObservations,
+        studentNextSteps,
+        coachObservations,
+        coachNextSteps,
+      };
+
+      const oldData = tableData.filter((notesRow: IAdminNotesRow) => {
+        return notesRow.key !== newData.key;
+      });
+      setTableData([newData, ...oldData]);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
+  };
+
   return (
     <div>
+      <AddDateNotesDialog
+        open={dateDialogOpen}
+        setOpen={() => setDateDialogOpen(false)}
+        addDate={addDate}
+        table={tableData}
+      />
+      <DeleteDateDialog
+        open={deleteDateDialogOpen}
+        setOpen={() => setDeleteDateDialogOpen(false)}
+        options={data.dates}
+        deleteDate={deleteDate}
+      />
       <Header />
       <Box
         sx={{
@@ -131,12 +241,35 @@ function AdminSessionsPage() {
           >
             Notes
           </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'right',
+            width: '80%',
+            padding: `0 ${theme.spacing(2)}`,
+          }}
+        >
           <Button
             variant="outlined"
-            onClick={handleDeleteEntry}
+            onClick={() => setDateDialogOpen(true)}
             sx={{
-              position: 'absolute',
-              right: '15%',
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+              marginRight: theme.spacing(2),
+            }}
+          >
+            Add Entry
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setDeleteDateDialogOpen(true)}
+            sx={{
               backgroundColor: 'white',
               borderColor: 'black',
               '&:hover': {
@@ -147,40 +280,24 @@ function AdminSessionsPage() {
           >
             Delete Entry
           </Button>
-          <Button
-            variant="outlined"
-            onClick={handleAddEntry}
-            sx={{
-              position: 'absolute',
-              right: '0%',
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-            }}
-          >
-            Add Entry
-          </Button>
         </Box>
+
         <Box
           sx={{
-            marginTop: theme.spacing(5),
             width: '80%',
             padding: theme.spacing(2),
           }}
         >
           {tableData && (
             <PaginationTable
-              rows={tableData.map((data) =>
+              rows={tableData.map((rowData) =>
                 createAdminNotesRow(
-                  data.key,
-                  data.date,
-                  data.studentObservations,
-                  data.studentNextSteps,
-                  data.coachObservations,
-                  data.coachNextSteps,
+                  rowData.key,
+                  rowData.date,
+                  rowData.studentObservations,
+                  rowData.studentNextSteps,
+                  rowData.coachObservations,
+                  rowData.coachNextSteps,
                 ),
               )}
               columns={columns}

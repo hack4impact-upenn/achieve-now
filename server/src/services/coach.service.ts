@@ -93,6 +93,7 @@ const getCoachBlocks = async (coach_id: string) => {
       student.coach_id.includes &&
       student.coach_id.includes(coach_id),
   );
+
   const blocks: string[] = [];
   filteredStudents.forEach((student: IStudent) => {
     if (!student.block_id) {
@@ -115,6 +116,59 @@ const getCoachBlocks = async (coach_id: string) => {
   return filteredBlocks;
 };
 
+const getStudentFromCoach = async (coach_id: string) => {
+  const students = await Student.find({});
+  const filteredStudents = students.filter(
+    (student: IStudent) =>
+      student.coach_id &&
+      student.coach_id.includes &&
+      student.coach_id.includes(coach_id),
+  );
+  return filteredStudents[0];
+};
+
+const getCoach = async (coach_id: string) => {
+  const coach = await Coach.findOne({ _id: coach_id });
+  return coach;
+};
+
+const updateProgressDate = async (
+  id: string,
+  date: string,
+  observations: string,
+  next_steps: string,
+) => {
+  const coach = await Coach.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        [`progress_stats.coach_observations.${date}`]: observations,
+        [`progress_stats.coach_next_steps.${date}`]: next_steps,
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
+const deleteProgressDate = async (id: string, date: string) => {
+  const coach = await Coach.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $unset: {
+        [`progress_stats.coach_observations.${date}`]: '',
+        [`progress_stats.coach_next_steps.${date}`]: '',
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
 export {
   getAllCoachesFromDB,
   createCoachInDB,
@@ -122,4 +176,8 @@ export {
   createAttendanceOnDate,
   deleteAttendanceOnDate,
   getCoachBlocks,
+  getStudentFromCoach,
+  getCoach,
+  updateProgressDate,
+  deleteProgressDate,
 };
