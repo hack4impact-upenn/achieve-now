@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+
 /**
  * All the controller functions containing the logic for routes relating to
  * student users.
@@ -34,18 +35,6 @@ const getStudentsFromTeacherId = async (
 
   if (!id) {
     next(ApiError.internal('Request must include a valid teacher_id param'));
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function hasTeacher(student: IStudent) {
-    const teachers = student.teacher_id;
-    for (let i = 0; i < teachers.length; i += 1) {
-      const teacher = teachers[i];
-      if (teacher === id) {
-        return true;
-      }
-    }
-    return false;
   }
 
   return (

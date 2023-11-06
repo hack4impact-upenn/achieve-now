@@ -2,6 +2,7 @@
  * All the controller functions containing the logic for routes relating to
  * student users.
  */
+// eslint-disable-next-line
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
