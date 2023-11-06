@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
 
 const ResourceSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-    auto: true,
-  },
   title: {
     type: String,
     required: true,

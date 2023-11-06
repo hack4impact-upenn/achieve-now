@@ -93,6 +93,7 @@ const getCoachBlocks = async (coach_id: string) => {
       student.coach_id.includes &&
       student.coach_id.includes(coach_id),
   );
+
   const blocks: string[] = [];
   filteredStudents.forEach((student: IStudent) => {
     if (!student.block_id) {
