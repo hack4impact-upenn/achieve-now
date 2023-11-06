@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import dayjs from 'dayjs';
 import { Button, Box, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate, useParams } from 'react-router-dom';
-import { setegid } from 'process';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import { deleteData, getData, putData, useData } from '../util/api';

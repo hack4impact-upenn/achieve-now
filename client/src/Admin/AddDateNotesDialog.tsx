@@ -12,9 +12,6 @@ import { Dayjs } from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { number } from 'prop-types';
-import IStudent from '../util/types/student';
-import ICoach from '../util/types/coach';
 
 interface IAdminNotesRow {
   key: string;
@@ -97,6 +94,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
           <Grid item width="1">
             <TextField
               fullWidth
+              multiline
               label="Student Observations"
               value={studentObservations}
               onChange={(event) => setStudentObservations(event.target.value)}
@@ -105,6 +103,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
           <Grid item width="1">
             <TextField
               fullWidth
+              multiline
               label="Student Next Steps"
               value={studentNextSteps}
               onChange={(event) => setStudentNextSteps(event.target.value)}
@@ -113,6 +112,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
           <Grid item width="1">
             <TextField
               fullWidth
+              multiline
               label="Coach Observations"
               value={coachObservations}
               onChange={(event) => setCoachObservations(event.target.value)}
@@ -121,6 +121,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
           <Grid item width="1">
             <TextField
               fullWidth
+              multiline
               label="Coach Next Steps"
               value={coachNextSteps}
               onChange={(event) => setCoachNextSteps(event.target.value)}
