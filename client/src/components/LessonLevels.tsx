@@ -59,12 +59,26 @@ function LessonLevels() {
             maintainAspectRatio: false,
             scales: {
               x: {
-                display: false,
+                display: true,
                 beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Lesson Level',
+                },
+                ticks: {
+                  display: false,
+                },
               },
               y: {
-                display: false,
+                display: true,
                 beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Number of Students',
+                },
+                ticks: {
+                  display: false,
+                },
               },
             },
             plugins: {
@@ -84,6 +98,9 @@ function LessonLevels() {
                 mode: 'index',
                 intersect: false,
                 callbacks: {
+                  title(context) {
+                    return `Lesson Level: ${context[0].parsed.x}`;
+                  },
                   label(context) {
                     let label = context.dataset.label || '';
 
