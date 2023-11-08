@@ -96,6 +96,9 @@ function StudentAttendancePage() {
           // eslint-disable-next-line no-underscore-dangle
           `http://localhost:4000/api/block/student/${student._id}`,
         );
+        if (!res.data) {
+          return;
+        }
         if (!studentBlocks.includes(res.data.name)) {
           studentBlocks.push(res.data.name);
         }
