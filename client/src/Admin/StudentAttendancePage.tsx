@@ -92,18 +92,17 @@ function StudentAttendancePage() {
           ...student,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
-        if (student.block_id) {
-          res = await axios.get(
-            `http://localhost:4000/api/block/block-info-id/${student.block_id}`,
-          );
-          if (!studentBlocks.includes(res.data.name)) {
-            studentBlocks.push(res.data.name);
-          }
-          students[index] = {
-            ...students[index],
-            blockName: res.data.name,
-          };
+        res = await axios.get(
+          // eslint-disable-next-line no-underscore-dangle
+          `http://localhost:4000/api/block/student/${student._id}`,
+        );
+        if (!studentBlocks.includes(res.data.name)) {
+          studentBlocks.push(res.data.name);
         }
+        students[index] = {
+          ...students[index],
+          blockName: res.data.name,
+        };
       }),
     );
 
