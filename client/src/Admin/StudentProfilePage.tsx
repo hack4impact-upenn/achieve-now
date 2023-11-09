@@ -14,15 +14,18 @@ import { useParams } from 'react-router-dom';
 import { postData, useData } from '../util/api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
-import { InputErrorMessage } from '../util/inputvalidation';
+import MultipleSelectCheckmarks from '../components/form/MultipleSelect';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 function StudentProfilePage() {
+  const { setAlert } = useAlert();
   const { id } = useParams();
 
   // Default values for state
   const defaultValues = {
-    school: '',
-    teacher: '',
+    school: [''],
+    teacher: [''],
     lessonLevel: '',
     grade: '',
     phone: '',
@@ -42,7 +45,7 @@ function StudentProfilePage() {
     motivation: '',
     goodStrategies: '',
     badStrategies: '',
-    badges: '',
+    badges: [],
     progressFlag: false,
     attendanceFlag: false,
   };
@@ -120,9 +123,14 @@ function StudentProfilePage() {
   const setValue = (field: string, value: any) => {
     setValueState((prevState) => ({
       ...prevState,
-      ...{ [field]: value },
+      [field]: value,
     }));
   };
+
+  useEffect(() => {
+    console.log(values);
+  }, [values]);
+
   const setShowError = (field: string, show: boolean) => {
     setShowErrorState((prevState) => ({
       ...prevState,
@@ -148,17 +156,17 @@ function StudentProfilePage() {
 
   const validateInputs = () => {
     clearErrorMessages();
-    let isValid = true;
+    const isValid = true;
 
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const valueTypeString in values) {
-      const valueType = valueTypeString as ValueType;
-      if (!values[valueType]) {
-        setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
-        setShowError(valueTypeString, true);
-        isValid = false;
-      }
-    }
+    // for (const valueTypeString in values) {
+    //   const valueType = valueTypeString as ValueType;
+    //   if (!values[valueType]) {
+    //     setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
+    //     setShowError(valueTypeString, true);
+    //     isValid = false;
+    //   }
+    // }
 
     return isValid;
   };
@@ -171,9 +179,16 @@ function StudentProfilePage() {
         return;
       }
       postData(`student/allInfo/${id}`, { values })
-        .then(() => {
-          setShowError('alert', true);
-          setErrorMessage('alert', 'Successfully updated!');
+        .then((res) => {
+          if (res.error) {
+            setShowError('alert', true);
+            setErrorMessage('alert', res.error.message);
+          } else {
+            setAlert(
+              'Student profile updated successfully!',
+              AlertType.SUCCESS,
+            );
+          }
         })
         .catch((e: any) => {
           setShowError('alert', true);
@@ -206,11 +221,15 @@ function StudentProfilePage() {
       return;
     }
 
-    const { student, user, lesson } = infoData;
+    const { student, user } = infoData;
     const newValue = {
-      school: student.school_id || '',
-      teacher: student.teacher_id || '',
-      lessonLevel: lesson.number || '',
+      school:
+        student.school_id && student.school_id[0] ? student.school_id[0] : [''],
+      teacher:
+        student.teacher_id && student.teacher_id[0]
+          ? student.teacher_id[0]
+          : [''],
+      lessonLevel: student.lesson_id || '',
       grade: student.grade || '',
       phone: user.phone || '',
       email: user.email || '',
@@ -239,14 +258,16 @@ function StudentProfilePage() {
     });
     const newLessons = sortedLessonData.map((lessonObj: any) => {
       return {
-        id: lessonObj.id,
+        // eslint-disable-next-line no-underscore-dangle
+        id: lessonObj._id,
         number: lessonObj.number,
       };
     });
 
     const newTeachers = teacherData.map((teacherObj: any) => {
       return {
-        id: teacherObj.id,
+        // eslint-disable-next-line no-underscore-dangle
+        id: teacherObj._id,
         firstName: teacherObj.firstName,
         lastName: teacherObj.lastName,
       };
@@ -254,7 +275,8 @@ function StudentProfilePage() {
 
     const newSchools = schoolData.map((schoolObj: any) => {
       return {
-        id: schoolObj.id,
+        // eslint-disable-next-line no-underscore-dangle
+        id: schoolObj._id,
         name: schoolObj.name,
       };
     });
@@ -263,7 +285,11 @@ function StudentProfilePage() {
     setAllLessonsState(newLessons);
     setAllTeachersState(newTeachers);
     setAllSchoolsState(newSchools);
-    setStudentNameState(`${user.firstName} ${user.lastName}`);
+    setStudentNameState(
+      user.firstName || user.lastName
+        ? `${user.firstName} ${user.lastName}`
+        : '',
+    );
     setAllTeachersState(newTeachers);
   }, [info?.data, lessonInfo?.data, teacherInfo?.data, schoolInfo?.data]);
 
@@ -291,11 +317,11 @@ function StudentProfilePage() {
             //   helperText={errorMessage.contactMethod}
             required
             label="School"
-            value={values.school}
-            onChange={(e) => setValue('School', e.target.value)}
+            value={values.school[0]}
+            onChange={(e) => setValue('school', [e.target.value])}
           >
             {allSchools.map((school: any) => {
-              return <MenuItem value={school.id}>{school.number}</MenuItem>;
+              return <MenuItem value={school.id}>{school.name}</MenuItem>;
             })}
           </Select>
         </FormControl>
@@ -306,17 +332,18 @@ function StudentProfilePage() {
           <Select
             fullWidth
             error={showError.teacher}
-            //   helperText={errorMessage.contactMethod}
             required
             label="Teacher"
-            value={values.teacher}
-            onChange={(e) => setValue('Teacher', e.target.value)}
+            value={values.teacher[0]}
+            onChange={(e) => setValue('teacher', [e.target.value])}
           >
             {allTeachers.map((teacher: any) => {
               return (
-                <MenuItem
-                  value={teacher.id}
-                >{`${teacher.firstName} ${teacher.lastName}`}</MenuItem>
+                <MenuItem value={teacher.id}>
+                  {teacher.firstName && teacher.lastName
+                    ? `${teacher.firstName} ${teacher.lastName}`
+                    : ''}
+                </MenuItem>
               );
             })}
           </Select>
@@ -335,7 +362,11 @@ function StudentProfilePage() {
             onChange={(e) => setValue('lessonLevel', e.target.value)}
           >
             {allLessons.map((lesson: any) => {
-              return <MenuItem value={lesson.id}>{lesson.number}</MenuItem>;
+              return (
+                <MenuItem
+                  value={lesson.id}
+                >{`Lesson ${lesson.number} `}</MenuItem>
+              );
             })}
           </Select>
         </FormControl>
@@ -353,7 +384,6 @@ function StudentProfilePage() {
             onChange={(e) => setValue('grade', e.target.value)}
           >
             {Array.from(Array(12).keys()).map((num) => {
-              console.log(num);
               return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
             })}
           </Select>
@@ -493,7 +523,7 @@ function StudentProfilePage() {
           error={showError.family}
           helperText={errorMessage.family}
           required
-          label="Family"
+          label="Notes on Family"
           value={values.family}
           onChange={(e) => setValue('family', e.target.value)}
         />
@@ -565,14 +595,11 @@ function StudentProfilePage() {
         />
       </Grid>
       <Grid item width="1">
-        <TextField
-          fullWidth
-          error={showError.badges}
-          helperText={errorMessage.badges}
-          required
+        <MultipleSelectCheckmarks
+          values={values.badges}
+          setValues={(newValues) => setValue('badges', newValues)}
           label="Badges"
-          value={values.badges}
-          onChange={(e) => setValue('badges', e.target.value)}
+          allValues={['Badge 1', 'Badge 2', 'Badge 3']}
         />
       </Grid>
       <Grid item container direction="row" justifyContent="space-between">

@@ -158,12 +158,17 @@ const updateUserInfo = async (
   email: string,
   phone: string,
 ) => {
-  const user = await User.findByIdAndUpdate(
-    id,
-    { firstName, lastName, email, phone },
-    { new: true },
-  ).exec();
-  return user;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { firstName, lastName, email, phone },
+      { new: true },
+    ).exec();
+    return user;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 };
 
 const getAllTeachersFromDB = async () => {

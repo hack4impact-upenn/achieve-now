@@ -16,7 +16,6 @@ import {
   createAttendanceOnDate,
   updateStudentInfo,
 } from '../services/student.service';
-import { getLessonById } from '../services/lesson.service';
 import { getUserById, updateUserInfo } from '../services/user.service';
 
 /**
@@ -93,11 +92,12 @@ const updateStudentInformation = async (
 
   if (!updatedStudent) {
     // If the update was unsuccessful, respond with an error
-    next(ApiError.notFound('Student not found'));
+    next(ApiError.notFound('Unable to update student'));
+    return;
   }
 
   const updatedUser = await updateUserInfo(
-    id,
+    updatedStudent.user_id,
     firstName,
     lastName,
     email,
@@ -106,7 +106,8 @@ const updateStudentInformation = async (
 
   if (!updatedUser) {
     // If the update was unsuccessful, respond with an error
-    next(ApiError.notFound('User not found'));
+    next(ApiError.notFound('Unable to update user'));
+    return;
   }
   res.status(StatusCode.OK);
 };
@@ -242,12 +243,12 @@ const deleteResource = async (
   const { resource } = req.body;
 
   if (!id) {
-    // next(ApiError.missingFields(['id']));
+    next(ApiError.missingFields(['id']));
     return;
   }
 
   if (!resource) {
-    // next(ApiError.missingFields(['resource']));
+    next(ApiError.missingFields(['resource']));
     return;
   }
 
@@ -398,14 +399,9 @@ const getStudentInformation = async (
   if (!user) {
     next(ApiError.notFound(`User does not exist`));
   }
-  const lesson = await getLessonById(student.lesson_level);
-  if (!lesson) {
-    next(ApiError.notFound(`Lesson does not exist`));
-  }
   const response = {
     student,
     user,
-    lesson,
   };
   res.status(StatusCode.OK).send(response);
 };
