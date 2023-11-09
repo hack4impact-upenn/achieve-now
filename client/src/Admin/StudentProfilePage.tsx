@@ -415,7 +415,6 @@ function StudentProfilePage() {
             MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
           >
             {Array.from(Array(12).keys()).map((num) => {
-              console.log(num);
               return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
             })}
           </Select>
