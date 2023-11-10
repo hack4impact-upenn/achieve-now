@@ -35,6 +35,7 @@ import CoachAttendancePage from './Admin/CoachAttendancePage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
+import LessonLevels from './components/LessonLevels';
 
 function App() {
   return (
@@ -128,6 +129,10 @@ function App() {
                     <Route
                       path="/coach-landing/:id"
                       element={<CoachLandingPage />}
+                    />
+                    <Route
+                      path="/teacher-dashboard/:id"
+                      element={<LessonLevels />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
