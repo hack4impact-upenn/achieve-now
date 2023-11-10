@@ -20,8 +20,12 @@ import {
   updateProgressDate,
   deleteProgressDate,
 } from '../services/student.service';
+import {
+  getAllUsersFromDB,
+} from '../services/user.service';
 import { getLessonById } from '../services/lesson.service';
-import { getUserById } from '../services/user.service';
+import { getUserByEmail, getUserById } from '../services/user.service';
+import { use } from 'passport';
 
 /**
  * Get students by teacher_id
@@ -75,6 +79,60 @@ const getStudent = async (
       })
   );
 };
+
+const getStudentsByTeacherID = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+)=> {
+  const { email } = req.params;
+  if (!email) {
+    next(ApiError.internal('Request must include a valid teacher email param'));
+  }
+  return(
+    getUserByEmail(email)
+      .then((user) => {
+        getAllStudentsFromDB()
+        .then((studentList) => {
+          if (!user) {
+            next(ApiError.internal('Unable to retrieve specified teacher'));
+            return;
+          }
+          studentList = studentList.filter((student) => {
+            if (!student.teacher_id) {
+              return false;
+            }
+            return student.teacher_id.includes(user._id)
+          })
+          let studentIdSet = new Set<String>();
+          studentList.forEach((student) => {
+            studentIdSet.add(student.user_id.toString());
+          })
+          getAllUsersFromDB()
+          .then((studentUserList) => {
+            studentUserList = studentUserList.filter((studentUser) => {
+              if (!studentUser._id) {
+                return false;
+              }
+              return studentIdSet.has(studentUser._id.toString());
+            })
+            res.status(StatusCode.OK).send(studentUserList);
+          })
+          .catch((e) => {
+            next(ApiError.internal('Unable to retrieve student in User'));
+          })
+        })
+        .catch((e) => {
+          next(ApiError.internal('Unable to retrieve students'));
+        })
+
+      })
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified teacher'));
+      })
+  )
+}
+
 
 /**
  * Get all students from the database. Upon success, send the a list of all students in the res body with 200 OK status code.
@@ -536,6 +594,7 @@ const deleteProgress = async (
 export {
   getStudentsFromTeacherId,
   getStudent,
+  getStudentsByTeacherID,
   getAllStudentsWithUserLesson,
   getAllStudentResources,
   getAdditionalStudentResources,

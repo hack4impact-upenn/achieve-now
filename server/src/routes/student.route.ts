@@ -7,6 +7,7 @@ import { isAdmin } from '../controllers/admin.middleware';
 import {
   getAdditionalStudentResources,
   getAllStudentResources,
+  getStudentsByTeacherID,
   deleteResource,
   addResource,
   getAllStudents,
@@ -45,6 +46,13 @@ router.post(
  * id (string) - The student id of the particular student
  */
 router.post('/resource/all/:id', getAllStudentResources);
+
+
+/**
+ * A GET route to get all resources for a given teacher email, it returns all the students
+ * associated with the teacher
+ */
+router.get('/students-by-teacher/:email', getStudentsByTeacherID);
 
 /**
  * A GET route to get all students.

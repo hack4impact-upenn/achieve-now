@@ -9,6 +9,7 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
+import StudentDashboardPage from './Teacher/StudentDashboard';
 import LessonsPage from './Lessons/LessonsPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
@@ -128,6 +129,10 @@ function App() {
                     <Route
                       path="/coach-landing/:id"
                       element={<CoachLandingPage />}
+                    />
+                    <Route
+                      path="/student-dashboard"
+                      element={<StudentDashboardPage />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
