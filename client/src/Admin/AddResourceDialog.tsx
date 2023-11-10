@@ -40,12 +40,24 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center' }}>Add Entry</DialogTitle>
       <DialogActions
-        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
       >
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
           <FormControl
             variant="outlined"
             sx={{

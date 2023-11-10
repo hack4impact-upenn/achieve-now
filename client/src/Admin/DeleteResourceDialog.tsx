@@ -7,7 +7,6 @@ import {
   Select,
   Stack,
 } from '@mui/material';
-import dayjs from 'dayjs';
 import React, { useState } from 'react';
 
 interface Resource {
@@ -42,16 +41,20 @@ function DeleteResourceDialog({
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center' }}>Delete Entry</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{ width: '100%', justifyContent: 'space-between' }}
-        >
+        <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
           <Select
             value={resource?.title || ''}
             sx={{

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Button,
   Box,
@@ -15,7 +14,6 @@ import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import { deleteData, postData, putData, useData } from '../util/api';
 import theme from '../assets/theme';
-import ScreenGrid from '../components/ScreenGrid';
 import DeleteResourceDialog from './DeleteResourceDialog';
 import AddResourceDialog from './AddResourceDialog';
 import EditResourceDialog from './EditResourceDialog';
@@ -59,13 +57,12 @@ function AdminResourcesPage() {
 
   useEffect(() => {
     const newData = rawTableData?.data || [];
-    console.log(newData);
     setTableData(newData);
   }, [rawTableData]);
 
   const columns: TColumn[] = [
     { id: 'title', label: 'Title' },
-    { id: 'description', label: 'Description' },
+    { id: 'description', label: 'Description', minWidth: 300 },
     { id: 'link', label: 'Link' },
     { id: 'type', label: 'Type' },
   ];
@@ -204,7 +201,6 @@ function AdminResourcesPage() {
           flexDirection: 'column',
           alignItems: 'center',
           padding: theme.spacing(10),
-          marginTop: theme.spacing(6),
           marginLeft: theme.spacing(6),
           marginRight: theme.spacing(6),
           minHeight: '80vh',
@@ -232,95 +228,102 @@ function AdminResourcesPage() {
         </Box>
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'right',
-            width: '80%',
-            padding: `0 ${theme.spacing(2)}`,
-          }}
-        >
-          <Button
-            variant="outlined"
-            onClick={() => setAddResourceDialogOpen(true)}
-            sx={{
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-              marginRight: theme.spacing(2),
-            }}
-          >
-            Add Entry
-          </Button>
-          <Button
-            variant="outlined"
-            // onClick={handleDeleteEntry}
-            onClick={() => setDeleteDateDialogOpen(true)}
-            sx={{
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-              marginRight: theme.spacing(2),
-            }}
-          >
-            Delete Entry
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => setEditResourceDialogOpen(true)}
-            sx={{
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-            }}
-          >
-            Edit Entry
-          </Button>
-        </Box>
-        <Box
-          sx={{
             width: '80%',
             padding: theme.spacing(2),
           }}
         >
-          <Box sx={{ paddingBottom: theme.spacing(2) }}>
-            <FormControl
-              variant="outlined"
+          <Box
+            sx={{
+              paddingBottom: theme.spacing(2),
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box>
+              <FormControl
+                variant="outlined"
+                sx={{
+                  marginRight: theme.spacing(2),
+                }}
+              >
+                <InputLabel htmlFor="search-field">Search</InputLabel>
+                <OutlinedInput
+                  id="search-field"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  label="Search"
+                />
+              </FormControl>
+
+              <FormControl>
+                <InputLabel id="resource-type-label">Type</InputLabel>
+                <Select
+                  labelId="resource-type-label"
+                  multiple
+                  value={resourceType}
+                  onChange={selectChangeHandler}
+                  input={<OutlinedInput label="Type" />}
+                  sx={{ width: 200 }}
+                >
+                  <MenuItem value="Video">Video</MenuItem>
+                  <MenuItem value="Slides">Slides</MenuItem>
+                  <MenuItem value="Article">Article</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box
               sx={{
-                marginRight: theme.spacing(2),
+                display: 'flex',
+                justifyContent: 'right',
+                alignItems: 'center',
               }}
             >
-              <InputLabel htmlFor="search-field">Search</InputLabel>
-              <OutlinedInput
-                id="search-field"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                label="Search"
-              />
-            </FormControl>
-
-            <FormControl>
-              <InputLabel id="resource-type-label">Type</InputLabel>
-              <Select
-                labelId="resource-type-label"
-                multiple
-                value={resourceType}
-                onChange={selectChangeHandler}
-                input={<OutlinedInput label="Type" />}
-                sx={{ width: 200 }}
+              <Button
+                variant="outlined"
+                onClick={() => setAddResourceDialogOpen(true)}
+                sx={{
+                  backgroundColor: 'white',
+                  borderColor: 'black',
+                  '&:hover': {
+                    backgroundColor: 'grey.200',
+                  },
+                  width: theme.spacing(20),
+                  marginRight: theme.spacing(2),
+                }}
               >
-                <MenuItem value="Video">Video</MenuItem>
-                <MenuItem value="Slides">Slides</MenuItem>
-                <MenuItem value="Article">Article</MenuItem>
-              </Select>
-            </FormControl>
+                Add Entry
+              </Button>
+              <Button
+                variant="outlined"
+                // onClick={handleDeleteEntry}
+                onClick={() => setDeleteDateDialogOpen(true)}
+                sx={{
+                  backgroundColor: 'white',
+                  borderColor: 'black',
+                  '&:hover': {
+                    backgroundColor: 'grey.200',
+                  },
+                  width: theme.spacing(20),
+                  marginRight: theme.spacing(2),
+                }}
+              >
+                Delete Entry
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setEditResourceDialogOpen(true)}
+                sx={{
+                  backgroundColor: 'white',
+                  borderColor: 'black',
+                  '&:hover': {
+                    backgroundColor: 'grey.200',
+                  },
+                  width: theme.spacing(20),
+                }}
+              >
+                Edit Entry
+              </Button>
+            </Box>
           </Box>
           {filteredTableData && (
             <PaginationTable
@@ -337,9 +340,6 @@ function AdminResourcesPage() {
             />
           )}
         </Box>
-        <Button variant="outlined" sx={{ marginTop: theme.spacing(2) }}>
-          Submit
-        </Button>
       </Box>
     </>
   );

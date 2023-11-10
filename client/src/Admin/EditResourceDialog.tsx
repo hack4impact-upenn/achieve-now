@@ -70,12 +70,20 @@ function EditResourceDialog({
     [resources],
   );
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center' }}>Edit Entry</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
           <FormControl
             variant="outlined"
             sx={{
