@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+
 /**
  * All the controller functions containing the logic for routes relating to
  * student users.
@@ -16,6 +17,8 @@ import {
   updateAttendance,
   deleteAttendanceOnDate,
   createAttendanceOnDate,
+  updateProgressDate,
+  deleteProgressDate,
 } from '../services/student.service';
 import { getLessonById } from '../services/lesson.service';
 import { getUserById } from '../services/user.service';
@@ -32,18 +35,6 @@ const getStudentsFromTeacherId = async (
 
   if (!id) {
     next(ApiError.internal('Request must include a valid teacher_id param'));
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function hasTeacher(student: IStudent) {
-    const teachers = student.teacher_id;
-    for (let i = 0; i < teachers.length; i += 1) {
-      const teacher = teachers[i];
-      if (teacher === id) {
-        return true;
-      }
-    }
-    return false;
   }
 
   return (
@@ -504,6 +495,44 @@ const deleteStudentAttendanceByDate = async (
   res.status(StatusCode.OK).send(student);
 };
 
+const updateProgress = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+
+  const { date } = req.body;
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+  }
+  const { observations } = req.body || '';
+  const { next_steps } = req.body || '';
+
+  const coach = await updateProgressDate(id, date, observations, next_steps);
+  res.status(StatusCode.OK).send(coach);
+};
+
+const deleteProgress = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id, date } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+  }
+
+  const coach = await deleteProgressDate(id, date);
+  res.status(StatusCode.OK).send(coach);
+};
+
 export {
   getStudentsFromTeacherId,
   getStudent,
@@ -516,4 +545,6 @@ export {
   updateStudentAttendance,
   createStudentAttendanceByDate,
   deleteStudentAttendanceByDate,
+  updateProgress,
+  deleteProgress,
 };

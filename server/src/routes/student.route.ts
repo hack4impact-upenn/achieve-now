@@ -16,6 +16,8 @@ import {
   updateStudentAttendance,
   deleteStudentAttendanceByDate,
   createStudentAttendanceByDate,
+  updateProgress,
+  deleteProgress,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -96,5 +98,8 @@ router.put(
   isAdmin,
   deleteStudentAttendanceByDate,
 );
+
+router.put('/progress/:id', updateProgress);
+router.delete('/progress/:id/:date', deleteProgress);
 
 export default router;
