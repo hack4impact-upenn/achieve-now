@@ -97,7 +97,10 @@ function App() {
                     <Route path="/teacher" element={<TeacherDashboard />} />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
-                    <Route path="/teacher/:teacherID" element={<TeacherDashboard />} />
+                    <Route
+                      path="/teacher/:teacherID"
+                      element={<TeacherDashboard />}
+                    />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route

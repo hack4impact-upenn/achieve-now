@@ -3,9 +3,9 @@
  * relating to admin users.
  */
 import express from 'express';
-import { isAdmin } from '../controllers/admin.middleware';
+// import { isAdmin } from '../controllers/admin.middleware';
 import { getUser } from '../controllers/user.controller';
-import { isAuthenticated } from '../controllers/auth.middleware';
+// import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
 const router = express.Router();

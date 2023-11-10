@@ -35,8 +35,7 @@ function TeacherCard({ teacherID }: StudentCardProps) {
               alignItems: 'center',
             }}
             variant="subtitle1"
-          >
-          </Typography>
+          />
         </CardContent>
       </CardActionArea>
     </Card>

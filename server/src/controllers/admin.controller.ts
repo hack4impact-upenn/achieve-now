@@ -22,7 +22,6 @@ import {
 } from '../services/invite.service';
 import { IInvite } from '../models/invite.model';
 import { emailInviteLink } from '../services/mail.service';
-import { IBlock } from '../models/block.model';
 
 /**
  * Get all users from the database. Upon success, send the a list of all users in the res body with 200 OK status code.
@@ -213,7 +212,7 @@ const getAllBlocks = async (
           const d: { [key: string]: any } = {};
           sortedList
             .filter((block) => {
-              return block.day == day;
+              return block.day === day;
             })
             .forEach((block) => {
               const key = block.startTime.concat(block.endTime);

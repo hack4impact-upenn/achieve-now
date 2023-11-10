@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -41,7 +42,7 @@ function SplitGrid() {
   const studentData = students?.data ?? [];
 
   const { teacherID } = useParams();
-  let final_id = "";
+  let final_id = '';
   if (teacherID) {
     final_id = teacherID;
   }
@@ -52,9 +53,6 @@ function SplitGrid() {
   //   const user = useData(`users/${id}`);
   //   student_users.push(user);
   // }
-
-  console.log(studentData);
-
   return (
     <Box>
       <PageHeader />
@@ -88,7 +86,7 @@ function SplitGrid() {
             square
           >
             <h2>Class Progress</h2>
-            <PhoneticsTable teacherID = {final_id}/>
+            <PhoneticsTable teacherID={final_id} />
           </Paper>
         </Box>
       </Box>
