@@ -36,8 +36,6 @@ import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
 import LessonLevels from './components/LessonLevels';
 
-``;
-
 function App() {
   return (
     <div className="App">
