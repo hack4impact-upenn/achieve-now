@@ -127,6 +127,14 @@ const StudentSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
   },
+  risingReadersScore: {
+    type: [Number],
+    required: false,
+  },
+  generalProgramScore: {
+    type: [Number],
+    required: false,
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -159,6 +167,8 @@ interface IStudent extends mongoose.Document {
   grade: number;
   progressFlag: boolean;
   attendanceFlag: boolean;
+  risingReadersScore: [number];
+  generalProgramScore: [number];
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);

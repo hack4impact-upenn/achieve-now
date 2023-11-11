@@ -28,22 +28,20 @@ const updateStudentInformation = async (
 ) => {
   const { id } = req.params;
   const {
-    firstName,
-    lastName,
-    phone,
-    parentName,
-    personality,
     school,
     teacher,
     lessonLevel,
     grade,
+    phone,
     email,
+    parentName,
     bestDay,
     bestTime,
     contactMethod,
     mediaWaiver,
     adminUpdates,
     workHabits,
+    personality,
     family,
     favFood,
     likes,
@@ -51,7 +49,9 @@ const updateStudentInformation = async (
     motivation,
     goodStrategies,
     badStrategies,
-    progressStats,
+    badges,
+    risingReadersScore,
+    generalProgramScore,
     progressFlag,
     attendanceFlag,
   } = req.body;
@@ -61,23 +61,82 @@ const updateStudentInformation = async (
     return;
   }
 
+  //   if (
+  //     !school ||
+  //     !teacher ||
+  //     !lessonLevel ||
+  //     !grade ||
+  //     !phone ||
+  //     !email ||
+  //     !parentName ||
+  //     !bestDay ||
+  //     !bestTime ||
+  //     !contactMethod ||
+  //     !mediaWaiver ||
+  //     !adminUpdates ||
+  //     !workHabits ||
+  //     !personality ||
+  //     !family ||
+  //     !favFood ||
+  //     !likes ||
+  //     !dislikes ||
+  //     !motivation ||
+  //     !goodStrategies ||
+  //     !badStrategies ||
+  //     !badges ||
+  //     !risingReadersScore ||
+  //     !generalProgramScore ||
+  //     !progressFlag ||
+  //     !attendanceFlag
+  //   ) {
+  //     next(
+  //       ApiError.missingFields([
+  //         'school',
+  //         'teacher',
+  //         'lessonLevel',
+  //         'grade',
+  //         'phone',
+  //         'email',
+  //         'parentName',
+  //         'bestDay',
+  //         'bestTime',
+  //         'contactMethod',
+  //         'mediaWaiver',
+  //         'adminUpdates',
+  //         'workHabits',
+  //         'personality',
+  //         'family',
+  //         'favFood',
+  //         'likes',
+  //         'dislikes',
+  //         'motivation',
+  //         'goodStrategies',
+  //         'badStrategies',
+  //         'badges',
+  //         'risingReadersScore',
+  //         'generalProgramScore',
+  //         'progressFlag',
+  //         'attendanceFlag',
+  //       ]),
+  //     );
+  //     return;
+  //   }
+
   // Call the updateStudentInfo service function with the provided parameters
   const updatedStudent = await updateStudentInfo(
     id,
-    parentName,
-    personality,
     school,
     teacher,
     lessonLevel,
     grade,
-    phone,
-    email,
+    parentName,
     bestDay,
     bestTime,
     contactMethod,
     mediaWaiver,
     adminUpdates,
     workHabits,
+    personality,
     family,
     favFood,
     likes,
@@ -85,7 +144,9 @@ const updateStudentInformation = async (
     motivation,
     goodStrategies,
     badStrategies,
-    progressStats,
+    badges,
+    risingReadersScore,
+    generalProgramScore,
     progressFlag,
     attendanceFlag,
   );
@@ -96,10 +157,16 @@ const updateStudentInformation = async (
     return;
   }
 
+  const user = await getUserById(updatedStudent.user_id);
+  if (!user) {
+    next(ApiError.notFound('Unable to find user'));
+    return;
+  }
+
   const updatedUser = await updateUserInfo(
     updatedStudent.user_id,
-    firstName,
-    lastName,
+    user.firstName,
+    user.lastName,
     email,
     phone,
   );
@@ -109,7 +176,7 @@ const updateStudentInformation = async (
     next(ApiError.notFound('Unable to update user'));
     return;
   }
-  res.status(StatusCode.OK);
+  res.status(StatusCode.OK).send();
 };
 
 /**

@@ -8,6 +8,7 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  Slider,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -46,6 +47,14 @@ function StudentProfilePage() {
     goodStrategies: '',
     badStrategies: '',
     badges: [],
+    risingReadersScore: {
+      start: 0,
+      mid: 0,
+    },
+    generalProgramScore: {
+      start: 0,
+      mid: 0,
+    },
     progressFlag: false,
     attendanceFlag: false,
   };
@@ -73,6 +82,8 @@ function StudentProfilePage() {
     goodStrategies: false,
     badStrategies: false,
     badges: false,
+    risingReaderScore: false,
+    generalProgramScore: false,
     progressFlag: false,
     attendanceFlag: false,
     alert: false,
@@ -101,6 +112,8 @@ function StudentProfilePage() {
     goodStrategies: '',
     badStrategies: '',
     badges: '',
+    risingReaderScore: '',
+    generalProgramScore: '',
     progressFlag: '',
     attendanceFlag: '',
     alert: '',
@@ -178,7 +191,7 @@ function StudentProfilePage() {
         setErrorMessage('alert', 'No user is defined');
         return;
       }
-      postData(`student/allInfo/${id}`, { values })
+      postData(`student/allInfo/${id}`, { ...values })
         .then((res) => {
           if (res.error) {
             setShowError('alert', true);
@@ -224,11 +237,9 @@ function StudentProfilePage() {
     const { student, user } = infoData;
     const newValue = {
       school:
-        student.school_id && student.school_id[0] ? student.school_id[0] : [''],
+        student.school_id && student.school_id[0] ? student.school_id : [''],
       teacher:
-        student.teacher_id && student.teacher_id[0]
-          ? student.teacher_id[0]
-          : [''],
+        student.teacher_id && student.teacher_id[0] ? student.teacher_id : [''],
       lessonLevel: student.lesson_id || '',
       grade: student.grade || '',
       phone: user.phone || '',
@@ -249,9 +260,26 @@ function StudentProfilePage() {
       goodStrategies: student.good_strategies || '',
       badStrategies: student.bad_strategies || '',
       badges: student.badges || [],
-      progressFlag: student.progress_flag || false,
-      attendanceFlag: student.attendance_flag || false,
+      risingReadersScore: {
+        start: student.risingReadersScore
+          ? student.risingReadersScore[0] || 0
+          : 0,
+        mid: student.risingReadersScore
+          ? student.risingReadersScore[1] || 0
+          : 0,
+      },
+      generalProgramScore: {
+        start: student.generalProgramScore
+          ? student.generalProgramScore[0] || 0
+          : 0,
+        mid: student.generalProgramScore
+          ? student.generalProgramScore[1] || 0
+          : 0,
+      },
+      progressFlag: student.progressFlag || false,
+      attendanceFlag: student.attendanceFlag || false,
     };
+    console.log(newValue);
 
     const sortedLessonData = lessonData.sort((a: any, b: any) => {
       return a.number - b.number;
@@ -431,7 +459,7 @@ function StudentProfilePage() {
             error={showError.bestDay}
             //   helperText={errorMessage.bestDay}
             required
-            label="Parent/Guardian Communication Preferences Days"
+            label="Best Days to Contact"
             value={values.bestDay}
             onChange={(e) => setValue('bestDay', e.target.value)}
           >
@@ -448,7 +476,7 @@ function StudentProfilePage() {
             error={showError.bestTime}
             //   helperText={errorMessage.bestTime}
             required
-            label="Parent/Guardian Communication Preferences Times"
+            label="Best Time to Contact"
             value={values.bestTime}
             onChange={(e) => setValue('bestTime', e.target.value)}
           >
@@ -466,7 +494,7 @@ function StudentProfilePage() {
             error={showError.contactMethod}
             //   helperText={errorMessage.contactMethod}
             required
-            label="Parent/Guardian Communication Preferences Methods"
+            label="Preferred Contact Method"
             value={values.contactMethod}
             onChange={(e) => setValue('contactMethod', e.target.value)}
           >
@@ -480,7 +508,12 @@ function StudentProfilePage() {
         <FormControlLabel
           value={values.mediaWaiver}
           onChange={() => setValue('mediaWaiver', !values.mediaWaiver)}
-          control={<Switch />}
+          control={
+            <Switch
+              checked={values.mediaWaiver}
+              onChange={() => setValue('mediaWaiver', !values.mediaWaiver)}
+            />
+          }
           label="Signed Media Waiver?"
         />
       </Grid>
@@ -602,17 +635,133 @@ function StudentProfilePage() {
           allValues={['Badge 1', 'Badge 2', 'Badge 3']}
         />
       </Grid>
+      <Grid
+        item
+        container
+        direction="row"
+        justifyContent="space-between"
+        width="1"
+        spacing={3}
+      >
+        <Grid item justifyContent="center" xs={12}>
+          <Typography>Rising Readers Assessment</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.risingReadersScore.start}
+            onChange={(e, newValue) =>
+              setValue('risingReadersScore', {
+                ...values.risingReadersScore,
+                start: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={78}
+            valueLabelDisplay="on"
+          />
+          <Typography>Start of Year</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.risingReadersScore.mid}
+            onChange={(e, newValue) =>
+              setValue('risingReadersScore', {
+                ...values.risingReadersScore,
+                mid: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={78}
+            valueLabelDisplay="on"
+          />
+          <Typography>Mid Year</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        item
+        container
+        direction="row"
+        justifyContent="space-between"
+        width="1"
+        spacing={3}
+      >
+        <Grid item justifyContent="center" xs={12}>
+          <Typography>General Program Assessment</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.generalProgramScore.start}
+            onChange={(e, newValue) =>
+              setValue('generalProgramScore', {
+                ...values.generalProgramScore,
+                start: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={49}
+            valueLabelDisplay="on"
+          />
+          <Typography>Start of Year</Typography>
+        </Grid>
+        <Grid item justifyContent="center" xs={6}>
+          <Slider
+            sx={{
+              mt: 2,
+            }}
+            defaultValue={0}
+            value={values.generalProgramScore.mid}
+            onChange={(e, newValue) =>
+              setValue('generalProgramScore', {
+                ...values.generalProgramScore,
+                mid: newValue,
+              })
+            }
+            marks
+            min={0}
+            max={78}
+            valueLabelDisplay="on"
+          />
+          <Typography>Mid Year</Typography>
+        </Grid>
+      </Grid>
       <Grid item container direction="row" justifyContent="space-between">
         <FormControlLabel
           value={values.progressFlag}
           onChange={() => setValue('progressFlag', !values.progressFlag)}
-          control={<Switch />}
+          control={
+            <Switch
+              checked={values.progressFlag}
+              onChange={() => setValue('progressFlag', !values.progressFlag)}
+            />
+          }
           label="Performance Flag"
         />
         <FormControlLabel
           value={values.attendanceFlag}
           onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
-          control={<Switch />}
+          control={
+            <Switch
+              checked={values.progressFlag}
+              onChange={() =>
+                setValue('attendanceFlag', !values.attendanceFlag)
+              }
+            />
+          }
           label="Attendance Flag"
         />
       </Grid>

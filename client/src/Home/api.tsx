@@ -15,7 +15,7 @@ async function logout() {
  * PLEASE REMOVE THIS FUNCTION AND BACKEND ENDPOINT UPON DEPLOYMENT
  */
 async function selfChange(email: string, role: string) {
-  const res = await putData('admin/autopromote', { email, role });
+  const res = await putData('admin/auto-change-role', { email, role });
   if (res.error) return false;
   return true;
 }
