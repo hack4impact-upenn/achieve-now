@@ -279,6 +279,7 @@ function StudentProfilePage() {
       progressFlag: student.progressFlag || false,
       attendanceFlag: student.attendanceFlag || false,
     };
+    console.log(newValue);
 
     const sortedLessonData = lessonData.sort((a: any, b: any) => {
       return a.number - b.number;
@@ -772,13 +773,25 @@ function StudentProfilePage() {
         <FormControlLabel
           value={values.progressFlag}
           onChange={() => setValue('progressFlag', !values.progressFlag)}
-          control={<Switch />}
+          control={
+            <Switch
+              checked={values.progressFlag}
+              onChange={() => setValue('progressFlag', !values.progressFlag)}
+            />
+          }
           label="Performance Flag"
         />
         <FormControlLabel
           value={values.attendanceFlag}
           onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
-          control={<Switch />}
+          control={
+            <Switch
+              checked={values.progressFlag}
+              onChange={() =>
+                setValue('attendanceFlag', !values.attendanceFlag)
+              }
+            />
+          }
           label="Attendance Flag"
         />
       </Grid>

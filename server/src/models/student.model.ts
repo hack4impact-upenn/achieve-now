@@ -140,14 +140,6 @@ const StudentSchema = new mongoose.Schema({
     required: false,
     default: [],
   },
-  progressFlag: {
-    tyle: Boolean,
-    required: false,
-  },
-  attendanceFlag: {
-    type: Boolean,
-    required: false,
-  },
 });
 
 interface IStudent extends mongoose.Document {
