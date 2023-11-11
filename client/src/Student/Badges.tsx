@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from '@mui/material';
 
 export default function Badges() {
     return (
@@ -7,17 +7,18 @@ export default function Badges() {
                 Badges
             </Typography>
             <Grid container spacing={2}>
-                <Grid item xs={8}>
-
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item xs>
+                        <img src="first_session.svg" alt="" />
+                    </Grid>
+                    <Grid item xs>
+                        <img src="ten_sessions.svg" alt="" />
+                    </Grid>
                 </Grid>
-                <Grid item xs={4}>
-
-                </Grid>
-                <Grid item xs={4}>
-
-                </Grid>
-                <Grid item xs={8}>
-
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item xs>
+                        <img src="ten_sessions.svg" alt="" />
+                    </Grid>
                 </Grid>
             </Grid>
         </Box>
