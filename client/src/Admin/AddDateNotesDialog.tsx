@@ -83,7 +83,12 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
     <Dialog open={open} onClose={handleClose} fullWidth>
       <DialogTitle sx={{ textAlign: 'center' }}>Add Entry</DialogTitle>
       <DialogActions
-        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingBottom: 5,
+        }}
       >
         <Stack direction="column" spacing={2}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -128,7 +133,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
               onChange={(event) => setCoachNextSteps(event.target.value)}
             />
           </Grid>
-          <Button variant="outlined" onClick={handleSubmit}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>

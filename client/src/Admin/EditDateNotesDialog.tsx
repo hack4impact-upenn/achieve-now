@@ -84,7 +84,12 @@ function EditDateDialog({
     <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
       <DialogTitle sx={{ textAlign: 'center' }}>Edit Date</DialogTitle>
       <DialogActions
-        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingBottom: 5,
+        }}
       >
         <Stack direction="column" spacing={2}>
           <Select
@@ -136,7 +141,7 @@ function EditDateDialog({
               onChange={(event) => setCoachNextSteps(event.target.value)}
             />
           </Grid>
-          <Button variant="outlined" onClick={handleSubmit}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>

@@ -236,7 +236,7 @@ function AdminSessionsPage() {
             justifyContent: 'space-between',
             width: '80%',
             position: 'relative',
-            paddingBottom: theme.spacing(1),
+            paddingBottom: theme.spacing(3),
           }}
         >
           <Typography
