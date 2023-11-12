@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 // eslint-disable-next-line
 import { useData } from './util/api';
@@ -32,6 +36,51 @@ function createData(data: any) {
     return <StudentCardFromID studentID={student.user_id} lesson="Lesson 1" />;
   });
 }
+function StudentName(props: any) {
+  const { id } = props;
+  const user = useData(`user/${id}`);
+  return (
+    <Typography color="text-primary" sx={{ fontSize: 20, color: 'black' }}>
+      {user?.data.firstName} {user?.data.lastName}
+    </Typography>
+  );
+}
+function StudentConcernsCard(props: any) {
+  const { students, title, description } = props;
+  const [showMore, setShowMore] = useState(false);
+  return (
+    <Card sx={{ marginBotom: '30px' }}>
+      <CardContent sx={{ marginBotom: '30px' }}>
+        <Typography
+          color="text-primary"
+          sx={{ fontSize: 30, fontWeight: 'bold' }}
+        >
+          {title}
+        </Typography>
+        <Typography color="text-secondary" sx={{ fontSize: 17 }}>
+          {description}
+        </Typography>
+        <div style={{ marginTop: '10px' }}>
+          {students
+            .slice(0, showMore ? students.length : 3)
+            .map((student: any) => {
+              return <StudentName id={student.user_id} />;
+            })}
+        </div>
+        {students.length > 3 && (
+          <Button
+            onClick={() => setShowMore(!showMore)}
+            variant="contained"
+            sx={{ marginTop: '10px' }}
+          >
+            {' '}
+            {showMore ? 'Show Less' : 'Show More'}
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 function SplitGrid() {
   const id = '111';
@@ -44,8 +93,12 @@ function SplitGrid() {
   //   const user = useData(`users/${id}`);
   //   student_users.push(user);
   // }
-
-  console.log(studentData);
+  const academicFlags = studentData.filter(
+    (student: any) => student.progressFlag,
+  );
+  const attendanceFlags = studentData.filter(
+    (student: any) => student.attendanceFlag,
+  );
 
   return (
     <Box>
@@ -80,6 +133,22 @@ function SplitGrid() {
             square
           >
             <h2>Class Progress</h2>
+            {academicFlags.length > 0 && (
+              <StudentConcernsCard
+                students={academicFlags}
+                title="Academic Concerns"
+                description="Students with a poor academic progress pattern"
+              />
+            )}
+            {attendanceFlags.length > 0 && (
+              <div style={{ marginTop: '10px' }}>
+                <StudentConcernsCard
+                  students={attendanceFlags}
+                  title="Attendance Concerns"
+                  description="Students with a poor attendance pattern"
+                />
+              </div>
+            )}
           </Paper>
         </Box>
       </Box>
