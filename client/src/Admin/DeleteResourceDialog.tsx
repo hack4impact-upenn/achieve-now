@@ -69,7 +69,9 @@ function DeleteResourceDialog({
             }
           >
             {resources.map((r: Resource) => (
-              <MenuItem value={r.title}>{r.title}</MenuItem>
+              <MenuItem value={r.title} key={r._id}>
+                {r.title}
+              </MenuItem>
             ))}
           </Select>
 

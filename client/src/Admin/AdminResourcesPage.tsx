@@ -62,7 +62,7 @@ function AdminResourcesPage() {
 
   const columns: TColumn[] = [
     { id: 'title', label: 'Title' },
-    { id: 'description', label: 'Description', minWidth: 300 },
+    { id: 'description', label: 'Description' },
     { id: 'link', label: 'Link' },
     { id: 'type', label: 'Type' },
   ];

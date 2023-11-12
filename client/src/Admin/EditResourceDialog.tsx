@@ -65,8 +65,13 @@ function EditResourceDialog({
     setOpen(false);
   };
 
-  const options = useMemo(
-    () => resources.map((resource) => resource.title),
+  const selectOptions = useMemo(
+    () =>
+      resources.map((resource) => (
+        <MenuItem value={resource.title} key={resource._id}>
+          {resource.title}
+        </MenuItem>
+      )),
     [resources],
   );
   return (
@@ -100,9 +105,7 @@ function EditResourceDialog({
               }}
               onChange={(event) => setTitle(event.target.value)}
             >
-              {options.map((option) => (
-                <MenuItem value={option}>{option}</MenuItem>
-              ))}
+              {selectOptions}
             </Select>
           </FormControl>
           <FormControl
@@ -119,6 +122,7 @@ function EditResourceDialog({
                 setDescription(event.target.value);
               }}
               label="Description"
+              multiline
             />
           </FormControl>
           <FormControl

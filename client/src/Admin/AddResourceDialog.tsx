@@ -88,6 +88,7 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
                 setDescription(event.target.value);
               }}
               label="Description"
+              multiline
             />
           </FormControl>
           <FormControl
