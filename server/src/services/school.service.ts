@@ -103,7 +103,7 @@ const updateSchoolById = async (
       second_grade_lunch_start_time,
       second_grade_lunch_end_time,
     },
-    { new: true }
+    { new: true },
   ).exec();
 
   return updatedSchool;

@@ -11,6 +11,7 @@ import DeleteSchoolDialog from './DeleteSchoolDialog';
 import EditSchoolDialog from './EditSchoolDialog';
 import { useData, postData, putData } from '../util/api';
 import ISchool from '../util/types/school';
+import Box from '@mui/material/Box';
 
 function SchoolProfilePage() {
   const navigate = useNavigate();
@@ -147,15 +148,24 @@ function SchoolProfilePage() {
         </Grid>
         <Grid item container width="60vw" justifyContent="flex-end">
           <Button
+            sx={{ m: 2 }}
             variant="outlined"
             onClick={() => setDeleteSchoolDialogOpen(true)}
           >
             Delete School
           </Button>
-          <Button variant="outlined" onClick={() => setSchoolDialogOpen(true)}>
+          <Button
+            sx={{ m: 2 }}
+            variant="outlined"
+            onClick={() => setSchoolDialogOpen(true)}
+          >
             Add School
           </Button>
-          <Button variant="outlined" onClick={() => setEditSchoolDialogOpen(true)}>
+          <Button
+            sx={{ m: 2 }}
+            variant="outlined"
+            onClick={() => setEditSchoolDialogOpen(true)}
+          >
             Edit School
           </Button>
         </Grid>

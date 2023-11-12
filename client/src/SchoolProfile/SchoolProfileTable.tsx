@@ -21,12 +21,12 @@ interface SchoolDashboardRow {
   admin_name: string;
   admin_content: string;
   calendar_link: string;
-  school_start_time: Date | null;
-  school_end_time: Date | null;
-  first_grade_lunch_start_time: Date | null;
-  first_grade_lunch_end_time: Date | null;
-  second_grade_lunch_start_time: Date | null;
-  second_grade_lunch_end_time: Date | null;
+  school_start_time: string;
+  school_end_time: string;
+  first_grade_lunch_start_time: string;
+  first_grade_lunch_end_time: string;
+  second_grade_lunch_start_time: string;
+  second_grade_lunch_end_time: string;
 }
 
 /**
@@ -34,6 +34,23 @@ interface SchoolDashboardRow {
  * the database and allowing admins to remove users and promote users to admins.
  */
 function SchoolProfileTable() {
+  const formatTime = (time: Date | null | string): string => {
+    if (time instanceof Date) {
+      return `${time.getHours().toString().padStart(2, '0')}:${time
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')}`;
+    } else if (typeof time === 'string') {
+      // Assuming the string is in a valid date format, you may need to adjust this based on your data
+      const date = new Date(time);
+      return `${date.getHours().toString().padStart(2, '0')}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')}`;
+    }
+    return '';
+  };
+
   // define columns for the table
   const columns: TColumn[] = [
     { id: 'name', label: 'Name' },
@@ -81,12 +98,12 @@ function SchoolProfileTable() {
       admin_name,
       admin_content,
       calendar_link,
-      school_start_time,
-      school_end_time,
-      first_grade_lunch_start_time,
-      first_grade_lunch_end_time,
-      second_grade_lunch_start_time,
-      second_grade_lunch_end_time,
+      school_start_time: formatTime(school_start_time),
+      school_end_time: formatTime(school_end_time),
+      first_grade_lunch_start_time: formatTime(first_grade_lunch_start_time),
+      first_grade_lunch_end_time: formatTime(first_grade_lunch_end_time),
+      second_grade_lunch_start_time: formatTime(second_grade_lunch_start_time),
+      second_grade_lunch_end_time: formatTime(second_grade_lunch_end_time),
     };
   }
 
@@ -134,6 +151,7 @@ function SchoolProfileTable() {
   return (
     <Box>
       <TextField
+        sx={{ m: 2 }}
         label="Search"
         defaultValue="School Name"
         onChange={handleSearch}
