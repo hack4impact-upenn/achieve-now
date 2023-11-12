@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-
 /**
  * All the controller functions containing the logic for routes relating to
  * student users.

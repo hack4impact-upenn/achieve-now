@@ -94,6 +94,18 @@ function App() {
                       element={<AdminSessionsPage />}
                     />
                   </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/teacher/:teacherID"
+                      element={<TeacherDashboard />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/progress"
+                      element={<FamilyProgressSnapshotPage />}
+                    />
+                  </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/profiles" element={<ProfilePage />} />
                   </Route>

@@ -6,10 +6,12 @@ import Button from '@mui/material/Button';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
+import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
 import { useData } from './util/api';
 import { StudentCardFromID } from './Admin/StudentCard';
 import PageHeader from './components/PageHeader';
+import PhoneticsTable from './components/buttons/PhoneticsTable';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -87,6 +89,12 @@ function SplitGrid() {
   const students = useData(`student/teacher/${id}`);
   const studentData = students?.data ?? [];
 
+  const { teacherID } = useParams();
+  let finalId = '';
+  if (teacherID) {
+    finalId = teacherID;
+  }
+
   // const student_users = []
   // for (let i = 0; i < studentData.length; i++) {
   //   const user_id = studentData[i].user_id;
@@ -133,7 +141,7 @@ function SplitGrid() {
             square
           >
             <h2>Class Progress</h2>
-            {academicFlags.length > 0 && (
+            {academicFlags.length > 0 && ( // TODO: Passed in teacher ID
               <StudentConcernsCard
                 students={academicFlags}
                 title="Academic Concerns"
@@ -149,6 +157,7 @@ function SplitGrid() {
                 />
               </div>
             )}
+            <PhoneticsTable teacherID={finalId} />
           </Paper>
         </Box>
       </Box>
