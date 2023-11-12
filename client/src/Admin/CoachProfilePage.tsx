@@ -9,20 +9,20 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { postData, useData } from '../util/api';
+import { getData, postData, useData } from '../util/api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { InputErrorMessage } from '../util/inputvalidation';
 import Header from '../components/PageHeader';
+import ICoach from '../util/types/coach';
+import IUser from '../util/types/user';
 
 function CoachProfilePage() {
   const { id } = useParams();
 
   // Default values for state
   const defaultValues = {
-    school: '',
     partnerSite: '',
-    grade: '',
     phone: '',
     email: '',
     mailingAddress: '',
@@ -31,9 +31,7 @@ function CoachProfilePage() {
   };
 
   const defaultShowErrors = {
-    school: false,
     partnerSite: false,
-    grade: false,
     phone: false,
     email: false,
     mailingAddress: false,
@@ -43,9 +41,7 @@ function CoachProfilePage() {
   };
 
   const defaultErrorMessages = {
-    school: '',
     partnerSite: '',
-    grade: '',
     phone: '',
     email: '',
     mailingAddress: '',
@@ -61,9 +57,29 @@ function CoachProfilePage() {
   const [values, setValueState] = useState(defaultValues);
   const [showError, setShowErrorState] = useState(defaultShowErrors);
   const [errorMessage, setErrorMessageState] = useState(defaultErrorMessages);
-  const [allPartnerSites, setAllPartnerSites] = useState([]);
-  const [allSchools, setAllSchoolsState] = useState([]);
   const [coachName, setCoachName] = useState('');
+
+  const [coach, setCoach] = useState<ICoach | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
+
+  const coachData = useData(`coach/${id}`);
+
+  async function getUser(userId: string) {
+    const res = await getData(`user/${userId}`);
+    if (!res.error) {
+      setUser(res.data);
+    }
+  }
+
+  useEffect(() => {
+    const rawCoachData = coachData?.data;
+    if (rawCoachData) {
+      setCoach(rawCoachData);
+      if (rawCoachData.user_id && rawCoachData.user_id.length >= 1) {
+        getUser(rawCoachData.user_id);
+      }
+    }
+  }, [coachData]);
 
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
@@ -131,54 +147,26 @@ function CoachProfilePage() {
     }
   }
 
-  const info = useData(`coach/allInfo/${id}`);
-  const partnerSiteInfo = useData(`coach/sites`);
-  const schoolInfo = useData(`school/all`);
+  useEffect(() => {
+    console.log(values);
+  }, [values]);
+
+  // const info = useData(`coach/allInfo/${id}`);
+  // const partnerSiteInfo = useData(`coach/sites`);
 
   useEffect(() => {
-    const infoData = info?.data;
-    if (!infoData) {
-      return;
-    }
-    const partnerSiteData = partnerSiteInfo?.data;
-    if (!partnerSiteData) {
-      return;
-    }
-    const schoolData = schoolInfo?.data;
-    if (!schoolData) {
-      return;
-    }
-
-    const { coach, user, student } = infoData;
-    const newValue = {
-      school: user.school_id,
-      partnerSite: coach.partner_site,
-      grade: student.grade,
-      phone: user.phone,
-      email: user.email,
-      mailingAddress: coach.mailing_address,
-      mediaWaiver: coach.media_waiver,
-      updates: coach.updates,
-    };
-
-    const newPartnerSites = partnerSiteData.map((partnerSiteObj: any) => {
-      return {
-        id: partnerSiteObj.id,
-        partnerSiteName: partnerSiteObj.siteName,
+    if (coach && user) {
+      const newValue = {
+        partnerSite: coach.partner_site,
+        phone: user.phone,
+        email: user.email,
+        mailingAddress: coach.mailing_address,
+        mediaWaiver: coach.media_waiver ? 'Complete' : 'Incomplete',
+        updates: coach.updates,
       };
-    });
-
-    const newSchools = schoolData.map((schoolObj: any) => {
-      return {
-        id: schoolObj.id,
-        name: schoolObj.name,
-      };
-    });
-
-    setValueState(newValue);
-    setAllSchoolsState(newSchools);
-    setAllPartnerSites(newPartnerSites);
-  }, [info?.data, partnerSiteInfo?.data, schoolInfo?.data]);
+      setValueState(newValue);
+    }
+  }, [coach, user]); // info?.data,
 
   return (
     <>
@@ -197,56 +185,16 @@ function CoachProfilePage() {
             {coachName} (Coach)
           </Typography>
         </Grid>
-        <Grid item width="1">
-          <FormControl fullWidth>
-            <InputLabel>School</InputLabel>
-            <Select
-              fullWidth
-              error={showError.school}
-              //   helperText={errorMessage.contactMethod}
-              required
-              label="School"
-              value={values.school}
-              onChange={(e) => setValue('school', e.target.value)}
-            >
-              {allSchools.map((school: any) => {
-                return <MenuItem value={school.id}>{school.number}</MenuItem>;
-              })}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid item width="1">
-          <FormControl fullWidth>
-            <InputLabel>Partner Site</InputLabel>
-            <Select
-              fullWidth
-              error={showError.partnerSite}
-              //   helperText={errorMessage.contactMethod}
-              required
-              label="Partner Site"
-              value={values.partnerSite}
-              onChange={(e) => setValue('partnerSite', e.target.value)}
-            >
-              {allPartnerSites.map((partnerSite: any) => {
-                return (
-                  <MenuItem value={partnerSite.id}>{partnerSite.name}</MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </Grid>
 
         <Grid item xs={6}>
           <TextField
             fullWidth
-            error={showError.grade}
-            helperText={errorMessage.grade}
+            error={showError.partnerSite}
+            helperText={errorMessage.partnerSite}
             required
-            label="Grade"
-            value={values.grade}
-            type="grade"
-            onChange={(e) => setValue('grade', e.target.value)}
+            label="Partner Site"
+            value={values.partnerSite}
+            onChange={(e) => setValue('partnerSite', e.target.value)}
           />
         </Grid>
 

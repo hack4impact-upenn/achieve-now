@@ -171,23 +171,6 @@ const getCoachById = async (
   res.status(StatusCode.OK).send(coach);
 };
 
-const getAllPartnerSites = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  return (
-    getAllSitesInDB()
-      .then((siteList) => {
-        res.status(StatusCode.OK).send(siteList);
-      })
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .catch((e) => {
-        next(ApiError.internal('Unable to retrieve all sites'));
-      })
-  );
-};
-
 export {
   getAllCoaches,
   createCoach,
@@ -197,5 +180,4 @@ export {
   getCoachBlocksById,
   getStudentFromCoachById,
   getCoachById,
-  getAllPartnerSites,
 };
