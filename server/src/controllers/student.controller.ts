@@ -12,6 +12,9 @@ import {
   getResourceByID,
   updateResourcesByID,
   getAllStudentsFromDB,
+  updateAttendance,
+  deleteAttendanceOnDate,
+  createAttendanceOnDate,
 } from '../services/student.service';
 
 /**
@@ -176,6 +179,7 @@ const deleteResource = async (
   );
 
   console.log(`updated: ${updated_resources}`);
+  console.log(`updated: ${updated_resources}`);
 
   updateResourcesByID(id, updated_resources)
     // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -237,6 +241,59 @@ const updateResource = async (
     });
 };
 
+const updateStudentAttendance = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id, date, attendance } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+    return;
+  }
+  if (!attendance) {
+    next(ApiError.missingFields(['attendance']));
+    return;
+  }
+
+  const student = updateAttendance(id, date, attendance);
+  res.status(StatusCode.OK).send(student);
+};
+
+const createStudentAttendanceByDate = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { date } = req.body;
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+    return;
+  }
+
+  const student = createAttendanceOnDate(date);
+  res.status(StatusCode.OK).send(student);
+};
+
+const deleteStudentAttendanceByDate = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { date } = req.body;
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+    return;
+  }
+
+  const student = deleteAttendanceOnDate(date);
+  res.status(StatusCode.OK).send(student);
+};
+
 export {
   getStudentsFromTeacherId,
   getStudent,
@@ -244,4 +301,7 @@ export {
   deleteResource,
   updateResource,
   getAllStudents,
+  updateStudentAttendance,
+  createStudentAttendanceByDate,
+  deleteStudentAttendanceByDate,
 };

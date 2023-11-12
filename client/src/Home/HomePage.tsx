@@ -10,6 +10,8 @@ import PrimaryButton from '../components/buttons/PrimaryButton';
 import RoleDropdown from '../components/buttons/RoleDropdown';
 import Attendance from '../components/Attendance';
 import ProgressSnapshot from '../components/ProgressSnapshot';
+import Phonetics from '../Student/Phonetics';
+import Badges from '../Student/Badges';
 
 interface ChooseRoleProps {
   role: string | null;
@@ -71,6 +73,9 @@ function HomePage() {
       </Grid>
       <Grid item>
         <ProgressSnapshot studentId="" />
+      </Grid>
+      <Grid item sx={{ width: 400 }}>
+        <Badges />
       </Grid>
     </ScreenGrid>
   );

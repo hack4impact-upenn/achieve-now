@@ -14,6 +14,10 @@ const BlockSchema = new mongoose.Schema({
     ],
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
   startTime: {
     type: String,
     required: true,
@@ -24,7 +28,7 @@ const BlockSchema = new mongoose.Schema({
   },
   block: {
     type: Number,
-    required: true,
+    required: false,
   },
   zoom: {
     type: String,
@@ -40,6 +44,7 @@ const BlockSchema = new mongoose.Schema({
 interface IBlock extends mongoose.Document {
   _id: string;
   day: string;
+  name: string;
   startTime: string;
   endTime: string;
   block: number;
@@ -47,4 +52,6 @@ interface IBlock extends mongoose.Document {
   students: [string];
 }
 
-export default mongoose.model<IBlock>('Block', BlockSchema);
+const Block = mongoose.model<IBlock>('Block', BlockSchema);
+
+export { IBlock, Block };
