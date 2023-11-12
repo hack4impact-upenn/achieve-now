@@ -138,7 +138,7 @@ export default function Phonetics() {
 
   const levels = [];
 
-  for (let i = 0; i < phonicPatterns.length; i++) {
+  for (let i = 0; i < phonicPatterns.length; i += 1) {
     levels.push([phonicPatterns[i], exampleWords[i]]);
   }
 
