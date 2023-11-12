@@ -8,7 +8,7 @@ import { logout as logoutApi } from './api';
 import ScreenGrid from '../components/ScreenGrid';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import RoleDropdown from '../components/buttons/RoleDropdown';
-import Attendance from '../components/Attendance';
+import Attendance from '../Student/Attendance';
 import ProgressSnapshot from '../components/ProgressSnapshot';
 import Phonetics from '../Student/Phonetics';
 import Badges from '../Student/Badges';

@@ -12,7 +12,7 @@ import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import ScreenGrid from '../components/ScreenGrid';
 import AchieveLogo from '../assets/achieve-now-logo.png';
-import Attendance from '../components/Attendance';
+import Attendance from '../Student/Attendance';
 
 /**
  * A page allowing users to input their email and password to login. The default
