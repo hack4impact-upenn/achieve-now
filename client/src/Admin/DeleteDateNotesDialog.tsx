@@ -37,7 +37,12 @@ function DeleteDateDialog({
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle sx={{ textAlign: 'center' }}>Delete Date</DialogTitle>
       <DialogActions
-        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingBottom: 5,
+        }}
       >
         <Stack
           direction="row"
@@ -57,7 +62,7 @@ function DeleteDateDialog({
               </MenuItem>
             ))}
           </Select>
-          <Button variant="outlined" onClick={handleSubmit}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>

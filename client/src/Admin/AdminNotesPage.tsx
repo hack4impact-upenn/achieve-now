@@ -7,6 +7,7 @@ import { deleteData, getData, putData, useData } from '../util/api';
 import theme from '../assets/theme';
 import AddDateNotesDialog from './AddDateNotesDialog';
 import DeleteDateDialog from './DeleteDateNotesDialog';
+import EditDateDialog from './EditDateNotesDialog';
 import IStudent from '../util/types/student';
 import ICoach from '../util/types/coach';
 
@@ -32,6 +33,7 @@ function AdminSessionsPage() {
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
+  const [editDateDialogOpen, setEditDateDialogOpen] = useState<boolean>(false);
   const [data, setData] = useState<IAdminNotesTable>({
     dates: [] as number[],
   });
@@ -206,6 +208,13 @@ function AdminSessionsPage() {
         options={data.dates}
         deleteDate={deleteDate}
       />
+      <EditDateDialog
+        open={editDateDialogOpen}
+        setOpen={() => setEditDateDialogOpen(false)}
+        options={data.dates}
+        editDate={addDate}
+        table={tableData}
+      />
       <Header />
       <Box
         sx={{
@@ -227,7 +236,7 @@ function AdminSessionsPage() {
             justifyContent: 'space-between',
             width: '80%',
             position: 'relative',
-            paddingBottom: theme.spacing(1),
+            paddingBottom: theme.spacing(3),
           }}
         >
           <Typography
@@ -276,9 +285,24 @@ function AdminSessionsPage() {
                 backgroundColor: 'grey.200',
               },
               width: theme.spacing(20),
+              marginRight: theme.spacing(2),
             }}
           >
             Delete Entry
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setEditDateDialogOpen(true)}
+            sx={{
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+            }}
+          >
+            Edit Entry
           </Button>
         </Box>
 

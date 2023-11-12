@@ -3,15 +3,14 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  MenuItem,
+  Select,
+  Stack,
   Grid,
   TextField,
 } from '@mui/material';
-import { Stack } from '@mui/system';
-import { DatePicker } from '@mui/x-date-pickers';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 interface IAdminNotesRow {
   key: string;
@@ -22,10 +21,11 @@ interface IAdminNotesRow {
   coachNextSteps: string;
 }
 
-interface AddDateProps {
+interface EditDateDialogProps {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  addDate: (
+  options: number[];
+  editDate: (
     date: number,
     studentObservations: string,
     studentNextSteps: string,
@@ -35,8 +35,14 @@ interface AddDateProps {
   table: IAdminNotesRow[];
 }
 
-function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
-  const [date, setDate] = useState<Dayjs | null>(null);
+function EditDateDialog({
+  open,
+  setOpen,
+  options,
+  editDate,
+  table,
+}: EditDateDialogProps) {
+  const [date, setDate] = useState<number | null>(null);
   const [studentObservations, setStudentObservations] = useState('');
   const [studentNextSteps, setStudentNextSteps] = useState('');
   const [coachObservations, setCoachObservations] = useState('');
@@ -59,9 +65,8 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
     if (!date) {
       return;
     }
-
-    addDate(
-      Number(date),
+    editDate(
+      date,
       studentObservations,
       studentNextSteps,
       coachObservations,
@@ -75,13 +80,9 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
     setOpen(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth>
-      <DialogTitle sx={{ textAlign: 'center' }}>Add Entry</DialogTitle>
+    <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+      <DialogTitle sx={{ textAlign: 'center' }}>Edit Date</DialogTitle>
       <DialogActions
         sx={{
           display: 'flex',
@@ -91,12 +92,19 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
         }}
       >
         <Stack direction="column" spacing={2}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              value={date}
-              onChange={(newValue) => setDate(newValue)}
-            />
-          </LocalizationProvider>
+          <Select
+            value={date}
+            sx={{
+              minWidth: 150,
+            }}
+            onChange={(event) => setDate(event.target.value as number)}
+          >
+            {options.map((option) => (
+              <MenuItem value={option}>
+                {new Date(option).toLocaleDateString()}
+              </MenuItem>
+            ))}
+          </Select>
           <Grid item width="1">
             <TextField
               fullWidth
@@ -142,4 +150,4 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
   );
 }
 
-export default AddDateNotesDialog;
+export default EditDateDialog;
