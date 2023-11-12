@@ -16,11 +16,13 @@ import {
   updateStudentAttendance,
   deleteStudentAttendanceByDate,
   createStudentAttendanceByDate,
+  addCoach,
   updateProgress,
   deleteProgress,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
+import { addListener } from 'process';
 
 const router = express.Router();
 
@@ -99,6 +101,7 @@ router.put(
   deleteStudentAttendanceByDate,
 );
 
+router.put('/add-coach', addCoach);
 router.put('/progress/:id', updateProgress);
 router.delete('/progress/:id/:date', deleteProgress);
 

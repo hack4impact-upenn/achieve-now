@@ -16,6 +16,7 @@ import {
   updateAttendance,
   deleteAttendanceOnDate,
   createAttendanceOnDate,
+  addCoachToStudent,
   updateProgressDate,
   deleteProgressDate,
 } from '../services/student.service';
@@ -494,6 +495,28 @@ const deleteStudentAttendanceByDate = async (
   res.status(StatusCode.OK).send(student);
 };
 
+const addCoach = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { student_id, coach_id } = req.body;
+  if (!student_id) {
+    next(ApiError.missingFields(['student_id']));
+    return;
+  }
+  if (!coach_id) {
+    next(ApiError.missingFields(['coach_id']));
+    return;
+  }
+  addCoachToStudent(student_id, coach_id)
+    .then((student) => res.status(StatusCode.OK).send(student))
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal(e));
+    });
+};
+
 const updateProgress = async (
   req: express.Request,
   res: express.Response,
@@ -544,6 +567,7 @@ export {
   updateStudentAttendance,
   createStudentAttendanceByDate,
   deleteStudentAttendanceByDate,
+  addCoach,
   updateProgress,
   deleteProgress,
 };

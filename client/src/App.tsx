@@ -14,6 +14,7 @@ import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
+import AdminAddBlockPage from './Admin/AdminAddBlockPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -32,6 +33,7 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import AdminEditBlockPage from './Admin/AdminEditBlockPage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
@@ -92,6 +94,14 @@ function App() {
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
+                    />
+                    <Route
+                      path="/admin-add-block"
+                      element={<AdminAddBlockPage />}
+                    />
+                    <Route
+                      path="/admin-edit-block/:id"
+                      element={<AdminEditBlockPage />}
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
