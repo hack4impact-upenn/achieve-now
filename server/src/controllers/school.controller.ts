@@ -109,7 +109,7 @@ const updateSchool = async (
   next: express.NextFunction,
 ) => {
   const {
-    _id,
+    id,
     name,
     teachers,
     info,
@@ -123,7 +123,7 @@ const updateSchool = async (
     second_grade_lunch_start_time,
     second_grade_lunch_end_time,
   } = req.body;
-  if (!_id) {
+  if (!id) {
     next(ApiError.missingFields(['_id']));
     return;
   }
@@ -142,7 +142,7 @@ const updateSchool = async (
   }
 
   const school = updateSchoolById(
-    _id,
+    id,
     name,
     teachers,
     info,

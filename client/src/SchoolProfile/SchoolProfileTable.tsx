@@ -21,12 +21,12 @@ interface SchoolDashboardRow {
   admin_name: string;
   admin_content: string;
   calendar_link: string;
-  school_start_time: Date;
-  school_end_time: Date;
-  first_grade_lunch_start_time: Date;
-  first_grade_lunch_end_time: Date;
-  second_grade_lunch_start_time: Date;
-  second_grade_lunch_end_time: Date;
+  school_start_time: Date | null;
+  school_end_time: Date | null;
+  first_grade_lunch_start_time: Date | null;
+  first_grade_lunch_end_time: Date | null;
+  second_grade_lunch_start_time: Date | null;
+  second_grade_lunch_end_time: Date | null;
 }
 
 /**

@@ -8,7 +8,8 @@ import ScreenGrid from '../components/ScreenGrid';
 import SchoolProfileTable from './SchoolProfileTable';
 import AddSchoolDialog from './AddSchoolDialog';
 import DeleteSchoolDialog from './DeleteSchoolDialog';
-import { useData } from '../util/api';
+import EditSchoolDialog from './EditSchoolDialog';
+import { useData, postData, putData } from '../util/api';
 import ISchool from '../util/types/school';
 
 function SchoolProfilePage() {
@@ -19,28 +20,19 @@ function SchoolProfilePage() {
   }
 
   const [schoolDialogOpen, setSchoolDialogOpen] = useState<boolean>(false);
-  const [schoolList, setSchoolList] = useState<ISchool[]>([]);
+  // const [schoolList, setSchoolList] = useState<ISchool[]>([]);
+  const [tableData, setTableData] = useState<ISchool[]>([]);
   const [deleteSchoolDialogOpen, setDeleteSchoolDialogOpen] =
+    useState<boolean>(false);
+  const [editSchoolDialogOpen, setEditSchoolDialogOpen] =
     useState<boolean>(false);
 
   const schools = useData('school/all');
 
   useEffect(() => {
-    setSchoolList(schools?.data);
+    const newData = schools?.data || [];
+    setTableData(newData);
   }, [schools]);
-
-  // function getSchoolNames() {
-  //   const slist: Array<{ id: string; schoolName: string }> = [];
-  //   schoolList.map(({ _id, name }) =>
-  //     slist.push({ id: _id, schoolName: name }),
-  //   );
-  //   return slist;
-  // }
-  // const schoolNames = getSchoolNames();
-  const schoolNames = [
-    { _id: 'ABC', name: 'school1' },
-    { _id: 'ABCD', name: 'school2' },
-  ];
 
   const addSchool = async (
     name: string,
@@ -56,34 +48,77 @@ function SchoolProfilePage() {
     second_grade_lunch_start_time: Date | null,
     second_grade_lunch_end_time: Date | null,
   ) => {
-    await axios.post('http://localhost:4000/api/school/create', {
-      name,
-      info,
-      admin_name,
-      teachers: [],
-      admin_content,
-      calendar_link,
-      school_start_time,
-      school_end_time,
-      first_grade_lunch_start_time,
-      first_grade_lunch_end_time,
-      second_grade_lunch_start_time,
-      second_grade_lunch_end_time,
-    });
+    try {
+      const newSchool = {
+        name,
+        info,
+        admin_name,
+        teachers: [],
+        admin_content,
+        calendar_link,
+        school_start_time,
+        school_end_time,
+        first_grade_lunch_start_time,
+        first_grade_lunch_end_time,
+        second_grade_lunch_start_time,
+        second_grade_lunch_end_time,
+      };
+      const promise = await postData('school/create', newSchool);
+      setTableData([...tableData, promise.data]);
+    } catch (error) {
+      console.error('Error deleting date:', error);
+    }
+  };
+
+  const editSchool = async (
+    id: string,
+    name: string,
+    info: string,
+    teachers: string,
+    admin_name: string,
+    admin_content: string,
+    calendar_link: string,
+    school_start_time: Date | null,
+    school_end_time: Date | null,
+    first_grade_lunch_start_time: Date | null,
+    first_grade_lunch_end_time: Date | null,
+    second_grade_lunch_start_time: Date | null,
+    second_grade_lunch_end_time: Date | null,
+  ) => {
+    try {
+      const newSchool = {
+        id,
+        name,
+        info,
+        admin_name,
+        teachers,
+        admin_content,
+        calendar_link,
+        school_start_time,
+        school_end_time,
+        first_grade_lunch_start_time,
+        first_grade_lunch_end_time,
+        second_grade_lunch_start_time,
+        second_grade_lunch_end_time,
+      };
+      // update putData
+      const promise = await putData(`school/update`, newSchool);
+      const removed = tableData.filter((r: ISchool) => r._id !== id);
+      setTableData([promise.data, ...removed]);
+    } catch (error) {
+      console.error('Error deleting school:', error);
+    }
   };
 
   const deleteSchool = async (schoolId: string) => {
     try {
-      await axios.put('http://localhost:4000/api/school/delete', {
-        id: schoolId,
-      });
-      console.log(schoolId);
-      // const updatedSchoolList = schoolList.filter(
-      //   (school) => school._id !== schoolId,
-      // );
-      // setSchoolList(updatedSchoolList);
+      await putData(`school/delete`, { id: schoolId });
+      const updatedTableData = tableData.filter(
+        (item) => item._id !== schoolId /* eslint no-underscore-dangle: 0 */,
+      );
+      setTableData(updatedTableData);
     } catch (error) {
-      // handle error
+      console.log('error deleting');
     }
   };
 
@@ -94,12 +129,17 @@ function SchoolProfilePage() {
         setOpen={() => setSchoolDialogOpen(false)}
         addSchool={addSchool}
       />
-      {/* schoolList.map((school: ISchool) => createAdminDashboardRow(school)) */}
       <DeleteSchoolDialog
         open={deleteSchoolDialogOpen}
         setOpen={() => setDeleteSchoolDialogOpen(false)}
-        options={schoolList}
+        options={tableData}
         deleteSchool={deleteSchool}
+      />
+      <EditSchoolDialog
+        open={editSchoolDialogOpen}
+        setOpen={() => setEditSchoolDialogOpen(false)}
+        editSchool={editSchool}
+        schools={tableData}
       />
       <ScreenGrid>
         <Grid item>
@@ -114,6 +154,9 @@ function SchoolProfilePage() {
           </Button>
           <Button variant="outlined" onClick={() => setSchoolDialogOpen(true)}>
             Add School
+          </Button>
+          <Button variant="outlined" onClick={() => setEditSchoolDialogOpen(true)}>
+            Edit School
           </Button>
         </Grid>
         <Grid item>

@@ -20,6 +20,7 @@ schoolRouter.post('/create', isAuthenticated, isAdmin, createSchool);
 schoolRouter.put('/delete', isAuthenticated, isAdmin, deleteSchool);
 
 // update school
+// schoolRouter.put('/:schoolId', isAuthenticated, isAdmin, updateSchool);
 schoolRouter.put('/update', isAuthenticated, isAdmin, updateSchool);
 
 export default schoolRouter;

@@ -73,7 +73,7 @@ const deleteSchoolById = async (id: string) => {
 };
 
 const updateSchoolById = async (
-  _id: string,
+  id: string,
   name: string,
   teachers: [string],
   info: string,
@@ -87,22 +87,26 @@ const updateSchoolById = async (
   second_grade_lunch_start_time: Date,
   second_grade_lunch_end_time: Date,
 ) => {
-  const newSchool = new School({
-    name,
-    teachers,
-    info,
-    admin_name,
-    admin_content,
-    calendar_link,
-    school_start_time,
-    school_end_time,
-    first_grade_lunch_start_time,
-    first_grade_lunch_end_time,
-    second_grade_lunch_start_time,
-    second_grade_lunch_end_time,
-  });
-  const school = await School.findOneAndUpdate({ _id }, newSchool).exec();
-  return school;
+  const updatedSchool = await School.findByIdAndUpdate(
+    id,
+    {
+      name,
+      teachers,
+      info,
+      admin_name,
+      admin_content,
+      calendar_link,
+      school_start_time,
+      school_end_time,
+      first_grade_lunch_start_time,
+      first_grade_lunch_end_time,
+      second_grade_lunch_start_time,
+      second_grade_lunch_end_time,
+    },
+    { new: true }
+  ).exec();
+
+  return updatedSchool;
 };
 
 export {
