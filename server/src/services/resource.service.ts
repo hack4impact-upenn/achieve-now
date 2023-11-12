@@ -50,6 +50,7 @@ const getLessonResources = async (lessonId: string) => {
 };
 
 const updateResource = async (resourceId: string, resource: IResource) => {
+  console.log(resourceId);
   const updatedResource = await Resource.findByIdAndUpdate(
     resourceId,
     resource,
@@ -66,10 +67,16 @@ const createResource = async (resource: IResource) => {
   return newResource;
 };
 
+const deleteResource = async (resourceId: string) => {
+  const deletedResource = await Resource.findByIdAndDelete(resourceId);
+  return deletedResource;
+};
+
 export {
   passwordHashSaltRounds,
   getAllResourcesFromDB,
   getLessonResources,
   updateResource,
   createResource,
+  deleteResource,
 };

@@ -29,6 +29,7 @@ interface IResource extends mongoose.Document {
   title: string;
   type: string;
   link: string;
+  description: string;
 }
 
 const Resource = mongoose.model<IResource>('Resource', ResourceSchema);

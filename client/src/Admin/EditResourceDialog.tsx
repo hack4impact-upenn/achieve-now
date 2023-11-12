@@ -11,13 +11,23 @@ import {
   InputLabel,
 } from '@mui/material';
 import { Stack } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import theme from '../assets/theme';
 
-interface AddResourceProps {
+interface Resource {
+  _id: string;
+  title: string;
+  description: string;
+  link: string;
+  type: string;
+}
+
+interface EditResourceProps {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  addResource: (
+  resources: Resource[];
+  editResource: (
+    id: string,
     title: string,
     description: string,
     link: string,
@@ -25,20 +35,45 @@ interface AddResourceProps {
   ) => void;
 }
 
-function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
+function EditResourceDialog({
+  open,
+  setOpen,
+  resources,
+  editResource,
+}: EditResourceProps) {
+  const [id, setId] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [link, setLink] = useState<string>('');
   const [type, setType] = useState<string>('');
 
+  useEffect(() => {
+    const resource = resources.find((r) => r.title === title);
+    if (resource) {
+      setId(resource._id); /* eslint no-underscore-dangle: 0 */
+      setDescription(resource.description);
+      setLink(resource.link);
+      setType(resource.type);
+    }
+  }, [title, resources]);
+
   const handleSubmit = () => {
     if (!title || !description || !link || !type) {
       return;
     }
-    addResource(title, description, link, type);
+    editResource(id, title, description, link, type);
     setOpen(false);
   };
 
+  const selectOptions = useMemo(
+    () =>
+      resources.map((resource) => (
+        <MenuItem value={resource.title} key={resource._id}>
+          {resource.title}
+        </MenuItem>
+      )),
+    [resources],
+  );
   return (
     <Dialog
       open={open}
@@ -49,13 +84,9 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
         },
       }}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Add Entry</DialogTitle>
+      <DialogTitle sx={{ textAlign: 'center' }}>Edit Entry</DialogTitle>
       <DialogActions
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}
+        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
         <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
           <FormControl
@@ -65,14 +96,17 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
             }}
           >
             <InputLabel htmlFor="title-field">Title</InputLabel>
-            <OutlinedInput
+            <Select
               id="title-field"
-              value={title}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setTitle(event.target.value);
-              }}
               label="Title"
-            />
+              value={title}
+              sx={{
+                minWidth: 150,
+              }}
+              onChange={(event) => setTitle(event.target.value)}
+            >
+              {selectOptions}
+            </Select>
           </FormControl>
           <FormControl
             variant="outlined"
@@ -132,4 +166,4 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
   );
 }
 
-export default AddResourceDialog;
+export default EditResourceDialog;
