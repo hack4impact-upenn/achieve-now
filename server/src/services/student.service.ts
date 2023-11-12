@@ -4,22 +4,11 @@
 import { Student } from '../models/student.model';
 import { Resource } from '../models/resource.model';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const passwordHashSaltRounds = 10;
-const removeSensitiveDataQuery = [
-  '-password',
-  '-verificationToken',
-  '-resetPasswordToken',
-  '-resetPasswordTokenExpiryDate',
-];
-
 /**
  * @returns All the {@link Student}s in the database without their passwords.
  */
 const getAllStudentsFromDB = async () => {
-  const userList = await Student.find({})
-    .select(removeSensitiveDataQuery)
-    .exec();
+  const userList = await Student.find({}).exec();
   return userList;
 };
 
@@ -29,10 +18,8 @@ const getAllStudentsFromDB = async () => {
  * @returns The {@link Student} or null if the student was not found.
  */
 const getStudentByID = async (id: string) => {
-  const user = await Student.findOne({ id })
-    .select(removeSensitiveDataQuery)
-    .exec();
-  return user;
+  const student = await Student.findById(id).exec();
+  return student;
 };
 
 /**
@@ -41,10 +28,8 @@ const getStudentByID = async (id: string) => {
  * @returns The {@link Resource} or null if the user was not found.
  */
 const getResourceByID = async (id: string) => {
-  const user = await Resource.findById(id)
-    .select(removeSensitiveDataQuery)
-    .exec();
-  return user;
+  const resource = await Resource.findById(id).exec();
+  return resource;
 };
 
 /**
@@ -52,9 +37,44 @@ const getResourceByID = async (id: string) => {
  * @param id The id of the user to delete.
  * @returns The updated {@link Student}
  */
-const updateResourcesByID = async (id: string, resources: string[]) => {
+const updateParentResourcesByID = async (id: string, resources: string[]) => {
   const student = await Student.findOneAndUpdate({ id }, [
     { $set: { parent_additional_resources: resources } },
+  ]).exec();
+  return student;
+};
+
+const updateCoachResourcesByID = async (id: string, resources: string[]) => {
+  const student = await Student.findOneAndUpdate({ id }, [
+    { $set: { coach_additional_resources: resources } },
+  ]).exec();
+  return student;
+};
+
+const removeParentResourcesByID = async (id: string, resource: string) => {
+  const student = await Student.findOneAndUpdate({ id }, [
+    { $pull: { parent_additional_resources: resource } },
+  ]).exec();
+  return student;
+};
+
+const removeCoachResourcesByID = async (id: string, resource: string) => {
+  const student = await Student.findOneAndUpdate({ id }, [
+    { $pull: { coach_additional_resources: resource } },
+  ]).exec();
+  return student;
+};
+
+const addParentResourcesByID = async (id: string, resource: string) => {
+  const student = await Student.findOneAndUpdate({ id }, [
+    { $addToSet: { parent_additional_resources: resource } },
+  ]).exec();
+  return student;
+};
+
+const addCoachResourcesByID = async (id: string, resource: string) => {
+  const student = await Student.findOneAndUpdate({ id }, [
+    { $addToSet: { coach_additional_resources: resource } },
   ]).exec();
   return student;
 };
@@ -141,15 +161,58 @@ const addCoachToStudent = async (student_id: string, coach_id: string) => {
   return student;
 };
 
+const updateProgressDate = async (
+  id: string,
+  date: string,
+  observations: string,
+  next_steps: string,
+) => {
+  const coach = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        [`progress_stats.student_observations.${date}`]: observations,
+        [`progress_stats.student_next_steps.${date}`]: next_steps,
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
+const deleteProgressDate = async (id: string, date: string) => {
+  const coach = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $unset: {
+        [`progress_stats.student_observations.${date}`]: '',
+        [`progress_stats.student_next_steps.${date}`]: '',
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
 export {
-  passwordHashSaltRounds,
   getStudentByID,
   getResourceByID,
-  updateResourcesByID,
+  updateParentResourcesByID,
+  updateCoachResourcesByID,
+  removeParentResourcesByID,
+  removeCoachResourcesByID,
+  addParentResourcesByID,
+  addCoachResourcesByID,
   getAllStudentsFromDB,
   createStudent,
   updateAttendance,
   createAttendanceOnDate,
   deleteAttendanceOnDate,
   addCoachToStudent,
+  updateProgressDate,
+  deleteProgressDate,
 };

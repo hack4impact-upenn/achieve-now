@@ -2,7 +2,7 @@
  * Mongo functions for all block objects
  */
 
-import { Block } from '../models/block.model';
+import { Block, IBlock } from '../models/block.model';
 
 const getBlockById = async (id: string) => {
   const response = await Block.findById(id);
@@ -80,6 +80,17 @@ const getAllBlocksfromDB = async () => {
   return blockList;
 };
 
+const getBlockByStudentId = async (studentId: string) => {
+  const blocks = await Block.find({});
+  const filteredBlocks = blocks.filter(
+    (blocks: IBlock) =>
+      blocks.students &&
+      blocks.students.includes &&
+      blocks.students.includes(studentId),
+  );
+  return filteredBlocks[0];
+};
+
 export {
   getBlockById,
   getBlock,
@@ -87,4 +98,5 @@ export {
   addBlock,
   editBlock,
   getAllBlocksfromDB,
+  getBlockByStudentId,
 };

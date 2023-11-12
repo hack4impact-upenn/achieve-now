@@ -9,8 +9,9 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
+import LessonsPage from './Lessons/LessonsPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
-import FamilyLessonsPage from './Family/FamilyLessonsPage';
+import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
 import AdminAddBlockPage from './Admin/AdminAddBlockPage';
@@ -27,13 +28,16 @@ import EmailResetPasswordPage from './Authentication/EmailResetPasswordPage';
 import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
-import Header from './components/PageHeader';
 import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
-import ResourceDashboard from './ResourceDashboard';
-import StudentAttendancePage from './Admin/StudentAttendancePage';
+import StudentResourceDashboard from './Admin/StudentResourceDashboard';
+import LessonResourceDashboard from './Admin/LessonResourceDashboard';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
 import AdminEditBlockPage from './Admin/AdminEditBlockPage';
+import ProfilePage from './Profile/ProfilePage';
+import StudentAttendancePage from './Admin/StudentAttendancePage';
+import CoachLandingPage from './Coach/CoachLandingPage';
+import LessonLevels from './components/LessonLevels';
 
 function App() {
   return (
@@ -45,15 +49,11 @@ function App() {
               <CssBaseline>
                 <AlertPopup />
                 <Routes>
+                  <Route path="/lessons/:studentID" element={<LessonsPage />} />
+
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/teacher" element={<TeacherDashboard />} />
-                    <Route path="/resource" element={<ResourceDashboard />} />
-                    <Route
-                      path="/resource/:id"
-                      element={<ResourceDashboard />}
-                    />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                       path="/verify-account/:token"
@@ -72,7 +72,6 @@ function App() {
                     path="/invite/:token"
                     element={<InviteRegisterPage />}
                   />
-                  <Route path="/header" element={<Header />} />
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/home" element={<HomePage />} />
@@ -80,11 +79,18 @@ function App() {
                       path="/onboarding/student"
                       element={<OnboardingPage />}
                     />
+                    <Route path="/teacher" element={<TeacherDashboard />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
-                  </Route>{' '}
-                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/resources/student/:studentId"
+                      element={<StudentResourceDashboard />}
+                    />
+                    <Route
+                      path="/resources/lesson/:lessonId"
+                      element={<LessonResourceDashboard />}
+                    />
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
@@ -99,25 +105,56 @@ function App() {
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
-                    <Route path="/lessons" element={<FamilyLessonsPage />} />
+                    <Route
+                      path="/teacher/:teacherID"
+                      element={<TeacherDashboard />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/progress"
+                      element={<FamilyProgressSnapshotPage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route path="/profiles" element={<ProfilePage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
                     />
-                    <Route path="/admin-notes" element={<AdminNotesPage />} />
+                    <Route
+                      path="/admin-notes/:studentId"
+                      element={<AdminNotesPage />}
+                    />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-student-attendance"
                       element={<StudentAttendancePage />}
                     />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-coach-attendance"
                       element={<CoachAttendancePage />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/lessons/:studentID"
+                      element={<LessonsPage />}
+                    />
+                    <Route
+                      path="/progress"
+                      element={<FamilyProgressSnapshotPage />}
+                    />
+                    <Route
+                      path="/coach-landing/:id"
+                      element={<CoachLandingPage />}
+                    />
+                    <Route
+                      path="/teacher-dashboard/:id"
+                      element={<LessonLevels />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
