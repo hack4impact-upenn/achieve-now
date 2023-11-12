@@ -34,6 +34,7 @@ import ResourceDashboard from './ResourceDashboard';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
+import StudentProgress from './StudentProgress/StudentProgress';
 
 function App() {
   return (
@@ -131,6 +132,12 @@ function App() {
                       <DynamicRedirect unAuthPath="/login" authPath="/home" />
                     }
                   />
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/student-progress/:id"
+                      element={<StudentProgress />}
+                    />
+                  </Route>
                   {/* Route which is accessed if no other route is matched */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
