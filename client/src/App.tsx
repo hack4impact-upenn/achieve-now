@@ -36,6 +36,10 @@ import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
 import LessonLevels from './components/LessonLevels';
+import AdminAttendance from './Admin/AdminAttendance';
+import AdminProfiles from './Admin/AdminProfiles';
+import AdminCurriculum from './Admin/AdminCurriculum';
+import AdminMenu from './Admin/AdminMenu';
 
 function App() {
   return (
@@ -145,6 +149,16 @@ function App() {
                     <Route
                       path="/teacher-dashboard/:id"
                       element={<LessonLevels />}
+                    />
+                    <Route
+                      path="/admin-attendance"
+                      element={<AdminAttendance />}
+                    />
+                    <Route path="/admin-profiles" element={<AdminProfiles />} />
+                    <Route path="/admin-menu" element={<AdminMenu />} />
+                    <Route
+                      path="/admin-curriculum"
+                      element={<AdminCurriculum />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
