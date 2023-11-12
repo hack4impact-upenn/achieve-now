@@ -81,6 +81,20 @@ function CoachProfilePage() {
     }
   }, [coachData]);
 
+  useEffect(() => {
+    if (coach && user) {
+      const newValue = {
+        partnerSite: coach.partner_site,
+        phone: user.phone,
+        email: user.email,
+        mailingAddress: coach.mailing_address,
+        mediaWaiver: coach.media_waiver.toString(),
+        updates: coach.updates,
+      };
+      setValueState(newValue);
+    }
+  }, [coach, user]);
+
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
     setValueState((prevState) => ({
@@ -146,27 +160,6 @@ function CoachProfilePage() {
         });
     }
   }
-
-  useEffect(() => {
-    console.log(values);
-  }, [values]);
-
-  // const info = useData(`coach/allInfo/${id}`);
-  // const partnerSiteInfo = useData(`coach/sites`);
-
-  useEffect(() => {
-    if (coach && user) {
-      const newValue = {
-        partnerSite: coach.partner_site,
-        phone: user.phone,
-        email: user.email,
-        mailingAddress: coach.mailing_address,
-        mediaWaiver: coach.media_waiver ? 'Complete' : 'Incomplete',
-        updates: coach.updates,
-      };
-      setValueState(newValue);
-    }
-  }, [coach, user]); // info?.data,
 
   return (
     <>
