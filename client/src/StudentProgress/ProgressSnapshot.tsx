@@ -8,7 +8,7 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
     {
       date: '12/28/2022',
       observations:
-        'Observation for 12/28/2022, showing progress in learning activities.',
+        'Observation for 12/28/2022, showing progress in learning activities. ',
       next_steps:
         'Continue with the current learning plan and review previous materials.',
     },
@@ -45,20 +45,41 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
   return (
     <>
       <div style={{ height: '50px' }} />
-      <Stack
-        sx={{
-          width: '100%',
-          height: '100%',
-          border: 1,
-          borderRadius: 3,
-          padding: 3,
-        }}
-      >
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-          Observations / Next Steps
-        </Typography>
-        <Stack />
-      </Stack>
+      <div style={{ width: 1000 }}>
+        <Stack
+          spacing={3}
+          px={5}
+          py={2}
+          sx={{
+            width: '100%',
+            height: '100%',
+            border: 1,
+            borderRadius: 3,
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Observations / Next Steps
+          </Typography>
+
+          {arr.map((item) => (
+            <Box
+              sx={{ borderRadius: 3, backgroundColor: '#EEEEEE', padding: 1 }}
+            >
+              <Stack spacing={1}>
+                <Typography>
+                  <b>{item.date}</b>
+                </Typography>
+                <Typography sx={{ width: '200' }}>
+                  <u>Observations:</u> {item.observations}
+                </Typography>
+                <Typography>
+                  <u>Next Steps:</u> {item.next_steps}
+                </Typography>
+              </Stack>
+            </Box>
+          ))}
+        </Stack>
+      </div>
     </>
   );
 }
