@@ -11,6 +11,7 @@ import { selectUser } from '../../util/redux/userSlice';
 import IStudent from '../../util/types/student';
 import IUser from '../../util/types/user';
 import ILesson from '../../util/types/lesson';
+import Box from '@mui/material/Box';
 // import { Button } from '@mui/material';
 
 type PhoneticsTableProps = {
@@ -289,7 +290,12 @@ function PhoneticsTable({ teacherID }: PhoneticsTableProps) {
     );
   }
 
-  return <PaginationTable rows={rows} columns={columns} />;
+  return (
+    <Box sx={{ width: '50%', height: '75%' }}>
+    <PaginationTable rows={rows} columns={columns} />
+  </Box>
+  );
+  
 }
 
 export default PhoneticsTable;
