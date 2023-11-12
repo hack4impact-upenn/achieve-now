@@ -1,15 +1,28 @@
-/**
- * Specifies the middleware and controller functions to call for each route
- * relating to admin users.
- */
-import express from 'express';
-import { isAdmin } from '../controllers/admin.middleware';
-import { getAllLessons } from '../controllers/lesson.controller';
-import { isAuthenticated } from '../controllers/auth.middleware';
+import { Router } from 'express';
 import 'dotenv/config';
+import {
+  getLessonResourcesHandler,
+  deleteResourceHandler,
+  addResourceHandler,
+  getAllLessonsHandler,
+} from '../controllers/lesson.controller';
+import { isAuthenticated } from '../controllers/auth.middleware';
+import { isAdmin } from '../controllers/admin.middleware';
 
-const router = express.Router();
+const lessonRouter = Router();
 
-router.get('/all', isAdmin, isAuthenticated, getAllLessons);
+lessonRouter.get('/all', isAuthenticated, getAllLessonsHandler);
+lessonRouter.post(
+  '/:lessonId/resources',
+  isAuthenticated,
+  getLessonResourcesHandler,
+);
+lessonRouter.post(
+  '/deleteResource',
+  isAuthenticated,
+  isAdmin,
+  deleteResourceHandler,
+);
+lessonRouter.post('/addResource', isAuthenticated, isAdmin, addResourceHandler);
 
-export default router;
+export default lessonRouter;
