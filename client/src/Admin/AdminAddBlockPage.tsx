@@ -10,12 +10,11 @@ import {
   Button,
   Autocomplete,
 } from '@mui/material';
-import { Box, display } from '@mui/system';
+import { display } from '@mui/system';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
-import ScreenGrid from '../components/ScreenGrid';
 import FormGrid from '../components/form/FormGrid';
 import FormCol from '../components/form/FormCol';
 import PrimaryButton from '../components/buttons/PrimaryButton';
@@ -131,7 +130,14 @@ function AdminAddBlockPage() {
   return (
     <div>
       <Header />
-      <ScreenGrid>
+      <Grid
+        container
+        xs={12}
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+        sx={{ paddingTop: '5rem' }}
+      >
         <FormGrid>
           <Typography variant="h4" sx={{ textAlign: 'center' }}>
             Add Block
@@ -335,7 +341,7 @@ function AdminAddBlockPage() {
             )}
           </FormCol>
         </FormGrid>
-      </ScreenGrid>
+      </Grid>
     </div>
   );
 }

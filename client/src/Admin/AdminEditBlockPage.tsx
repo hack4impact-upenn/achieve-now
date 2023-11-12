@@ -16,7 +16,6 @@ import { useParams } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
-import ScreenGrid from '../components/ScreenGrid';
 import FormGrid from '../components/form/FormGrid';
 import FormCol from '../components/form/FormCol';
 import PrimaryButton from '../components/buttons/PrimaryButton';
@@ -183,7 +182,14 @@ function AdminEditBlockPage() {
   return valid ? (
     <div>
       <Header />
-      <ScreenGrid>
+      <Grid
+        container
+        xs={12}
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+        sx={{ paddingTop: '5rem' }}
+      >
         <FormGrid>
           <Typography variant="h4" sx={{ textAlign: 'center' }}>
             Edit Block
@@ -387,7 +393,7 @@ function AdminEditBlockPage() {
             )}
           </FormCol>
         </FormGrid>
-      </ScreenGrid>
+      </Grid>
     </div>
   ) : (
     <div />
