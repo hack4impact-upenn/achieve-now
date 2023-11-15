@@ -93,10 +93,10 @@ function App() {
                     <Route path="/lessons" element={<FamilyLessonsPage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
-                    <Route
+                    {/* <Route
                       path="/admin-lessons"
                       element={<AdminLessonsPage />}
-                    />
+                    /> */}
                     <Route path="/admin-notes" element={<AdminNotesPage />} />
                   </Route>
                   <Route
