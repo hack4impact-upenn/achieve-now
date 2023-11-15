@@ -51,7 +51,7 @@ function AdminMenu() {
                 margin: 'auto',
               }}
               size="large"
-              href="/"
+              href="/admin-sessions"
               fullWidth
             >
               Sessions

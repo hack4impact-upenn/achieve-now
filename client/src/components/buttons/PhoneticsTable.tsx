@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import { PaginationTable, TColumn } from '../PaginationTable';
 import { useData } from '../../util/api';
 import { useAppSelector } from '../../util/redux/hooks';
@@ -11,7 +12,6 @@ import { selectUser } from '../../util/redux/userSlice';
 import IStudent from '../../util/types/student';
 import IUser from '../../util/types/user';
 import ILesson from '../../util/types/lesson';
-import Box from '@mui/material/Box';
 // import { Button } from '@mui/material';
 
 type PhoneticsTableProps = {
@@ -292,10 +292,9 @@ function PhoneticsTable({ teacherID }: PhoneticsTableProps) {
 
   return (
     <Box sx={{ width: '50%', height: '75%' }}>
-    <PaginationTable rows={rows} columns={columns} />
-  </Box>
+      <PaginationTable rows={rows} columns={columns} />
+    </Box>
   );
-  
 }
 
 export default PhoneticsTable;
