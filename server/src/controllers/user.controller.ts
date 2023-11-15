@@ -5,7 +5,7 @@
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import { getUserById } from '../services/user.service';
+import { getUserById, updateUser } from '../services/user.service';
 
 // get a specific student
 const getUser = async (
@@ -25,9 +25,34 @@ const getUser = async (
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
-        next(ApiError.internal('Unable to retrieve specified student'));
+        next(ApiError.internal('Unable to retrieve specified user'));
       })
   );
 };
 
-export { getUser };
+const putUser = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const user = req.body;
+
+  if (!id || !user) {
+    next(ApiError.internal('Request must include a valid userID param'));
+  }
+  console.log(id);
+  console.log(user);
+  return (
+    updateUser(id, user)
+      .then((user) => {
+        res.status(StatusCode.OK).send(user);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified user'));
+      })
+  );
+};
+
+export { getUser, putUser };

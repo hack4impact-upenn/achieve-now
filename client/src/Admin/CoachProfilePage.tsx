@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getData, postData, useData } from '../util/api';
+import { getData, postData, putData, useData } from '../util/api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { InputErrorMessage } from '../util/inputvalidation';
@@ -91,6 +91,7 @@ function CoachProfilePage() {
         mediaWaiver: coach.media_waiver.toString(),
         updates: coach.updates,
       };
+      setCoachName(`${user.firstName} ${user.lastName}`);
       setValueState(newValue);
     }
   }, [coach, user]);
@@ -132,7 +133,7 @@ function CoachProfilePage() {
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const valueTypeString in values) {
       const valueType = valueTypeString as ValueType;
-      if (!values[valueType]) {
+      if (!values[valueType] && valueType !== 'phone') {
         setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
         setShowError(valueTypeString, true);
         isValid = false;
@@ -149,15 +150,27 @@ function CoachProfilePage() {
         setErrorMessage('alert', 'No user is defined');
         return;
       }
-      postData(`coach/allInfo/${id}`, { values })
-        .then(() => {
-          setShowError('alert', true);
-          setErrorMessage('alert', 'Successfully updated!');
-        })
-        .catch((e: any) => {
-          setShowError('alert', true);
-          setErrorMessage('alert', e.message);
-        });
+      const newUserValues = { email: values.email, phone: values.phone };
+      const newUser = {
+        ...user,
+        ...newUserValues,
+      };
+      putData(`user/${coach?.user_id}`, newUser);
+
+      const newCoachValues = {
+        partner_site: values.partnerSite,
+        mailing_address: values.mailingAddress,
+        media_waiver: values.mediaWaiver,
+        updates: values.updates,
+      };
+      const newCoach = {
+        ...coach,
+        ...newCoachValues,
+      };
+      putData(`coach/${id}`, newCoach);
+
+      console.log(newUser);
+      console.log(newCoach);
     }
   }
 
@@ -196,7 +209,6 @@ function CoachProfilePage() {
             fullWidth
             error={showError.phone}
             helperText={errorMessage.phone}
-            required
             label="Phone Number"
             value={values.phone}
             type="phone"
@@ -252,7 +264,6 @@ function CoachProfilePage() {
             fullWidth
             error={showError.updates}
             helperText={errorMessage.updates}
-            required
             label="Notes / Updates"
             value={values.updates}
             onChange={(e) => setValue('updates', e.target.value)}

@@ -2,7 +2,7 @@
  * All the functions for interacting with user data in the MongoDB database
  */
 import { hash } from 'bcrypt';
-import { User } from '../models/user.model';
+import { IUser, User } from '../models/user.model';
 
 const passwordHashSaltRounds = 10;
 const removeSensitiveDataQuery = [
@@ -165,6 +165,10 @@ const updateUserInfo = async (
   return user;
 };
 
+const updateUser = async (id: string, user: IUser) => {
+  return await User.findByIdAndUpdate(id, user, { new: true }).exec();
+};
+
 export {
   passwordHashSaltRounds,
   createUser,
@@ -177,4 +181,5 @@ export {
   changeUserRole,
   deleteUserById,
   updateUserInfo,
+  updateUser,
 };

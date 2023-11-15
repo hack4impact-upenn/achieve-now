@@ -10,11 +10,12 @@ import {
   updateCoachAttendance,
   getStudentFromCoachById,
   getCoachById,
+  putCoach,
 } from '../controllers/coach.controller';
 
 const coachRouter = Router();
 
-coachRouter.get('/all', isAuthenticated, isAdmin, getAllCoaches);
+coachRouter.get('/all', getAllCoaches);
 
 coachRouter.post('/', isAuthenticated, isAdmin, createCoach);
 
@@ -39,5 +40,7 @@ coachRouter.get('/blocks/:id', isAuthenticated, isAdmin, getCoachBlocksById);
 coachRouter.get('/student/:id', isAuthenticated, getStudentFromCoachById);
 
 coachRouter.get('/:id', isAuthenticated, getCoachById);
+
+coachRouter.put('/:id', putCoach);
 
 export default coachRouter;

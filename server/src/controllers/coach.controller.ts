@@ -9,7 +9,7 @@ import {
   updateAttendance,
   getStudentFromCoach,
   getCoach,
-  getAllSitesInDB,
+  updateCoach,
 } from '../services/coach.service';
 import StatusCode from '../util/statusCode';
 
@@ -171,6 +171,26 @@ const getCoachById = async (
   res.status(StatusCode.OK).send(coach);
 };
 
+const putCoach = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const coach = req.body;
+
+  if (!id || !coach) {
+    next(ApiError.missingFields(['id', 'coach']));
+  }
+
+  const newCoach = await updateCoach(id, coach);
+  if (!coach) {
+    next(ApiError.notFound('Coach not found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(newCoach);
+};
+
 export {
   getAllCoaches,
   createCoach,
@@ -180,4 +200,5 @@ export {
   getCoachBlocksById,
   getStudentFromCoachById,
   getCoachById,
+  putCoach,
 };
