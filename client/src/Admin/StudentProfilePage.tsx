@@ -279,7 +279,6 @@ function StudentProfilePage() {
       progressFlag: student.progressFlag || false,
       attendanceFlag: student.attendanceFlag || false,
     };
-    console.log(newValue);
 
     const sortedLessonData = lessonData.sort((a: any, b: any) => {
       return a.number - b.number;
@@ -347,6 +346,7 @@ function StudentProfilePage() {
             label="School"
             value={values.school[0]}
             onChange={(e) => setValue('school', [e.target.value])}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 100 } } }}
           >
             {allSchools.map((school: any) => {
               return <MenuItem value={school.id}>{school.name}</MenuItem>;
@@ -364,6 +364,7 @@ function StudentProfilePage() {
             label="Teacher"
             value={values.teacher[0]}
             onChange={(e) => setValue('teacher', [e.target.value])}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 100 } } }}
           >
             {allTeachers.map((teacher: any) => {
               return (
@@ -388,6 +389,7 @@ function StudentProfilePage() {
             label="Lesson Level"
             value={values.lessonLevel}
             onChange={(e) => setValue('lessonLevel', e.target.value)}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 100 } } }}
           >
             {allLessons.map((lesson: any) => {
               return (
@@ -410,6 +412,7 @@ function StudentProfilePage() {
             label="Grade Level"
             value={values.grade}
             onChange={(e) => setValue('grade', e.target.value)}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 100 } } }}
           >
             {Array.from(Array(12).keys()).map((num) => {
               return <MenuItem value={num + 1}>{num + 1}</MenuItem>;
@@ -756,7 +759,7 @@ function StudentProfilePage() {
           onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
           control={
             <Switch
-              checked={values.progressFlag}
+              checked={values.attendanceFlag}
               onChange={() =>
                 setValue('attendanceFlag', !values.attendanceFlag)
               }
