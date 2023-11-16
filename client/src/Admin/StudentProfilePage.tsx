@@ -279,7 +279,6 @@ function StudentProfilePage() {
       progressFlag: student.progressFlag || false,
       attendanceFlag: student.attendanceFlag || false,
     };
-    console.log(newValue);
 
     const sortedLessonData = lessonData.sort((a: any, b: any) => {
       return a.number - b.number;
