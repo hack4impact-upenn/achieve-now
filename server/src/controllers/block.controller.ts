@@ -52,6 +52,7 @@ const putAddBlock = async (
   return (
     addBlock(
       req.body.day,
+      req.body.name,
       req.body.startTime,
       req.body.endTime,
       req.body.block,
@@ -63,6 +64,7 @@ const putAddBlock = async (
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
+        console.log(e);
         next(ApiError.internal('Unable to add block'));
       })
   );
@@ -75,7 +77,9 @@ const putEditBlock = async (
 ) => {
   return (
     editBlock(
+      req.body.blockId,
       req.body.day,
+      req.body.name,
       req.body.startTime,
       req.body.endTime,
       req.body.block,
@@ -104,6 +108,12 @@ const getBlockInfoByStudentId = async (
   }
   const block = await getBlockByStudentId(id);
   res.status(StatusCode.OK).send(block);
-}
+};
 
-export { getBlockInfoById, getBlockInfo, putAddBlock, putEditBlock, getBlockInfoByStudentId };
+export {
+  getBlockInfoById,
+  getBlockInfo,
+  putAddBlock,
+  putEditBlock,
+  getBlockInfoByStudentId,
+};

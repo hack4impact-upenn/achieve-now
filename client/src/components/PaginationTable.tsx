@@ -47,7 +47,8 @@ interface TRow {
 /**
  * Our pagination table is set up by passing in a row component for each row.
  * This is the row component for a table of users.
- * @param columns - an array of TColumn objects that define the columns of the table.
+ * @param columns - an array of TColumn
+ * objects that define the columns of the table.
  * @param row  - a object type containing a unique key for the row and props mapping each column id to a value. If the column id is not present, the corresponding cell will be empty
  * @returns User Row component, to be used in a user-specific pagination table.
  */

@@ -11,6 +11,8 @@ import {
   getStudentFromCoachById,
   getCoachById,
   putCoach,
+  updateProgress,
+  deleteProgress,
 } from '../controllers/coach.controller';
 
 const coachRouter = Router();
@@ -42,5 +44,7 @@ coachRouter.get('/student/:id', isAuthenticated, getStudentFromCoachById);
 coachRouter.get('/:id', isAuthenticated, getCoachById);
 
 coachRouter.put('/:id', putCoach);
+coachRouter.put('/progress/:id', updateProgress);
+coachRouter.delete('/progress/:id/:date', deleteProgress);
 
 export default coachRouter;
