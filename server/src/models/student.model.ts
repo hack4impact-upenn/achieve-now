@@ -39,13 +39,12 @@ const StudentSchema = new mongoose.Schema({
     default: [],
   },
   progress_stats: {
-    type: Map,
-    of: {
+    attendance: {
       type: Map,
       of: String,
+      required: false,
+      default: {},
     },
-    required: false,
-    default: {},
   },
   parent_name: {
     type: String,
@@ -133,7 +132,9 @@ interface IStudent extends mongoose.Document {
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];
-  progress_stats: Map<string, Map<string, string>>;
+  progress_stats: {
+    attendance: Map<number, string>;
+  };
   parent_name: string;
   parent_communication_days: string;
   parent_communication_times: string;
