@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Grid } from '@mui/material';
 import ScreenGrid from '../components/ScreenGrid';
 import StudentTable from './StudentTable';
-import InviteUserButton from '../components/buttons/InviteUserButton';
+import InviteStudentButton from '../components/buttons/InviteStudentButton';
 
 /**
  * A page only accessible to admins that displays all users in a table and allows
@@ -15,7 +15,7 @@ function StudentDashboardPage() {
         <Typography variant="h2">Welcome to the Student Dashboard</Typography>
       </Grid>
       <Grid item container width="60vw" justifyContent="flex-end">
-        <InviteUserButton />
+        <InviteStudentButton />
       </Grid>
       <Grid item>
         <div style={{ height: '60vh', width: '60vw' }}>
