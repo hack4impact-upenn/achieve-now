@@ -111,7 +111,10 @@ function AdminAddBlockPage() {
       startTime === '' ||
       endTime === '' ||
       zoom === '' ||
-      teacher === null
+      teacher === null ||
+      pairs.length === 0 ||
+      pairs[0][0] === null ||
+      pairs[0][1] === null
     ) {
       setError(true);
       return;

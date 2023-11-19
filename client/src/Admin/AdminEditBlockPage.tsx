@@ -279,6 +279,7 @@ function AdminEditBlockPage() {
                   <Grid
                     display="flex"
                     flexDirection="row"
+                    gap={2}
                     sx={{
                       marginTop: '10px',
                     }}
