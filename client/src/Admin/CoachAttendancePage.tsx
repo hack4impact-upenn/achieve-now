@@ -62,7 +62,7 @@ function CoachAttendancePage() {
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
 
-  const fetchData = async () => {
+  const fetchData = async (curSearch: string, curBlock: string) => {
     const result = await axios.get('http://localhost:4000/api/coach/all');
     const coaches = result.data as any[];
     const blockList: string[] = [];
@@ -76,10 +76,11 @@ function CoachAttendancePage() {
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
         res = await axios.get(
-          `http://localhost:4000/api/coach/blocks/${coach.user_id}`,
+          // eslint-disable-next-line no-underscore-dangle
+          `http://localhost:4000/api/coach/blocks/${coach._id}`,
         );
         coaches[index] = {
-          ...coach,
+          ...coaches[index],
           blocks: res.data,
         };
         res.data.forEach((block: string) => {
@@ -103,12 +104,19 @@ function CoachAttendancePage() {
       });
     });
     setRawData({ dates, attendance: attendances });
-    setData({ dates, attendance: attendances });
+    setData({
+      dates,
+      attendance: attendances.filter(
+        (coach) =>
+          coach.name.includes(curSearch) &&
+          (curBlock === 'All Blocks' || coach.blocks.includes(curBlock)),
+      ),
+    });
     setBlocks(blockList);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData('', 'All Blocks');
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,14 +145,14 @@ function CoachAttendancePage() {
     await axios.put('http://localhost:4000/api/coach/attendance/create', {
       date,
     });
-    fetchData();
+    fetchData(search, filterBlock);
   };
 
   const deleteDate = async (date: number) => {
     await axios.put('http://localhost:4000/api/coach/attendance/delete', {
       date,
     });
-    fetchData();
+    fetchData(search, filterBlock);
   };
 
   const handleChangeAttendance = async (
@@ -157,7 +165,7 @@ function CoachAttendancePage() {
       date,
       attendance,
     });
-    fetchData();
+    fetchData(search, filterBlock);
   };
 
   return (
@@ -183,7 +191,7 @@ function CoachAttendancePage() {
         <Typography variant="h3">Coach Attendance</Typography>
         <Stack direction="row" spacing={2}>
           <TextField
-            label="search"
+            label="Search"
             placeholder="Enter a Name..."
             variant="outlined"
             onChange={handleSearch}
@@ -214,6 +222,7 @@ function CoachAttendancePage() {
           padding: '2rem',
           flexDirection: 'row',
           justifyContent: 'start',
+          overflowX: 'scroll',
         }}
       >
         <Table>
