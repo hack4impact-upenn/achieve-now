@@ -9,6 +9,7 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
+import StudentDashboardPage from './Teacher/StudentDashboard';
 import LessonsPage from './Lessons/LessonsPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
@@ -38,7 +39,6 @@ import AdminEditBlockPage from './Admin/AdminEditBlockPage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
-import LessonLevels from './components/LessonLevels';
 import AdminAttendance from './Admin/AdminAttendance';
 import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
@@ -126,10 +126,6 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/admin-lessons"
-                      element={<AdminLessonsPage />}
-                    />
-                    <Route
                       path="/admin-notes/:studentId"
                       element={<AdminNotesPage />}
                     />
@@ -162,8 +158,8 @@ function App() {
                       element={<CoachLandingPage />}
                     />
                     <Route
-                      path="/teacher-dashboard/:id"
-                      element={<LessonLevels />}
+                      path="/student-dashboard"
+                      element={<StudentDashboardPage />}
                     />
                     <Route
                       path="/admin-attendance"

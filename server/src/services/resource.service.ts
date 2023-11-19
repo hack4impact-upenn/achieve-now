@@ -34,6 +34,7 @@ const getLessonResources = async (lessonId: string) => {
 };
 
 const updateResource = async (resourceId: string, resource: IResource) => {
+  console.log(resourceId);
   const updatedResource = await Resource.findByIdAndUpdate(
     resourceId,
     resource,
