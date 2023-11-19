@@ -11,9 +11,56 @@ const getLessonById = async (id: string) => {
   return lesson;
 };
 
-const getAllLessonsfromDB = async () => {
+const getLessonByLevel = async (level: string) => {
+  const lesson = await Lesson.findOne({ level }).exec();
+  return lesson;
+};
+
+const getAllLessonsFromDB = async () => {
   const lessonList = await Lesson.find({}).exec();
   return lessonList;
 };
 
-export { getLessonById, getAllLessonsfromDB };
+const deleteResource = async (id: string, role: string, resourceId: string) => {
+  if (role === 'parent') {
+    const lesson = await Lesson.findOneAndUpdate(
+      { id },
+      { $pull: { parent_resources: resourceId } },
+    ).exec();
+    return lesson;
+  }
+  if (role === 'coach') {
+    const lesson = await Lesson.findOneAndUpdate(
+      { id },
+      { $pull: { coach_resources: resourceId } },
+    ).exec();
+    return lesson;
+  }
+  return null;
+};
+
+const addResource = async (id: string, role: string, resourceId: string) => {
+  if (role === 'parent') {
+    const lesson = await Lesson.findOneAndUpdate(
+      { id },
+      { $push: { parent_resources: resourceId } },
+    ).exec();
+    return lesson;
+  }
+  if (role === 'coach') {
+    const lesson = await Lesson.findOneAndUpdate(
+      { id },
+      { $push: { coach_resources: resourceId } },
+    ).exec();
+    return lesson;
+  }
+  return null;
+};
+
+export {
+  getLessonById,
+  getLessonByLevel,
+  getAllLessonsFromDB,
+  deleteResource,
+  addResource,
+};

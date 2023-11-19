@@ -1,19 +1,38 @@
+/**
+ * All the functions for interacting with school data in the MongoDB database
+ */
 import { School } from '../models/school.model';
 
 /**
- * Gets a user from the database by their id but doesn't include the
- * password in the returned user.
- * @param id The id of the user to get.
- * @returns The {@link User} or null if the user was not found.
+ * createSchool creates a school in the database
+ * @returns the newly created school
  */
-const getSchoolById = async (id: string) => {
-  const school = await School.findById(id).exec();
+const createSchoolInDB = async (name: string, info: string) => {
+  const newSchool = new School({
+    name,
+    info,
+  });
+  const school = await newSchool.save();
   return school;
 };
 
-const getAllSchoolsfromDB = async () => {
-  const schoolList = await School.find({}).exec();
+/**
+ * @returns All the {@link School}s in the database.
+ */
+const getAllSchoolsInDB = async () => {
+  const schoolList = await School.find({});
   return schoolList;
 };
 
-export { getSchoolById, getAllSchoolsfromDB };
+/**
+ * A function that updates a school's attendance
+ * @param id: The id of the school to query
+ * @returns The updated {@link School}
+ */
+const getSchoolByIdInDB = async (id: string) => {
+  const school = await School.findById(id);
+
+  return school;
+};
+
+export { createSchoolInDB, getAllSchoolsInDB, getSchoolByIdInDB };

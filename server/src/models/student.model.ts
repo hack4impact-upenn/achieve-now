@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const StudentSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -172,5 +171,4 @@ interface IStudent extends mongoose.Document {
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
-
 export { IStudent, Student };
