@@ -39,8 +39,8 @@ function StudentConcernsCard(props: any) {
   const { students, title, description } = props;
   const [showMore, setShowMore] = useState(false);
   return (
-    <Card sx={{ marginBotom: '30px' }}>
-      <CardContent sx={{ marginBotom: '30px' }}>
+    <Card sx={{ marginBottom: '30px' }}>
+      <CardContent sx={{ marginBottom: '30px' }}>
         <Typography
           color="text-primary"
           sx={{ fontSize: 30, fontWeight: 'bold' }}
@@ -85,12 +85,6 @@ function SplitGrid() {
   const students = useData(`student/teacher/${finalId}`);
   const studentData = students?.data ?? [];
 
-  // const student_users = []
-  // for (let i = 0; i < studentData.length; i++) {
-  //   const user_id = studentData[i].user_id;
-  //   const user = useData(`users/${id}`);
-  //   student_users.push(user);
-  // }
   const academicFlags = studentData.filter(
     (student: any) => student.progressFlag,
   );

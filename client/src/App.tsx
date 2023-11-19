@@ -48,7 +48,6 @@ function App() {
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
-                    {/* <Route path="/teacher" element={<TeacherDashboard />} /> */}
                     <Route path="/resource" element={<ResourceDashboard />} />
                     <Route
                       path="/resource/:id"
@@ -94,11 +93,8 @@ function App() {
                     <Route path="/lessons" element={<FamilyLessonsPage />} />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
-                    <Route path="/teacher" element={<TeacherDashboard />} />
-                  </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
                     <Route
-                      path="/teacher/:teacherID"
+                      path="/teacher-dashboard"
                       element={<TeacherDashboard />}
                     />
                   </Route>
