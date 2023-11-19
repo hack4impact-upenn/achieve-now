@@ -85,13 +85,21 @@ function AdminSessionsPage() {
               >
                 {day}
               </Typography>
-              <Box display="flex" justifyContent="left">
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'left',
+                  width: '60vw',
+                  overflowX: 'auto',
+                }}
+              >
                 {Object.keys(blockDict[day]).map((slot) => (
                   <Box
                     // key={session.key}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
+                      width: theme.spacing(30),
                       alignItems: 'center',
                       padding: theme.spacing(2),
                       margin: theme.spacing(3),
