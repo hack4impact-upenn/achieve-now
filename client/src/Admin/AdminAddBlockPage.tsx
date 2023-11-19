@@ -18,10 +18,18 @@ import theme from '../assets/theme';
 import FormGrid from '../components/form/FormGrid';
 import FormCol from '../components/form/FormCol';
 import PrimaryButton from '../components/buttons/PrimaryButton';
-import { useData } from '../util/api';
+import { getData, putData, useData } from '../util/api';
 import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
 import { addBlock } from '../Home/api';
+import IBlock from '../util/types/block';
+import ICoach from '../util/types/coach';
+import { ScreenshotMonitorRounded } from '@mui/icons-material';
+
+interface ResolvedReq {
+  data: any | null;
+  error: Error | any | null;
+}
 
 interface submitState {
   day: string;
@@ -84,6 +92,11 @@ function AdminAddBlockPage() {
 
   const users = useData('admin/all');
   const studentList = useData('student/all');
+  const blocks = useData('block/all');
+
+  const [studentsInBlock, setStudentsInBlock] = useState<string[]>([]);
+  const [coachesInBlock, setCoachesInBlock] = useState<string[]>([]);
+  const [blockNames, setBlockNames] = useState<string[]>([]);
 
   useEffect(() => {
     const data = users?.data || [];
@@ -95,6 +108,34 @@ function AdminAddBlockPage() {
   useEffect(() => {
     setStudents(studentList?.data || []);
   }, [studentList]);
+
+  useEffect(() => {
+    const blockData: IBlock[] = studentList?.data;
+    if (blockData) {
+      var blockNames: string[] = [];
+      var studentPromises: Promise<ResolvedReq>[] = [];
+      var blockStudentIds: string[] = [];
+      blockData.forEach((block: IBlock) => {
+        blockNames.push(block.name);
+        block.students.forEach((student_id: string) => {
+          blockStudentIds.push(student_id);
+          studentPromises.push(
+            getData(`student/${student_id}`),
+          );
+        });
+      });
+      var blockCoachIds: string[] = [];
+      Promise.all(studentPromises).then((students: ResolvedReq[]) => {
+        students.forEach((res: ResolvedReq) => {
+          if (res.data?.coach_id) {
+            blockCoachIds.push(res.data?.coach_id);
+          };
+        });
+      }).finally(() => setCoachesInBlock(blockCoachIds as string[]));
+      setBlockNames(blockNames);
+      setStudentsInBlock(blockStudentIds);
+    }
+  }, [blocks]);
 
   const handleDayChange = (event: SelectChangeEvent) => {
     setDay(event.target.value as string);
