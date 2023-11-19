@@ -3,7 +3,7 @@
  * student users.
  */
 // eslint-disable-next-line
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import {

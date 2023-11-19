@@ -3,6 +3,7 @@
  */
 import mongoose from 'mongoose';
 import { IResource, Resource } from '../models/resource.model';
+import { Lesson } from '../models/lesson.model';
 
 /**
  * @returns All the {@link Resource}s in the database without their passwords.
