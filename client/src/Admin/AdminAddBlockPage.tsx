@@ -40,6 +40,7 @@ function AdminAddBlockPage() {
   ]);
 
   const [error, setError] = useState(false);
+  const [nameError, setNameError] = useState('');
 
   const users = useData('admin/all');
   const studentList = useData('student/all');
@@ -62,7 +63,14 @@ function AdminAddBlockPage() {
   const handleNameChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    setName(event.target.value as string);
+    const newName = event.target.value;
+
+    if (newName.length <= 26) {
+      setName(newName);
+      setNameError('');
+    } else {
+      setNameError('Name cannot exceed 26 characters');
+    }
   };
 
   const handleStartTimeChange = (
@@ -169,6 +177,11 @@ function AdminAddBlockPage() {
                 variant="standard"
                 placeholder="Name"
               />
+              {nameError && (
+                <Typography justifyContent="center" color="red">
+                  {nameError}
+                </Typography>
+              )}
             </Grid>
             <Grid item width="1">
               <Typography variant="subtitle1">Start Time</Typography>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { Button, Box, Typography } from '@mui/material';
 import { BlockOutlined } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import { useData } from '../util/api';
@@ -56,21 +57,23 @@ function AdminSessionsPage() {
           >
             Sessions
           </Typography>
-          <Button
-            variant="outlined"
-            sx={{
-              position: 'absolute',
-              right: '0%',
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-            }}
-          >
-            Add Block
-          </Button>
+          <Link to="/admin-add-block">
+            <Button
+              variant="outlined"
+              sx={{
+                position: 'absolute',
+                right: '0%',
+                backgroundColor: 'white',
+                borderColor: 'black',
+                '&:hover': {
+                  backgroundColor: 'grey.200',
+                },
+                width: theme.spacing(20),
+              }}
+            >
+              Add Block
+            </Button>
+          </Link>
         </Box>
 
         <Box p={4}>
@@ -88,21 +91,21 @@ function AdminSessionsPage() {
               <Box
                 style={{
                   display: 'flex',
+                  flexWrap: 'wrap',
                   justifyContent: 'left',
-                  width: '60vw',
-                  overflowX: 'auto',
+                  width: '70vw',
                 }}
               >
                 {Object.keys(blockDict[day]).map((slot) => (
                   <Box
-                    // key={session.key}
+                    key={slot}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
                       width: theme.spacing(30),
                       alignItems: 'center',
                       padding: theme.spacing(2),
-                      margin: theme.spacing(3),
+                      margin: theme.spacing(1.5),
                       backgroundColor: 'LightGray',
                       borderRadius: '8px',
                     }}
@@ -116,15 +119,26 @@ function AdminSessionsPage() {
                       {moment(
                         blockDict[day][slot][0].startTime,
                         'HH:mm',
-                      ).format('LT')}
-                      -
+                      ).format('LT')}{' '}
+                      -{' '}
                       {moment(blockDict[day][slot][0].endTime, 'HH:mm').format(
                         'LT',
                       )}
                     </Typography>
-                    {blockDict[day][slot].map((block: IBlock) => (
-                      <Typography variant="subtitle1">{block.name}</Typography>
-                    ))}
+                    {blockDict[day][slot].map((block: IBlock) =>
+                      // eslint-disable-next-line
+                      block && block._id ? (
+                        <a
+                          // eslint-disable-next-line
+                          href={`admin-edit-block/${block._id}`}
+                          style={{ color: theme.palette.primary.main }}
+                        >
+                          <Typography variant="subtitle1">
+                            {block.name}
+                          </Typography>
+                        </a>
+                      ) : null,
+                    )}
                   </Box>
                 ))}
               </Box>
