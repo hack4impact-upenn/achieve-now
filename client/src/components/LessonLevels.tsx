@@ -51,7 +51,7 @@ function LessonLevels() {
   }, [id]);
 
   return (
-    <Card sx={{ width: '400px', height: '400px' }}>
+    <Card sx={{ width: '100%', height: '400px' }}>
       <CardContent sx={{ width: '100%', height: '100%' }}>
         <Bar
           options={{
@@ -98,10 +98,10 @@ function LessonLevels() {
                 mode: 'index',
                 intersect: false,
                 callbacks: {
-                  title(context : any) {
+                  title(context: any) {
                     return `Lesson Level: ${context[0].parsed.x}`;
                   },
-                  label(context : any) {
+                  label(context: any) {
                     let label = context.dataset.label || '';
 
                     if (label) {

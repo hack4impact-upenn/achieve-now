@@ -8,11 +8,11 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
+import { Grid } from '@mui/material';
 import { useData } from './util/api';
 import { StudentCardFromID } from './Admin/StudentCard';
 import PageHeader from './components/PageHeader';
 import PhoneticsTable from './components/buttons/PhoneticsTable';
-import { Grid } from '@mui/material';
 import LessonLevels from './components/LessonLevels';
 
 const ScrollableBox = styled(Box)({
@@ -78,11 +78,11 @@ function SplitGrid() {
   // const studentData = students?.data ?? [];
 
   const { teacherID } = useParams();
-  let final_id = '111';
+  let finalId = '111';
   if (teacherID) {
-    final_id = teacherID;
+    finalId = teacherID;
   }
-  const students = useData(`student/teacher/${final_id}`);
+  const students = useData(`student/teacher/${finalId}`);
   const studentData = students?.data ?? [];
 
   // const student_users = []
@@ -107,14 +107,14 @@ function SplitGrid() {
             sx={{
               width: '30%',
               overflowY: 'auto',
-              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
+              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height
               bgcolor: 'white',
               p: 2,
             }}
             elevation={0}
             square
           >
-            <h2>Students</h2>
+            <h2>Student</h2>
             {createData(studentData)}
           </Paper>
 
@@ -122,41 +122,46 @@ function SplitGrid() {
             sx={{
               width: '70%',
               overflowY: 'auto',
-              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height (default is 64px)
+              maxHeight: 'calc(100vh - 64px)', // Subtract the Toolbar height
               bgcolor: '#EDEDED',
               p: 2,
-              paddingX: 4,
+              display: 'flex',
+              flexDirection: 'column',
             }}
             elevation={0}
             square
           >
-            <h2>Class Progress</h2>
-            <Grid item xs={8}>
-              {academicFlags.length > 0 && ( // TODO: Passed in teacher ID
-                <StudentConcernsCard
-                  students={academicFlags}
-                  title="Academic Concerns"
-                  description="Students with a poor academic progress pattern"
-                />
-              )}
-            </Grid>
-            <Grid item xs={8}>
-              {attendanceFlags.length > 0 && (
-                <div style={{ marginTop: '10px' }}>
-                  <StudentConcernsCard
-                    students={attendanceFlags}
-                    title="Attendance Concerns"
-                    description="Students with a poor attendance pattern"
-                  />
-                </div>
-              )}
-            </Grid>
-            <Grid item xs={8}>
-              <PhoneticsTable teacherID={final_id} />
-            </Grid>
-            <Grid item xs={8}>
-              <LessonLevels/>
-            </Grid>
+            <Box sx={{ marginBottom: 2 }}>
+              <h2>Class Progress</h2>
+            </Box>
+
+            <Box display="flex" flexDirection="row" width="100%">
+              <Box width="50%" paddingRight={2}>
+                <LessonLevels />
+                {academicFlags.length > 0 && (
+                  <Box marginTop={2}>
+                    <StudentConcernsCard
+                      students={academicFlags}
+                      title="Academic Concerns"
+                      description="Students with a poor academic progress pattern"
+                    />
+                  </Box>
+                )}
+                {attendanceFlags.length > 0 && (
+                  <Box marginTop={2}>
+                    <StudentConcernsCard
+                      students={attendanceFlags}
+                      title="Attendance Concerns"
+                      description="Students with a poor attendance pattern"
+                    />
+                  </Box>
+                )}
+              </Box>
+
+              <Box width="50%" paddingLeft={2}>
+                <PhoneticsTable teacherID={finalId} />
+              </Box>
+            </Box>
           </Paper>
         </Box>
       </Box>
