@@ -40,6 +40,7 @@ function SchoolProfileTable() {
         .getMinutes()
         .toString()
         .padStart(2, '0')}`;
+      // eslint-disable-next-line
     } else if (typeof time === 'string') {
       // Assuming the string is in a valid date format, you may need to adjust this based on your data
       const date = new Date(time);
@@ -151,7 +152,7 @@ function SchoolProfileTable() {
   return (
     <Box>
       <TextField
-        sx={{ m: 2 }}
+        sx={{ mb: 2 }}
         label="Search"
         defaultValue="School Name"
         onChange={handleSearch}

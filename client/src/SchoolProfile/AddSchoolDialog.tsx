@@ -3,10 +3,17 @@ import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
-import React, { useState } from 'react';
+import { Theme, useTheme } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import ISchool from '../util/types/school';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+import MenuItem from '@mui/material/MenuItem';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Box from '@mui/material/Box';
+import { useData } from '../util/api';
+import IUser from '../util/types/user';
 
 interface AddSchoolProps {
   open: boolean;
@@ -14,8 +21,8 @@ interface AddSchoolProps {
   addSchool: (
     name: string,
     info: string,
-    teachers: string,
     admin_name: string,
+    teachers: string[],
     admin_content: string,
     calendar_link: string,
     school_start_time: Date | null,
@@ -30,7 +37,7 @@ interface AddSchoolProps {
 function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
   const [name, setName] = useState<string>('');
   const [info, setInfo] = useState<string | ''>('');
-  const [teachers, setTeachers] = useState<string | ''>('');
+  const [teachers, setTeachers] = useState<string[] | []>([]);
   const [admin_name, setAdminName] = useState<string | ''>('');
   const [admin_content, setAdminContent] = useState<string | ''>('');
   const [calendar_link, setCalendarLink] = useState<string | ''>('');
@@ -45,6 +52,26 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
   const [second_grade_lunch_end_time, setSecondGradeLunchEndTime] =
     useState<Date | null>(null);
 
+  const [userList, setUserList] = useState<IUser[]>([]);
+  const [teacherList, setTeacherList] = useState<IUser[]>([]);
+  const [teacherNames, setTeacherNames] = useState<string[]>([]);
+  const users = useData('admin/all');
+
+  useEffect(() => {
+    const allUsers = users?.data || [];
+    let filteredUsers = allUsers;
+    filteredUsers = filteredUsers.filter((user: IUser) => {
+      return user.role === 'teacher';
+    });
+    setUserList(allUsers);
+    setTeacherList(filteredUsers);
+    const names: string[] = [];
+    filteredUsers.map((teacher: IUser) =>
+      names.push(`${teacher.firstName} ${teacher.lastName}`),
+    );
+    setTeacherNames(names);
+  }, [users]);
+
   const handleSubmit = () => {
     if (!name || !info) {
       return;
@@ -52,8 +79,8 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
     addSchool(
       name,
       info,
-      teachers,
       admin_name,
+      teachers,
       admin_content,
       calendar_link,
       school_start_time,
@@ -67,6 +94,22 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
     setOpen(false);
   };
 
+  const [teacherName, setTeacherName] = React.useState<string[]>([]);
+
+  const handleChange = (event: SelectChangeEvent<typeof teacherName>) => {
+    const {
+      target: { value },
+    } = event;
+    setTeacherName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+    setTeachers(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle sx={{ textAlign: 'center' }}>Add School</DialogTitle>
@@ -76,37 +119,47 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
         <Stack direction="column" spacing={2}>
           <TextField
             label="School Name"
-            defaultValue="School Name"
             onChange={(event) => setName(event.target.value)}
           />
           <br />
           <TextField
             label="Info"
-            defaultValue="Info"
             onChange={(event) => setInfo(event.target.value)}
           />
           <br />
-          <TextField
+          <Select
+            multiple
+            value={teacherName}
+            onChange={handleChange}
             label="Teachers"
-            defaultValue="Teachers"
-            onChange={(event) => setTeachers(event.target.value)}
-          />
+            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+          >
+            {teacherNames.map((nameValue) => (
+              <MenuItem key={nameValue} value={nameValue}>
+                {nameValue}
+              </MenuItem>
+            ))}
+          </Select>
           <br />
           <TextField
             label="Admin Name"
-            defaultValue="Admin Name"
             onChange={(event) => setAdminName(event.target.value)}
           />
           <br />
           <TextField
             label="Admin Content"
-            defaultValue="Admin Content"
             onChange={(event) => setAdminContent(event.target.value)}
           />
           <br />
           <TextField
             label="Calendar Link"
-            defaultValue="Calendar Link"
             onChange={(event) => setCalendarLink(event.target.value)}
           />
           <br />

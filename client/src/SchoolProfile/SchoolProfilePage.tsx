@@ -11,7 +11,6 @@ import DeleteSchoolDialog from './DeleteSchoolDialog';
 import EditSchoolDialog from './EditSchoolDialog';
 import { useData, postData, putData } from '../util/api';
 import ISchool from '../util/types/school';
-import Box from '@mui/material/Box';
 
 function SchoolProfilePage() {
   const navigate = useNavigate();
@@ -39,7 +38,7 @@ function SchoolProfilePage() {
     name: string,
     info: string,
     admin_name: string,
-    teachers: string,
+    teachers: string[],
     admin_content: string,
     calendar_link: string,
     school_start_time: Date | null,
@@ -54,7 +53,7 @@ function SchoolProfilePage() {
         name,
         info,
         admin_name,
-        teachers: [],
+        teachers,
         admin_content,
         calendar_link,
         school_start_time,
@@ -104,6 +103,7 @@ function SchoolProfilePage() {
       };
       // update putData
       const promise = await putData(`school/update`, newSchool);
+      // eslint-disable-next-line
       const removed = tableData.filter((r: ISchool) => r._id !== id);
       setTableData([promise.data, ...removed]);
     } catch (error) {
@@ -114,10 +114,12 @@ function SchoolProfilePage() {
   const deleteSchool = async (schoolId: string) => {
     try {
       await putData(`school/delete`, { id: schoolId });
-      const updatedTableData = tableData.filter(
-        (item) => item._id !== schoolId /* eslint no-underscore-dangle: 0 */,
+
+      // Update state without refreshing the page
+      setTableData((prevTableData) =>
+        // eslint-disable-next-line
+        prevTableData.filter((item) => item._id !== schoolId),
       );
-      setTableData(updatedTableData);
     } catch (error) {
       console.log('error deleting');
     }
