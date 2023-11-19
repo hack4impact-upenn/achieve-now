@@ -49,9 +49,10 @@ export function submitError({
     endTime === '' ||
     zoom === '' ||
     teacher === null ||
-    pairs.length === 0 ||
+    pairs.length === 0 || // checking if no students in block
     pairs[0][0] === null ||
-    pairs[0][1] === null
+    pairs[0][1] === null ||
+    endTime < startTime
   ) {
     return true;
   }
