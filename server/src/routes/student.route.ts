@@ -54,7 +54,7 @@ router.post('/resource/all/:id', getAllStudentResources);
  * A GET route to get all resources for a given teacher email, it returns all the students
  * associated with the teacher
  */
-router.get('/students-by-teacher/:email', getStudentsByTeacherID);
+router.get('/students-by-teacher/:email', isAuthenticated, isTeacher, getStudentsByTeacherID);
 
 /**
  * A GET route to get all students.
