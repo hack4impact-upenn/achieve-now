@@ -99,11 +99,6 @@ function App() {
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
                     />
-<<<<<<< HEAD
-                  </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
-                    <Route path="/lessons" element={<FamilyLessonsPage />} />
-=======
                     <Route
                       path="/admin-add-block"
                       element={<AdminAddBlockPage />}
@@ -112,7 +107,6 @@ function App() {
                       path="/admin-edit-block/:id"
                       element={<AdminEditBlockPage />}
                     />
->>>>>>> main
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route
