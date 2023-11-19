@@ -5,6 +5,7 @@
  * student users.
  */
 import express from 'express';
+import crypto from 'crypto';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import { IStudent } from '../models/student.model';
@@ -26,7 +27,14 @@ import {
 import { getLessonById } from '../services/lesson.service';
 import { getUserByEmail, getUserById } from '../services/user.service';
 import { use } from 'passport';
+import {
+  createInvite,
+  getInviteByEmail,
+  updateInvite,
+} from '../services/invite.service';
+import { IInvite } from '../models/invite.model';
 import { IUser } from '../models/user.model';
+import { emailInviteLink } from '../services/mail.service';
 
 /**
  * Get students by teacher_id
@@ -592,11 +600,40 @@ const deleteProgress = async (
   res.status(StatusCode.OK).send(coach);
 };
 
+const inviteStudent = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email, role } = req.body;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
+  if (!email.match(emailRegex)) {
+    next(ApiError.badRequest('Invalid email'));
+  }
+  const lowercaseEmail = email.toLowerCase();
+  const existingInvite: IInvite | null = await getInviteByEmail(lowercaseEmail);
+
+  try {
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    if (existingInvite) {
+      await updateInvite(existingInvite, verificationToken);
+    } else {
+      await createInvite(lowercaseEmail, verificationToken, role);
+    }
+
+    await emailInviteLink(lowercaseEmail, verificationToken);
+    res.sendStatus(StatusCode.CREATED);
+  } catch (err) {
+    next(ApiError.internal('Unable to invite user.'));
+  }
+};
+
 /**
  * Middleware to check if a user is an student using Passport Strategy
  * and creates an {@link ApiError} to pass on to error handlers if not
  */
-const isStudent = (
+const isTeacher = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
@@ -608,11 +645,12 @@ const isStudent = (
     next(ApiError.unauthorized('Not a valid user.')); // TODO: see if this is the correct message
     return;
   }
-  // Check if the user is an student
-  if (user.role === 'parent') {
+
+  // Check if the user is an teacher
+  if (user.role === 'teacher') {
     next();
   } else {
-    next(ApiError.unauthorized('Is not a student.'));
+    next(ApiError.unauthorized('Is not a teacher.'));
   }
 };
 
@@ -631,5 +669,6 @@ export {
   deleteStudentAttendanceByDate,
   updateProgress,
   deleteProgress,
-  isStudent,
+  inviteStudent,
+  isTeacher,
 };
