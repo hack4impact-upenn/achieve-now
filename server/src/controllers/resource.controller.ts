@@ -3,13 +3,14 @@
  * student users.
  */
 // eslint-disable-next-line
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import {
   getAllResourcesFromDB,
   createResource,
   updateResource,
+  deleteResource,
 } from '../services/resource.service';
 
 /**
@@ -62,4 +63,17 @@ const createResourceHandler = async (
     });
 };
 
-export { updateResourceHandler, createResourceHandler, getAllResources };
+const deleteResourceHandler: RequestHandler = async (req, res) => {
+  const { resourceId } = req.params;
+  console.log(resourceId);
+  const deletedResource = await deleteResource(resourceId);
+  console.log(deletedResource);
+  res.status(StatusCode.OK).send(deletedResource);
+};
+
+export {
+  updateResourceHandler,
+  createResourceHandler,
+  getAllResources,
+  deleteResourceHandler,
+};

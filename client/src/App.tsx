@@ -34,11 +34,11 @@ import OnboardingPage from './Authentication/OnboardingPage';
 import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import AdminResourcesPage from './Admin/AdminResourcesPage';
 import AdminEditBlockPage from './Admin/AdminEditBlockPage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
-import LessonLevels from './components/LessonLevels';
 import AdminAttendance from './Admin/AdminAttendance';
 import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
@@ -126,14 +126,14 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/admin-lessons"
-                      element={<AdminLessonsPage />}
-                    />
-                    <Route
                       path="/admin-notes/:studentId"
                       element={<AdminNotesPage />}
                     />
                   </Route>
+                  <Route
+                    element={<AdminResourcesPage />}
+                    path="/admin-resources"
+                  />
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin-student-attendance"
