@@ -227,6 +227,7 @@ function AdminAddBlockPage() {
                   <Grid
                     display="flex"
                     flexDirection="row"
+                    gap={theme.spacing(2)}
                     sx={{
                       marginTop: '10px',
                     }}
