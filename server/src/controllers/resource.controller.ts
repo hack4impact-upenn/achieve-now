@@ -2,14 +2,13 @@
  * All the controller functions containing the logic for routes relating to
  * student users.
  */
+// eslint-disable-next-line
 import express from 'express';
-import { RequestHandler } from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import {
   getAllResourcesFromDB,
   createResource,
-  getLessonResources,
   updateResource,
   deleteResource,
 } from '../services/resource.service';
@@ -44,21 +43,34 @@ const getLessonResourcesHandler: RequestHandler = async (req, res) => {
   res.status(StatusCode.OK).send(resources);
 };
 
-const updateResourceHandler: RequestHandler = async (req, res) => {
+const updateResourceHandler = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
   const { resourceId } = req.params;
   const resource = req.body;
   const updatedResource = await updateResource(resourceId, resource);
   if (!updatedResource) {
-    res.sendStatus(StatusCode.NOT_FOUND);
-    return;
+    next(ApiError.badRequest('no resources found'));
   }
   res.status(StatusCode.OK).send(updatedResource);
 };
 
-const createResourceHandler: RequestHandler = async (req, res) => {
+const createResourceHandler = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
   const resource = req.body;
-  const newResource = await createResource(resource);
-  res.status(StatusCode.OK).send(newResource);
+  createResource(resource)
+    .then((newResource) => {
+      res.status(StatusCode.OK).send(newResource);
+    })
+    .catch((e) => {
+      console.log(e);
+      next(ApiError.internal('Unable to create resource'));
+    });
 };
 
 const deleteResourceHandler: RequestHandler = async (req, res) => {

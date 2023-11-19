@@ -20,7 +20,7 @@ function StudentCard({ studentID, lesson }: StudentCardProps) {
   }
 
   function handleClick() {
-    const s = `/resources/${studentID}`;
+    const s = `/teacher/${studentID}`;
     navigate(s);
   }
 

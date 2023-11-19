@@ -22,9 +22,13 @@ const CoachSchema = new mongoose.Schema({
     type: Map,
     of: {
       type: Map,
-      of: mongoose.Schema.Types.Mixed,
+      of: String,
     },
     required: true,
+  },
+  updates: {
+    type: String,
+    required: false,
   },
 });
 
@@ -34,7 +38,8 @@ interface ICoach extends mongoose.Document {
   partner_site: string;
   mailing_address: string;
   media_waiver: boolean;
-  progress_stats: Map<string, Map<string, any>>;
+  progress_stats: Map<string, Map<string, string>>;
+  updates: string;
 }
 
 const Coach = mongoose.model<ICoach>('Coach', CoachSchema);
