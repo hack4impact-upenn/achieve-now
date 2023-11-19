@@ -152,6 +152,15 @@ const deleteAttendanceOnDate = async (date: number) => {
   );
 };
 
+const addCoachToStudent = async (student_id: string, coach_id: string) => {
+  const student = await Student.findByIdAndUpdate(
+    student_id,
+    { $set: { coach_id: [coach_id] } },
+    { new: true },
+  );
+  return student;
+};
+
 const updateProgressDate = async (
   id: string,
   date: string,
@@ -203,6 +212,7 @@ export {
   updateAttendance,
   createAttendanceOnDate,
   deleteAttendanceOnDate,
+  addCoachToStudent,
   updateProgressDate,
   deleteProgressDate,
 };

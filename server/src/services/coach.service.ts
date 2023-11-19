@@ -87,31 +87,23 @@ const deleteAttendanceOnDate = async (date: number) => {
 
 const getCoachBlocks = async (coach_id: string) => {
   const students = await Student.find({});
-  const filteredStudents = students.filter(
-    (student: IStudent) =>
-      student.coach_id &&
-      student.coach_id.includes &&
-      student.coach_id.includes(coach_id),
-  );
-
-  const blocks: string[] = [];
-  filteredStudents.forEach((student: IStudent) => {
-    if (!student.block_id) {
-      return;
-    }
-    if (!blocks.includes(student.block_id.toString())) {
-      blocks.push(student.block_id.toString());
-    }
-  });
+  const filteredStudents = students
+    .filter(
+      (student: IStudent) =>
+        student.coach_id &&
+        student.coach_id.includes &&
+        student.coach_id.includes(coach_id),
+    )
+    .map((student: IStudent) => student._id.toString());
 
   const rawBlocks: IBlock[] = await getAllBlocksfromDB();
   const filteredBlocks = rawBlocks
-    .map((block) => ({
-      _id: block._id.toString(),
-      name: block.name,
-    }))
-    .filter((block) => blocks.includes(block._id))
-    .map((block) => block.name);
+    .filter((block: IBlock) =>
+      block.students.some((student: string) =>
+        filteredStudents.includes(student.toString()),
+      ),
+    )
+    .map((block: IBlock) => block.name);
 
   return filteredBlocks;
 };
