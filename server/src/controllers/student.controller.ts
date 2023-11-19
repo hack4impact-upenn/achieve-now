@@ -518,7 +518,7 @@ const deleteResource = async (
 
   console.log(`updated: ${updatedResources}`);
 
-  updateResourcesByID(id, updatedResources)
+  updateParentResourcesByID(id, updatedResources)
     .then((studentRes) => res.status(StatusCode.OK).send(studentRes))
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
@@ -544,51 +544,29 @@ const updateResource = async (
     next(ApiError.missingFields(['resource']));
     return;
   }
-  if (!role) {
-    next(ApiError.missingFields(['role']));
-    return;
-  }
-
   // Check if student exists
   const student: IStudent | null = await getStudentByID(id);
   if (!student) {
     next(ApiError.notFound(`Student with id ${id} does not exist`));
     return;
   }
-
-  if (role === 'parent') {
-    if (!student.parent_additional_resources) {
-      next(ApiError.notFound(`Student does not have any parent resources.`));
-      return;
-    }
-
-    const updated_resources = student.parent_additional_resources.filter(
-      (item) => item.toString() !== resource.toString(),
-    );
-
-    updateParentResourcesByID(id, updated_resources)
-      .then((studentRes: any) => res.status(StatusCode.OK).send(studentRes))
-      .catch((e: any) => {
-        console.log(e);
-        next(ApiError.internal('Failed to delete resource.'));
-      });
-  } else if (role === 'coach') {
-    if (!student.coach_additional_resources) {
-      next(ApiError.notFound(`Student does not have any coach resources.`));
-      return;
-    }
-
-    const updated_resources = student.coach_additional_resources.filter(
-      (item) => item.toString() !== resource.toString(),
-    );
-
-    updateCoachResourcesByID(id, updated_resources)
-      .then((studentRes) => res.status(StatusCode.OK).send(studentRes))
-      .catch((e: any) => {
-        console.log(e);
-        next(ApiError.internal('Failed to delete resource.'));
-      });
+  let resources = [];
+  if (student.parent_additional_resources) {
+    resources = student.parent_additional_resources;
+  } else {
+    resources.push('');
   }
+  console.log(`original: ${resources}`);
+  const studentId = student._id;
+  resources.push(resource);
+  const updatedResources = resources.filter((item) => item !== '');
+  console.log(`updated: ${updatedResources}`);
+  updateParentResourcesByID(studentId, updatedResources)
+    .then(() => res.sendStatus(StatusCode.OK))
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Failed to add resource.'));
+    });
 };
 
 /**

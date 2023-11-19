@@ -2,6 +2,7 @@
  * Specifies the middleware and controller functions to call for each route
  * relating to admin users.
  */
+import { isAuthenticated } from '../controllers/auth.middleware';
 import express from 'express';
 import { getAllResources, getSchool, getAllSchools } from '../controllers/school.controller';
 import 'dotenv/config';

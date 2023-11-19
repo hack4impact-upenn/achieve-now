@@ -31,7 +31,6 @@ const createResource = async (resource: IResource) => {
 
 export {
   getAllResourcesFromDB,
-  getLessonResources,
   updateResource,
   createResource,
 };
