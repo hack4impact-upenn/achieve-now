@@ -1,7 +1,7 @@
-// eslint-disable-next-line
-import mongoose from 'mongoose';
-
-interface IStudent extends mongoose.Document {
+/**
+ * Interface for the student data type return from the backend
+ */
+interface IStudent {
   _id: string;
   user_id: string;
   school_id: [string];
@@ -11,7 +11,7 @@ interface IStudent extends mongoose.Document {
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];
-  progress_stats: Map<string, Map<string, number>>;
+  progress_stats: { [type: string]: { [date: string]: string } };
   parent_name: string;
   parent_communication_days: string;
   parent_communication_times: string;
