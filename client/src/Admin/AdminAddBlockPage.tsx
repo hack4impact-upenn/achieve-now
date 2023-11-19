@@ -23,6 +23,46 @@ import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
 import { addBlock } from '../Home/api';
 
+interface submitState {
+  day: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  zoom: string;
+  teacher: IUser | null;
+  pairs: [IUser | null, IStudent | null][];
+}
+
+export function submitError({
+  day,
+  name,
+  startTime,
+  endTime,
+  zoom,
+  teacher,
+  pairs,
+}: submitState): boolean {
+  if (
+    day === '' ||
+    name === '' ||
+    startTime === '' ||
+    endTime === '' ||
+    zoom === '' ||
+    teacher === null ||
+    pairs.length === 0 ||
+    pairs[0][0] === null ||
+    pairs[0][1] === null
+  ) {
+    return true;
+  }
+  try {
+    const _ = new URL(zoom);
+  } catch (e) {
+    return true;
+  }
+  return false;
+}
+
 function AdminAddBlockPage() {
   const [day, setDay] = useState('');
   const [name, setName] = useState('');
@@ -105,17 +145,7 @@ function AdminAddBlockPage() {
   };
 
   const handleSubmit = () => {
-    if (
-      day === '' ||
-      name === '' ||
-      startTime === '' ||
-      endTime === '' ||
-      zoom === '' ||
-      teacher === null ||
-      pairs.length === 0 ||
-      pairs[0][0] === null ||
-      pairs[0][1] === null
-    ) {
+    if (submitError({ day, name, startTime, endTime, zoom, teacher, pairs })) {
       setError(true);
       return;
     }

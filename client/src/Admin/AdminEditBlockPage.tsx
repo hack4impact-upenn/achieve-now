@@ -23,6 +23,7 @@ import { getData, useData } from '../util/api';
 import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
 import { editBlock } from '../Home/api';
+import { submitError } from './AdminAddBlockPage';
 
 function AdminEditBlockPage() {
   const blockId = useParams().id;
@@ -156,14 +157,7 @@ function AdminEditBlockPage() {
   };
 
   const handleSubmit = () => {
-    if (
-      day === '' ||
-      name === '' ||
-      startTime === '' ||
-      endTime === '' ||
-      zoom === '' ||
-      teacher === null
-    ) {
+    if (submitError({ day, name, startTime, endTime, zoom, teacher, pairs })) {
       setError(true);
       return;
     }
