@@ -30,7 +30,7 @@ function InviteStudentButton() {
   const handleInvite = async () => {
     setLoading(true);
     const role = 'parent';
-    postData('admin/invite', { email, role }).then((res) => {
+    postData('student/invite', { email, role }).then((res) => {
       if (res.error) {
         setError(res.error.message);
       } else {

@@ -26,6 +26,7 @@ import {
 import { getLessonById } from '../services/lesson.service';
 import { getUserByEmail, getUserById } from '../services/user.service';
 import { use } from 'passport';
+import { IUser } from '../models/user.model';
 
 /**
  * Get students by teacher_id
@@ -591,6 +592,30 @@ const deleteProgress = async (
   res.status(StatusCode.OK).send(coach);
 };
 
+/**
+ * Middleware to check if a user is an student using Passport Strategy
+ * and creates an {@link ApiError} to pass on to error handlers if not
+ */
+const isStudent = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  // Get User
+  const user: IUser | null = req.user as IUser;
+  // Check is user exists and is valid
+  if (!user) {
+    next(ApiError.unauthorized('Not a valid user.')); // TODO: see if this is the correct message
+    return;
+  }
+  // Check if the user is an student
+  if (user.role === 'parent') {
+    next();
+  } else {
+    next(ApiError.unauthorized('Is not a student.'));
+  }
+};
+
 export {
   getStudentsFromTeacherId,
   getStudent,
@@ -606,4 +631,5 @@ export {
   deleteStudentAttendanceByDate,
   updateProgress,
   deleteProgress,
+  isStudent,
 };

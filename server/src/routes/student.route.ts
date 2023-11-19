@@ -19,7 +19,9 @@ import {
   createStudentAttendanceByDate,
   updateProgress,
   deleteProgress,
+  isStudent,
 } from '../controllers/student.controller';
+import { inviteUser } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
@@ -109,5 +111,15 @@ router.put(
 
 router.put('/progress/:id', updateProgress);
 router.delete('/progress/:id/:date', deleteProgress);
+
+/**
+ * A POST route to invite a new student
+ * Expects a JSON body with the following fields:
+ * - email (string) - The email to invite the student from
+ * - userType (string) - The type of student to invite
+ * - active (boolean) - Whether the student is active or not
+ */
+router.post('/invite', isAuthenticated, isStudent, inviteUser);
+
 
 export default router;
