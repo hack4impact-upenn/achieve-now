@@ -92,22 +92,6 @@ function SplitGrid() {
     (student: any) => student.attendanceFlag,
   );
 
-<<<<<<< HEAD
-=======
-  // const student_users = []
-  // for (let i = 0; i < studentData.length; i++) {
-  //   const user_id = studentData[i].user_id;
-  //   const user = useData(`users/${id}`);
-  //   student_users.push(user);
-  // }
-  const academicFlags = studentData.filter(
-    (student: any) => student.progressFlag,
-  );
-  const attendanceFlags = studentData.filter(
-    (student: any) => student.attendanceFlag,
-  );
-
->>>>>>> main
   return (
     <Box>
       <PageHeader />
@@ -141,7 +125,6 @@ function SplitGrid() {
             elevation={0}
             square
           >
-<<<<<<< HEAD
             <Box sx={{ marginBottom: 2 }}>
               <h2>Class Progress</h2>
             </Box>
@@ -173,26 +156,6 @@ function SplitGrid() {
                 <PhoneticsTable teacherID={finalId} />
               </Box>
             </Box>
-=======
-            <h2>Class Progress</h2>
-            {academicFlags.length > 0 && ( // TODO: Passed in teacher ID
-              <StudentConcernsCard
-                students={academicFlags}
-                title="Academic Concerns"
-                description="Students with a poor academic progress pattern"
-              />
-            )}
-            {attendanceFlags.length > 0 && (
-              <div style={{ marginTop: '10px' }}>
-                <StudentConcernsCard
-                  students={attendanceFlags}
-                  title="Attendance Concerns"
-                  description="Students with a poor attendance pattern"
-                />
-              </div>
-            )}
-            <PhoneticsTable teacherID={finalId} />
->>>>>>> main
           </Paper>
         </Box>
       </Box>
