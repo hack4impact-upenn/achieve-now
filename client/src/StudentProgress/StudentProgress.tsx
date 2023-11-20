@@ -18,20 +18,20 @@ export default function StudentProgress() {
   return (
     <>
       <Header />
-      <Grid container spacing={3} p={4}>
-        <Grid item container xs={4} rowSpacing={3} columnSpacing={3}>
-          <Grid item xs={12}>
+      <Grid container spacing={4} p={5}>
+        <Grid item container direction="column" xs={3} spacing={4}>
+          <Grid item xs>
             <Badges />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs>
             <Attendance studentId="6510857e100eb371707ca8e7" />
           </Grid>
         </Grid>
-        <Grid item container xs={8} rowSpacing={3} columnSpacing={0}>
-          <Grid item xs={12}>
+        <Grid item container direction="column" xs={9} spacing={4}>
+          <Grid item xs>
             <Phonetics />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs>
             <ProgressSnapshot studentId="6510857e100eb371707ca8e7" />
           </Grid>
         </Grid>
