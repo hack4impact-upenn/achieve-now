@@ -3,6 +3,8 @@
  * relating to admin users.
  */
 import express from 'express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { addListener } from 'process';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getAdditionalStudentResources,
@@ -22,7 +24,6 @@ import {
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
-import { addListener } from 'process';
 
 const router = express.Router();
 
