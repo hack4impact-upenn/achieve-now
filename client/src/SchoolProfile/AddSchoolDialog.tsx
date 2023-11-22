@@ -2,7 +2,7 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { Theme, useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
@@ -93,6 +93,8 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
     console.log('added');
     setOpen(false);
   };
+  
+  const defaultDate = dayjs('2022-04-17T00:00');
 
   const [teacherName, setTeacherName] = React.useState<string[]>([]);
 
@@ -166,18 +168,21 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School Start Time"
             openTo="hours"
+            defaultValue={defaultDate}
             onChange={(newValue) => setSchoolStartTime(newValue as Date | null)}
           />
           <br />
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
+            defaultValue={defaultDate}
             onChange={(newValue) => setSchoolEndTime(newValue as Date | null)}
           />
           <br />
           <MobileTimePicker
             label="First Grade Lunch Start Time"
             openTo="hours"
+            defaultValue={defaultDate}
             onChange={(newValue) =>
               setFirstGradeLunchStartTime(newValue as Date | null)
             }
@@ -186,6 +191,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch End Time"
             openTo="hours"
+            defaultValue={defaultDate}
             onChange={(newValue) =>
               setFirstGradeLunchEndTime(newValue as Date | null)
             }
@@ -194,6 +200,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch Start Time"
             openTo="hours"
+            defaultValue={defaultDate}
             onChange={(newValue) =>
               setSecondGradeLunchStartTime(newValue as Date | null)
             }
@@ -202,6 +209,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch End Time"
             openTo="hours"
+            defaultValue={defaultDate}
             onChange={(newValue) =>
               setSecondGradeLunchEndTime(newValue as Date | null)
             }

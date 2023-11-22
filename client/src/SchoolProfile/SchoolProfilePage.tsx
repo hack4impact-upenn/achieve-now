@@ -103,6 +103,7 @@ function SchoolProfilePage() {
       };
       // update putData
       const promise = await putData(`school/update`, newSchool);
+      console.log('editted');
       // eslint-disable-next-line
       const removed = tableData.filter((r: ISchool) => r._id !== id);
       setTableData([promise.data, ...removed]);

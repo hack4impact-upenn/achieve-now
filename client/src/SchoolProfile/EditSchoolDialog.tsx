@@ -12,7 +12,9 @@ import {
   OutlinedInput,
   InputLabel,
 } from '@mui/material';
+import dayjs from 'dayjs';
 import { Stack } from '@mui/system';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import React, { useEffect, useState, useMemo } from 'react';
 import theme from '../assets/theme';
 import ISchool from '../util/types/school';
@@ -221,14 +223,11 @@ function EditSchoolDialog({
               marginRight: theme.spacing(2),
             }}
           >
-            <InputLabel htmlFor="link-field">School Start Time</InputLabel>
-            <OutlinedInput
-              id="schoolstarttime-field"
-              value={school_start_time}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setSchoolStartTime(event.target.value);
-              }}
+            <MobileTimePicker
               label="School Start Time"
+              value={dayjs(school_start_time)}
+              openTo="hours"
+              onChange={(newValue) => setSchoolStartTime(newValue as Date | null)}
             />
           </FormControl>
           <FormControl
@@ -237,14 +236,11 @@ function EditSchoolDialog({
               marginRight: theme.spacing(2),
             }}
           >
-            <InputLabel htmlFor="link-field">School End Time</InputLabel>
-            <OutlinedInput
-              id="schoolendtime-field"
-              value={school_end_time}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setSchoolEndTime(event.target.value);
-              }}
-              label="Admin Content"
+            <MobileTimePicker
+              label="School End Time"
+              value={dayjs(school_end_time)}
+              openTo="hours"
+              onChange={(newValue) => setSchoolEndTime(newValue as Date | null)}
             />
           </FormControl>
           <FormControl
@@ -253,16 +249,11 @@ function EditSchoolDialog({
               marginRight: theme.spacing(2),
             }}
           >
-            <InputLabel htmlFor="link-field">
-              First Grade Lunch Start Time
-            </InputLabel>
-            <OutlinedInput
-              id="firsgradelunchstarttime-field"
-              value={first_grade_lunch_start_time}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setFirstGradeLunchStartTime(event.target.value);
-              }}
+            <MobileTimePicker
               label="First Grade Lunch Start Time"
+              value={dayjs(first_grade_lunch_start_time)}
+              openTo="hours"
+              onChange={(newValue) => setFirstGradeLunchStartTime(newValue as Date | null)}
             />
           </FormControl>
           <FormControl
@@ -271,16 +262,11 @@ function EditSchoolDialog({
               marginRight: theme.spacing(2),
             }}
           >
-            <InputLabel htmlFor="link-field">
-              First Grade Lunch End Time
-            </InputLabel>
-            <OutlinedInput
-              id="firsgradelunchendtime-field"
-              value={first_grade_lunch_end_time}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setFirstGradeLunchEndTime(event.target.value);
-              }}
+            <MobileTimePicker
               label="First Grade Lunch End Time"
+              value={dayjs(first_grade_lunch_end_time)}
+              openTo="hours"
+              onChange={(newValue) => setFirstGradeLunchEndTime(newValue as Date | null)}
             />
           </FormControl>
           <FormControl
@@ -289,16 +275,11 @@ function EditSchoolDialog({
               marginRight: theme.spacing(2),
             }}
           >
-            <InputLabel htmlFor="link-field">
-              Second Grade Lunch Start Time
-            </InputLabel>
-            <OutlinedInput
-              id="firsgradelunchstarttime-field"
-              value={second_grade_lunch_start_time}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setSecondGradeLunchStartTime(event.target.value);
-              }}
+            <MobileTimePicker
               label="Second Grade Lunch Start Time"
+              value={dayjs(second_grade_lunch_start_time)}
+              openTo="hours"
+              onChange={(newValue) => setSecondGradeLunchStartTime(newValue as Date | null)}
             />
           </FormControl>
           <FormControl
@@ -307,16 +288,11 @@ function EditSchoolDialog({
               marginRight: theme.spacing(2),
             }}
           >
-            <InputLabel htmlFor="link-field">
-              Second Grade Lunch End Time
-            </InputLabel>
-            <OutlinedInput
-              id="firsgradelunchendtime-field"
-              value={second_grade_lunch_end_time}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setSecondGradeLunchEndTime(event.target.value);
-              }}
+            <MobileTimePicker
               label="Second Grade Lunch End Time"
+              value={dayjs(second_grade_lunch_end_time)}
+              openTo="hours"
+              onChange={(newValue) => setSecondGradeLunchEndTime(newValue as Date | null)}
             />
           </FormControl>
           <Button variant="outlined" onClick={handleSubmit}>
