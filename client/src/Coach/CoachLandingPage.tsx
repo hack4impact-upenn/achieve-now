@@ -26,8 +26,8 @@ function CoachLandingPage() {
   const [coach, setCoach] = useState<any>({});
   const [student, setStudent] = useState<any>({});
 
-  const zoomLink = () => {
-    window.open(student.zoom_link);
+  const openLink = (link: string) => {
+    window.open(link);
   };
 
   useEffect(() => {
@@ -91,13 +91,31 @@ function CoachLandingPage() {
       >
         <Box
           sx={{
-            justifyContent: 'space-between',
+            justifyContent: 'end',
             display: 'flex',
             alignItems: 'center',
           }}
         >
           <Typography variant="h3">{student.firstName}</Typography>
-          <Button variant="outlined" onClick={zoomLink}>
+          <Button
+            variant="outlined"
+            onClick={() => openLink(student.zoom_link)}
+            sx={{ marginRight: '1rem' }}
+          >
+            Absence Notification
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => openLink(student.zoom_link)}
+            sx={{ marginRight: '1rem' }}
+          >
+            Exit Ticket
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => openLink(student.zoom_link)}
+            sx={{ marginRight: '1rem' }}
+          >
             Zoom
           </Button>
         </Box>

@@ -11,6 +11,7 @@ import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import LessonsPage from './Lessons/LessonsPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
+import AdminBlockPage from './Admin/AdminBlockPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
 import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
@@ -90,6 +91,10 @@ function App() {
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}
+                    />
+                    <Route
+                      path="/admin-block/:id"
+                      element={<AdminBlockPage />}
                     />
                     <Route
                       path="/admin-lessons"

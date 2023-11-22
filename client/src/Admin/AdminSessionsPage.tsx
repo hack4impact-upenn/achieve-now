@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Button, Box, Typography } from '@mui/material';
+import { Button, Box, Typography, Link } from '@mui/material';
 import { BlockOutlined } from '@material-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import { useData } from '../util/api';
@@ -12,6 +13,7 @@ function AdminSessionsPage() {
   const [blockDict, setBlockDict] = useState<{ [key: string]: any }>({});
   const [uniqueDays, setUniqueDays] = useState<string[]>([]);
   const blocks = useData('admin/blocks');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const data = blocks?.data || {};
@@ -87,8 +89,8 @@ function AdminSessionsPage() {
               </Typography>
               <Box display="flex" justifyContent="left">
                 {Object.keys(blockDict[day]).map((slot) => (
+                  // wrap route around the box & pass in the block_id
                   <Box
-                    // key={session.key}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -115,7 +117,12 @@ function AdminSessionsPage() {
                       )}
                     </Typography>
                     {blockDict[day][slot].map((block: IBlock) => (
-                      <Typography variant="subtitle1">{block.name}</Typography>
+                      /* eslint no-underscore-dangle: 0 */
+                      <Link href={`/admin-block/${block._id}`}>
+                        <Typography variant="subtitle1">
+                          {block.name}
+                        </Typography>
+                      </Link>
                     ))}
                   </Box>
                 ))}
