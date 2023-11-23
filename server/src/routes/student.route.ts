@@ -22,7 +22,6 @@ import {
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
-import { addListener } from 'process';
 
 const router = express.Router();
 

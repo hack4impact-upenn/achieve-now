@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * All the functions for interacting with student data in the MongoDB database
  */
