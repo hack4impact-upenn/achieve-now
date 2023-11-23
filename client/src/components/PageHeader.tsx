@@ -24,8 +24,8 @@ export default function Header() {
     }
   };
   const user = useAppSelector(selectUser);
-  console.log(user);
   const path = location.pathname;
+  // Admin Onclick Functions
   const handleAdminHome = () => {
     navigator('/admin-menu');
   };
@@ -44,13 +44,33 @@ export default function Header() {
   const handleBackButton = () => {
     navigator(-1);
   };
+
+  // Family Onclick Functions
+  const handleFamilyProgress = () => {
+    navigator('/lessons');
+  };
+  const handleFamilyLesson = () => {
+    navigator('/progress');
+  };
   const noBackButton = [
     '/admin-sessions',
     '/admin-attendance',
     '/admin-profiles',
     '/admin-curriculum',
     '/admin-menu',
+    '/progress',
+    '/lessons',
+    '/coach-landing',
   ];
+  const checkIfBackButton = (paths: string) => {
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < noBackButton.length; i++) {
+      if (paths.includes(noBackButton[i])) {
+        return false;
+      }
+    }
+    return true;
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -64,11 +84,32 @@ export default function Header() {
           justifyContent: 'space-between',
         }}
       >
-        <div>
-          <Button onClick={handleAdminHome}>
-            <img alt="achieve now logo" src={Logo} width={95} height={44} />
-          </Button>
-          {!noBackButton.includes(path) ? (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 'auto',
+            marginBottom: 'auto',
+          }}
+        >
+          {user && user.role === 'admin' ? (
+            <Button onClick={handleAdminHome}>
+              <img alt="achieve now logo" src={Logo} width={95} height={44} />
+            </Button>
+          ) : (
+            <img
+              alt="achieve now logo"
+              src={Logo}
+              width={95}
+              height={44}
+              style={{
+                marginTop: 'auto',
+                marginBottom: 'auto',
+                marginRight: '10px',
+              }}
+            />
+          )}
+          {checkIfBackButton(path) ? (
             <Button
               sx={{ color: 'white', borderColor: 'white', marginRight: '10px' }}
               variant="outlined"
@@ -151,6 +192,80 @@ export default function Header() {
                   onClick={handleAdminCurriculum}
                 >
                   Curriculum
+                </Button>
+              ) : (
+                false
+              )}
+            </div>
+          ) : (
+            false
+          )}
+          {user && user.role === 'family' ? (
+            <div>
+              {!location.pathname.includes('/progress') ? (
+                <Button
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    marginRight: '10px',
+                  }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleFamilyProgress}
+                >
+                  Progress
+                </Button>
+              ) : (
+                false
+              )}
+              {!location.pathname.includes('/lessons') ? (
+                <Button
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    marginRight: '10px',
+                  }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleFamilyLesson}
+                >
+                  Lessons
+                </Button>
+              ) : (
+                false
+              )}
+            </div>
+          ) : (
+            false
+          )}
+          {user && user.role === 'coach' ? (
+            <div>
+              {!location.pathname.includes('/progress') ? (
+                <Button
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    marginRight: '10px',
+                  }}
+                  variant="outlined"
+                  color="primary"
+                >
+                  Progress
+                </Button>
+              ) : (
+                false
+              )}
+              {!location.pathname.includes('/lessons') ? (
+                <Button
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    marginRight: '10px',
+                  }}
+                  variant="outlined"
+                  color="primary"
+                >
+                  Lessons
                 </Button>
               ) : (
                 false
