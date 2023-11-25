@@ -53,8 +53,6 @@ function App() {
               <CssBaseline>
                 <AlertPopup />
                 <Routes>
-                  <Route path="/lessons/:studentID" element={<LessonsPage />} />
-
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />

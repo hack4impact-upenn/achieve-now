@@ -89,7 +89,7 @@ const deleteResourceHandler = async (
   deleteResource(id, role, resource)
     .then((response) =>
       response
-        ? res.sendStatus(StatusCode.OK).send(response)
+        ? res.status(StatusCode.OK).send(response)
         : res.sendStatus(StatusCode.NOT_FOUND),
     )
     .catch((e: any) => {
@@ -136,7 +136,7 @@ const addResourceHandler = async (
 
   const response = await addResource(id, role, resource);
   if (response) {
-    res.sendStatus(StatusCode.OK).send(response);
+    res.status(StatusCode.OK).send(response);
     return;
   }
   res.sendStatus(StatusCode.NOT_FOUND);

@@ -425,14 +425,14 @@ const addResource = async (
 
   if (role === 'parent') {
     updateParentResourcesByID(id, resources)
-      .then((response) => res.sendStatus(StatusCode.OK).send(response))
+      .then((response) => res.status(StatusCode.OK).send(response))
       .catch((e: any) => {
         console.log(e);
         next(ApiError.internal('Failed to add resource.'));
       });
   } else if (role === 'coach') {
     updateCoachResourcesByID(id, resources)
-      .then((response) => res.sendStatus(StatusCode.OK).send(response))
+      .then((response) => res.status(StatusCode.OK).send(response))
       .catch((e: any) => {
         console.log(e);
         next(ApiError.internal('Failed to add resource.'));
