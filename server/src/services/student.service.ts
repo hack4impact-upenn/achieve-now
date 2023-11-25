@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * All the functions for interacting with student data in the MongoDB database
  */
@@ -198,6 +199,71 @@ const deleteProgressDate = async (id: string, date: string) => {
   return coach;
 };
 
+/**
+ * A function that updates student info in the database.
+ * @param id The id of the user to update.
+ * @returns The updated {@link Student}
+ */
+const updateStudentInfo = async (
+  id: string,
+  school: string,
+  teacher: string,
+  lessonLevel: string,
+  grade: number,
+  parentName: string,
+  bestDay: string,
+  bestTime: string,
+  contactMethod: string,
+  mediaWaiver: boolean,
+  adminUpdates: string,
+  workHabits: string,
+  personality: string,
+  family: string,
+  favFood: string,
+  likes: string,
+  dislikes: string,
+  motivation: string,
+  goodStrategies: string,
+  badStrategies: string,
+  badges: string[],
+  risingReadersScore: any,
+  generalProgramScore: any,
+  progressFlag: boolean,
+  attendanceFlag: boolean,
+) => {
+  const student = await Student.findByIdAndUpdate(
+    id,
+    {
+      school_id: school,
+      teacher_id: teacher,
+      lesson_level: lessonLevel === '' ? undefined : lessonLevel,
+      grade,
+      parent_name: parentName,
+      parent_communication_days: bestDay,
+      parent_communication_times: bestTime,
+      best_communication_method: contactMethod,
+      media_waiver: mediaWaiver,
+      admin_updates: adminUpdates,
+      work_habits: workHabits,
+      personality,
+      family,
+      fav_food: favFood,
+      likes,
+      dislikes,
+      motivation,
+      good_strategies: goodStrategies,
+      bad_strategies: badStrategies,
+      badges,
+      risingReadersScore: [risingReadersScore.start, risingReadersScore.mid],
+      generalProgramScore: [generalProgramScore.start, generalProgramScore.mid],
+      progressFlag,
+      attendanceFlag,
+    },
+    { new: true },
+  ).exec();
+  return student;
+};
+
 export {
   getStudentByID,
   getResourceByID,
@@ -215,4 +281,5 @@ export {
   addCoachToStudent,
   updateProgressDate,
   deleteProgressDate,
+  updateStudentInfo,
 };
