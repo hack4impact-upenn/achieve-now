@@ -768,32 +768,6 @@ function StudentProfilePage() {
           label="Attendance Flag"
         />
       </Grid>
-      <Grid item container direction="row" justifyContent="space-between">
-        <FormControlLabel
-          value={values.progressFlag}
-          onChange={() => setValue('progressFlag', !values.progressFlag)}
-          control={
-            <Switch
-              checked={values.progressFlag}
-              onChange={() => setValue('progressFlag', !values.progressFlag)}
-            />
-          }
-          label="Performance Flag"
-        />
-        <FormControlLabel
-          value={values.attendanceFlag}
-          onChange={() => setValue('attendanceFlag', !values.attendanceFlag)}
-          control={
-            <Switch
-              checked={values.progressFlag}
-              onChange={() =>
-                setValue('attendanceFlag', !values.attendanceFlag)
-              }
-            />
-          }
-          label="Attendance Flag"
-        />
-      </Grid>
       <Grid item container justifyContent="center">
         <PrimaryButton
           fullWidth
