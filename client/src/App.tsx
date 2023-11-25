@@ -85,14 +85,22 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
-                    <Route
-                      path="/resources/student/:studentId"
-                      element={<StudentResourceDashboard />}
-                    />
-                    <Route
-                      path="/resources/lesson/:lessonId"
-                      element={<LessonResourceDashboard />}
-                    />
+                    <Route path="/resources">
+                      <Route path="student">
+                        <Route
+                          path=":studentId"
+                          element={<StudentResourceDashboard />}
+                        />
+                        <Route path="" element={<StudentResourceDashboard />} />
+                      </Route>
+                      <Route path="lesson">
+                        <Route
+                          path=":lessonId"
+                          element={<LessonResourceDashboard />}
+                        />
+                        <Route path="" element={<LessonResourceDashboard />} />
+                      </Route>
+                    </Route>
                     <Route
                       path="/admin-sessions"
                       element={<AdminSessionsPage />}

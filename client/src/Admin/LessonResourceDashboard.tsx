@@ -35,7 +35,7 @@ function LessonResourceDashboard() {
     });
     setAllLessons(sortedLessonData);
     setCurrLessons(sortedLessonData);
-  }, [lessonId, lessonsRes]);
+  }, [lessonsRes]);
 
   const resourcesRes = useData(`resources/all`);
   const [parentResources, setParentResources] = React.useState<IRow[]>([]);
@@ -44,7 +44,7 @@ function LessonResourceDashboard() {
   useEffect(() => {
     const getResources = async () => {
       const allResourceData = resourcesRes?.data || [];
-      const lessonRes = await postData(`lesson/${lessonId}/resources`);
+      const lessonRes = await postData(`lesson/${lessonId || ''}/resources`);
       const lessonData = lessonRes?.data;
       if (!lessonData) {
         return;
@@ -164,7 +164,7 @@ function LessonResourceDashboard() {
         display="flex"
         flexDirection="row"
         width="100%"
-        maxHeight="calc(100vh - 66px)"
+        height="calc(100vh - 66px)"
       >
         <Paper
           sx={{
@@ -204,13 +204,13 @@ function LessonResourceDashboard() {
             }}
           >
             <h1>
-              {lessonNumber !== ''
-                ? `Lesson ${lessonNumber}`
-                : 'Invalid Selected Lesson'}
+              {!lessonId || lessonNumber === ''
+                ? 'Select a Lesson'
+                : `Lesson ${lessonNumber}`}
             </h1>
             <h3>Parent Additional Resources</h3>
             {!lessonId ? (
-              <h3>No Lesson Selected </h3>
+              <Box height="100px" />
             ) : (
               <ResourceTable
                 allResources={parentResources}
@@ -230,7 +230,7 @@ function LessonResourceDashboard() {
               <h3>Coach Additional Resources</h3>
             </Box>
             {!lessonId ? (
-              <h4>No Lesson Selected </h4>
+              <Box height="40%" />
             ) : (
               <ResourceTable
                 allResources={coachResources}
