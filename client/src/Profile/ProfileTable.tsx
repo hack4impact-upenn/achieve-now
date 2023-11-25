@@ -117,7 +117,7 @@ function UserTable() {
     }
 
     if (role === 'all') {
-      filteredUsers = users?.data || [];
+      const i = 1;
     } else if (role) {
       filteredUsers = filteredUsers.filter((user: IUser) => user.role === role);
     }
