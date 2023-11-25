@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { display } from '@mui/system';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
+import { ScreenshotMonitorRounded } from '@mui/icons-material';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
@@ -24,12 +25,6 @@ import IStudent from '../util/types/student';
 import { addBlock } from '../Home/api';
 import IBlock from '../util/types/block';
 import ICoach from '../util/types/coach';
-import { ScreenshotMonitorRounded } from '@mui/icons-material';
-
-interface ResolvedReq {
-  data: any | null;
-  error: Error | any | null;
-}
 
 interface submitState {
   day: string;
@@ -39,6 +34,9 @@ interface submitState {
   zoom: string;
   teacher: IUser | null;
   pairs: [IUser | null, IStudent | null][];
+  coachesInBlock: string[];
+  studentsInBlock: string[];
+  blockNames: string[];
 }
 
 export function submitError({
@@ -49,27 +47,68 @@ export function submitError({
   zoom,
   teacher,
   pairs,
-}: submitState): boolean {
+  coachesInBlock,
+  studentsInBlock,
+  blockNames,
+}: submitState): string {
   if (
     day === '' ||
     name === '' ||
     startTime === '' ||
     endTime === '' ||
     zoom === '' ||
-    teacher === null ||
-    pairs.length === 0 || // checking if no students in block
-    pairs[0][0] === null ||
-    pairs[0][1] === null ||
-    endTime < startTime
+    teacher === null
   ) {
-    return true;
+    return 'Please fill out all fields';
   }
+  if (endTime < startTime) {
+    return 'Invalid times';
+  }
+
+  if (blockNames.includes(name)) {
+    return 'Duplicate block name';
+  }
+
+  if (
+    pairs.find(
+      (pair: [IUser | null, IStudent | null]) =>
+        pair[0] === null || pair[1] === null,
+    )
+  ) {
+    return 'Please fill out all pairs';
+  }
+
+  const students = new Set<string>();
+  const coaches = new Set<string>();
+  pairs.forEach((pair: [IUser | null, IStudent | null]) => {
+    if (pair[0]) {
+      coaches.add(pair[0]._id);
+    }
+    if (pair[1]) {
+      students.add(pair[1].user_id);
+    }
+  });
+  if (students.size !== pairs.length) {
+    return 'Duplicate students found in pairs';
+  }
+  if (coaches.size !== pairs.length) {
+    return 'Duplicate coaches found in pairs';
+  }
+
+  if (studentsInBlock.find((studentId: string) => students.has(studentId))) {
+    return 'Student is already in existing block';
+  }
+
+  if (coachesInBlock.find((coachId: string) => coaches.has(coachId))) {
+    return 'Coach is already in existing block';
+  }
+
   try {
     const _ = new URL(zoom);
   } catch (e) {
-    return true;
+    return 'Invalid zoom link';
   }
-  return false;
+  return '';
 }
 
 function AdminAddBlockPage() {
@@ -80,7 +119,7 @@ function AdminAddBlockPage() {
   const [zoom, setZoom] = useState('');
   const [teachers, setTeachers] = useState<IUser[]>([]);
   const [coaches, setCoaches] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<IStudent[]>([]);
   const [allUsers, setAllUsers] = useState<IUser[]>([]);
   const [teacher, setTeacher] = useState<IUser | null>(null);
 
@@ -88,7 +127,7 @@ function AdminAddBlockPage() {
     [null, null],
   ]);
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
   const users = useData('admin/all');
   const studentList = useData('student/all');
@@ -110,32 +149,38 @@ function AdminAddBlockPage() {
   }, [studentList]);
 
   useEffect(() => {
-    const blockData: IBlock[] = studentList?.data;
+    const blockData: IBlock[] = blocks?.data;
     if (blockData) {
-      var blockNames: string[] = [];
-      var studentPromises: Promise<ResolvedReq>[] = [];
-      var blockStudentIds: string[] = [];
+      const currBlockNames: string[] = [];
+      const blockStudentIds: string[] = [];
+      const blockCoachIds: string[] = [];
       blockData.forEach((block: IBlock) => {
-        blockNames.push(block.name);
-        block.students.forEach((student_id: string) => {
-          blockStudentIds.push(student_id);
-          studentPromises.push(
-            getData(`student/${student_id}`),
+        currBlockNames.push(block.name);
+        block.students.forEach((studentId: string) => {
+          blockStudentIds.push(studentId);
+          const foundStudent: IStudent | undefined = students.find(
+            (currStudent: IStudent) => currStudent.user_id === studentId,
           );
+          if (
+            foundStudent &&
+            foundStudent.coach_id &&
+            foundStudent.coach_id.length > 0
+          ) {
+            blockCoachIds.push(foundStudent.coach_id[0]);
+          }
         });
       });
-      var blockCoachIds: string[] = [];
-      Promise.all(studentPromises).then((students: ResolvedReq[]) => {
-        students.forEach((res: ResolvedReq) => {
-          if (res.data?.coach_id) {
-            blockCoachIds.push(res.data?.coach_id);
-          };
-        });
-      }).finally(() => setCoachesInBlock(blockCoachIds as string[]));
-      setBlockNames(blockNames);
+      setBlockNames(currBlockNames);
       setStudentsInBlock(blockStudentIds);
+      setCoachesInBlock(blockCoachIds);
     }
-  }, [blocks]);
+  }, [blocks, students]);
+
+  useEffect(() => {
+    console.log(blockNames);
+    console.log(coachesInBlock);
+    console.log(studentsInBlock);
+  }, [blockNames, coachesInBlock, studentsInBlock]);
 
   const handleDayChange = (event: SelectChangeEvent) => {
     setDay(event.target.value as string);
@@ -186,11 +231,35 @@ function AdminAddBlockPage() {
     setPairs((prev) => [...prev.slice(0, index), ...prev.slice(index + 1)]);
   };
 
+  const reset = () => {
+    setError('');
+    setDay('');
+    setName('');
+    setStartTime('');
+    setEndTime('');
+    setTeacher(null);
+    setPairs([[null, null]]);
+    setZoom('');
+  };
+
   const handleSubmit = () => {
-    if (submitError({ day, name, startTime, endTime, zoom, teacher, pairs })) {
-      setError(true);
+    const desc = submitError({
+      day,
+      name,
+      startTime,
+      endTime,
+      zoom,
+      teacher,
+      pairs,
+      coachesInBlock,
+      studentsInBlock,
+      blockNames,
+    });
+    if (desc) {
+      setError(desc);
       return;
     }
+
     addBlock({
       day,
       name,
@@ -199,7 +268,7 @@ function AdminAddBlockPage() {
       zoom,
       pairs,
     });
-    window.location.reload();
+    reset();
   };
 
   return (
@@ -411,7 +480,7 @@ function AdminAddBlockPage() {
             {error && (
               <Grid item container justifyContent="center">
                 <Typography justifyContent="center" color="red">
-                  Please fill out all fields.
+                  {error}
                 </Typography>
               </Grid>
             )}

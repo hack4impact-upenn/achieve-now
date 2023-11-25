@@ -24,6 +24,7 @@ import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
 import { editBlock } from '../Home/api';
 import { submitError } from './AdminAddBlockPage';
+import IBlock from '../util/types/block';
 
 function AdminEditBlockPage() {
   const blockId = useParams().id;
@@ -38,7 +39,7 @@ function AdminEditBlockPage() {
   const [zoom, setZoom] = useState('');
   const [teachers, setTeachers] = useState<IUser[]>([]);
   const [coaches, setCoaches] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<IStudent[]>([]);
   const [allUsers, setAllUsers] = useState<IUser[]>([]);
   const [teacher, setTeacher] = useState<IUser | null>(null);
 
@@ -46,10 +47,15 @@ function AdminEditBlockPage() {
     [null, null],
   ]);
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
   const users = useData('admin/all');
   const studentList = useData('student/all');
+  const blocks = useData('block/all');
+
+  const [studentsInBlock, setStudentsInBlock] = useState<string[]>([]);
+  const [coachesInBlock, setCoachesInBlock] = useState<string[]>([]);
+  const [blockNames, setBlockNames] = useState<string[]>([]);
 
   useEffect(() => {
     if (!block || !block.data) {
@@ -95,6 +101,35 @@ function AdminEditBlockPage() {
       setPairs(p);
     }
   }, [block, students, teachers, coaches]);
+
+  useEffect(() => {
+    const blockData: IBlock[] = blocks?.data;
+    if (blockData) {
+      const currBlockNames: string[] = [];
+      const blockStudentIds: string[] = [];
+      const blockCoachIds: string[] = [];
+      blockData.forEach((existingBlock: IBlock) => {
+        if (existingBlock._id === blockId) return;
+        currBlockNames.push(existingBlock.name);
+        existingBlock.students.forEach((studentId: string) => {
+          blockStudentIds.push(studentId);
+          const foundStudent: IStudent | undefined = students.find(
+            (currStudent: IStudent) => currStudent.user_id === studentId,
+          );
+          if (
+            foundStudent !== undefined &&
+            foundStudent.coach_id &&
+            foundStudent.coach_id.length > 0
+          ) {
+            blockCoachIds.push(foundStudent.coach_id[0]);
+          }
+        });
+      });
+      setBlockNames(currBlockNames);
+      setStudentsInBlock(blockStudentIds);
+      setCoachesInBlock(blockCoachIds);
+    }
+  }, [blocks, students, blockId]);
 
   useEffect(() => {
     const data = users?.data || [];
@@ -157,10 +192,23 @@ function AdminEditBlockPage() {
   };
 
   const handleSubmit = () => {
-    if (submitError({ day, name, startTime, endTime, zoom, teacher, pairs })) {
-      setError(true);
+    const desc = submitError({
+      day,
+      name,
+      startTime,
+      endTime,
+      zoom,
+      teacher,
+      pairs,
+      coachesInBlock,
+      studentsInBlock,
+      blockNames,
+    });
+    if (desc) {
+      setError(desc);
       return;
     }
+
     editBlock({
       blockId,
       day,
@@ -169,8 +217,9 @@ function AdminEditBlockPage() {
       endTime,
       zoom,
       pairs,
+    }).then(() => {
+      window.location.reload();
     });
-    window.location.reload();
   };
 
   return valid ? (
@@ -382,7 +431,7 @@ function AdminEditBlockPage() {
             {error && (
               <Grid item container justifyContent="center">
                 <Typography justifyContent="center" color="red">
-                  Please fill out all fields
+                  {error}
                 </Typography>
               </Grid>
             )}
