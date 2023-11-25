@@ -11,7 +11,7 @@ interface IStudent {
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];
-  progress_stats: { [type: string]: { [date: string]: string } };
+  progress_stats: Map<string, Map<string, number>>;
   parent_name: string;
   parent_communication_days: string;
   parent_communication_times: string;

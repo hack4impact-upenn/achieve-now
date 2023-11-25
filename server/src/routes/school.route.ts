@@ -3,7 +3,12 @@
  * relating to admin users.
  */
 import express from 'express';
-import { getAllResources, getSchool } from '../controllers/school.controller';
+import { isAuthenticated } from '../controllers/auth.middleware';
+import {
+  getAllResources,
+  getSchool,
+  getAllSchools,
+} from '../controllers/school.controller';
 
 const schoolRouter = express.Router();
 /**
@@ -16,5 +21,10 @@ schoolRouter.get('/all', getAllResources);
  * id (string) - The school id of the particular school
  */
 schoolRouter.get('/:id', getSchool);
+
+/**
+ * A GET route to get all schools.
+ */
+schoolRouter.get('/all', isAuthenticated, getAllSchools);
 
 export default schoolRouter;

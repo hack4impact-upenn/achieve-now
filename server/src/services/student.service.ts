@@ -153,52 +153,6 @@ const deleteAttendanceOnDate = async (date: number) => {
   );
 };
 
-const addCoachToStudent = async (student_id: string, coach_id: string) => {
-  const student = await Student.findByIdAndUpdate(
-    student_id,
-    { $set: { coach_id: [coach_id] } },
-    { new: true },
-  );
-  return student;
-};
-
-const updateProgressDate = async (
-  id: string,
-  date: string,
-  observations: string,
-  next_steps: string,
-) => {
-  const coach = await Student.findOneAndUpdate(
-    {
-      _id: id,
-    },
-    {
-      $set: {
-        [`progress_stats.student_observations.${date}`]: observations,
-        [`progress_stats.student_next_steps.${date}`]: next_steps,
-      },
-    },
-    { new: true },
-  ).exec();
-  return coach;
-};
-
-const deleteProgressDate = async (id: string, date: string) => {
-  const coach = await Student.findOneAndUpdate(
-    {
-      _id: id,
-    },
-    {
-      $unset: {
-        [`progress_stats.student_observations.${date}`]: '',
-        [`progress_stats.student_next_steps.${date}`]: '',
-      },
-    },
-    { new: true },
-  ).exec();
-  return coach;
-};
-
 /**
  * A function that updates student info in the database.
  * @param id The id of the user to update.
@@ -262,6 +216,52 @@ const updateStudentInfo = async (
     { new: true },
   ).exec();
   return student;
+};
+
+const addCoachToStudent = async (student_id: string, coach_id: string) => {
+  const student = await Student.findByIdAndUpdate(
+    student_id,
+    { $set: { coach_id: [coach_id] } },
+    { new: true },
+  );
+  return student;
+};
+
+const updateProgressDate = async (
+  id: string,
+  date: string,
+  observations: string,
+  next_steps: string,
+) => {
+  const coach = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        [`progress_stats.student_observations.${date}`]: observations,
+        [`progress_stats.student_next_steps.${date}`]: next_steps,
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
+};
+
+const deleteProgressDate = async (id: string, date: string) => {
+  const coach = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $unset: {
+        [`progress_stats.student_observations.${date}`]: '',
+        [`progress_stats.student_next_steps.${date}`]: '',
+      },
+    },
+    { new: true },
+  ).exec();
+  return coach;
 };
 
 export {

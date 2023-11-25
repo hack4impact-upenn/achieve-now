@@ -152,7 +152,7 @@ interface IStudent extends mongoose.Document {
   lesson_level: string;
   parent_additional_resources: [string];
   coach_additional_resources: [string];
-  progress_stats: Map<string, Map<string, string>>;
+  progress_stats: Map<string, Map<string, number>>;
   parent_name: string;
   parent_communication_days: string;
   parent_communication_times: string;
@@ -177,5 +177,4 @@ interface IStudent extends mongoose.Document {
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
-
 export { IStudent, Student };

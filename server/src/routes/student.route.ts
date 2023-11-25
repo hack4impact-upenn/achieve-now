@@ -5,10 +5,10 @@
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
+  getStudentInformation,
   getAdditionalStudentResources,
   getAllStudentResources,
   getStudentsByTeacherID,
-  getStudentInformation,
   deleteResource,
   addResource,
   getAllStudents,

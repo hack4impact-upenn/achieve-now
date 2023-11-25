@@ -30,12 +30,14 @@ import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
-import StudentAttendancePage from './Admin/StudentAttendancePage';
-import CoachAttendancePage from './Admin/CoachAttendancePage';
-import StudentProfilePage from './Admin/StudentProfilePage';
 import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
 import AdminResourcesPage from './Admin/AdminResourcesPage';
+import CoachAttendancePage from './Admin/CoachAttendancePage';
+import StudentProfilePage from './Admin/StudentProfilePage';
+import AdminEditBlockPage from './Admin/AdminEditBlockPage';
+import ProfilePage from './Profile/ProfilePage';
+import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
 import AdminAttendance from './Admin/AdminAttendance';
 import AdminProfiles from './Admin/AdminProfiles';
@@ -101,6 +103,8 @@ function App() {
                   {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
                     <Route
                       path="/admin/student-resources"
                       element={<StudentResourceDashboard />}
@@ -117,6 +121,15 @@ function App() {
                       path="/admin/lessons"
                       element={<AdminLessonsPage />}
                     />
+                    <Route
+                      path="/admin/student/profile/:id"
+                      element={<StudentProfilePage />}
+                    />
+                    <Route
+                      path="/admin/lessons"
+                      element={<AdminLessonsPage />}
+                    />
+                    <Route path="/admin-notes" element={<AdminNotesPage />} />
                     <Route
                       path="/admin/student/profile/:id"
                       element={<StudentProfilePage />}

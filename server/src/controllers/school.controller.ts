@@ -53,4 +53,19 @@ const getSchool = async (
   res.status(StatusCode.OK).send(school);
 };
 
-export { getAllResources, getSchool };
+const getAllSchools = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return getAllSchoolsInDB()
+    .then((schoolList) => {
+      res.status(StatusCode.OK).send(schoolList);
+    })
+    .catch((e) => {
+      console.log(e);
+      next(ApiError.internal('Unable to retrieve all schools'));
+    });
+};
+
+export { getAllResources, getSchool, getAllSchools };

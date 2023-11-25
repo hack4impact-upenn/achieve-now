@@ -465,7 +465,7 @@ const onboardStudent = async (
       userId._id,
       studentFirst,
       studentLast,
-      email,
+      userId.email,
       parentPhone,
     );
     if (!userObj) {
