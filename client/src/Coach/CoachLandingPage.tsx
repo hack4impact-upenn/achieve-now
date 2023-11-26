@@ -85,44 +85,47 @@ function CoachLandingPage() {
       <Stack
         direction="column"
         sx={{
-          padding: '1rem',
+          padding: '1rem 3rem 2rem 3rem',
         }}
         spacing={2}
       >
         <Box
           sx={{
-            justifyContent: 'end',
+            justifyContent: 'space-between',
             display: 'flex',
             alignItems: 'center',
           }}
         >
           <Typography variant="h3">{student.firstName}</Typography>
-          <Button
-            variant="outlined"
-            onClick={() => openLink(student.zoom_link)}
-            sx={{ marginRight: '1rem' }}
-          >
-            Absence Notification
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => openLink(student.zoom_link)}
-            sx={{ marginRight: '1rem' }}
-          >
-            Exit Ticket
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => openLink(student.zoom_link)}
-            sx={{ marginRight: '1rem' }}
-          >
-            Zoom
-          </Button>
+          <Box>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Absence Notification
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Exit Ticket
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Zoom
+            </Button>
+          </Box>
         </Box>
         <Card
           variant="outlined"
           sx={{
             padding: '1rem',
+            border: '1px solid black',
           }}
         >
           <Stack direction="column">
@@ -138,6 +141,7 @@ function CoachLandingPage() {
           variant="outlined"
           sx={{
             padding: '1rem',
+            border: '1px solid black',
           }}
         >
           <Stack direction="column">

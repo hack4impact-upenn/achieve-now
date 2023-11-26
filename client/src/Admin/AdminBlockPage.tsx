@@ -97,6 +97,7 @@ function AdminBlockPage() {
 
   useEffect(() => {
     // assumming the block id is known / fetched from elsewhere
+    setStudentData([]);
     axios
       .get(`http://localhost:4000/api/block/block-info-id/${blockID}`)
       .then((response) => {
@@ -113,7 +114,7 @@ function AdminBlockPage() {
   // for the button
   const handleEditBlock = () => {
     // todo add functionality
-    console.log('Editing block...');
+    navigate(`/admin-edit-block/${blockID}`);
   };
 
   const handleDeleteBlock = async () => {
@@ -175,34 +176,43 @@ function AdminBlockPage() {
             {tableData?.day} {tableData?.startTime} - {tableData?.endTime}:{' '}
             {tableData?.name}
           </Typography>
-          <Button
-            variant="outlined"
-            onClick={handleEditBlock}
-            sx={{
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              width: '100%',
             }}
           >
-            Edit Block
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleDeleteBlock}
-            sx={{
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
-              width: theme.spacing(20),
-            }}
-          >
-            Delete Block
-          </Button>
+            <Button
+              variant="outlined"
+              onClick={handleDeleteBlock}
+              sx={{
+                backgroundColor: 'white',
+                borderColor: 'black',
+                '&:hover': {
+                  backgroundColor: 'grey.200',
+                },
+                width: theme.spacing(20),
+                marginRight: theme.spacing(2),
+              }}
+            >
+              Delete Block
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleEditBlock}
+              sx={{
+                backgroundColor: 'white',
+                borderColor: 'black',
+                '&:hover': {
+                  backgroundColor: 'grey.200',
+                },
+                width: theme.spacing(20),
+              }}
+            >
+              Edit Block
+            </Button>
+          </div>
         </Box>
 
         <Box
