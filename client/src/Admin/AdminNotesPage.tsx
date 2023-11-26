@@ -53,7 +53,7 @@ function AdminSessionsPage() {
 
   async function getCoach(id: string) {
     // stored coach_id is the user_id of the coach not the id
-    const res = await getData(`coach/user/${id}`);
+    const res = await getData(`coach/${id}`);
     if (!res.error) {
       setCoach(res.data);
     }
