@@ -8,6 +8,7 @@ import {
   addBlock,
   editBlock,
   getBlockById,
+  deleteBlockById,
   getBlockByStudentId,
 } from '../services/block.service';
 
@@ -57,6 +58,8 @@ const putAddBlock = async (
       req.body.endTime,
       req.body.block,
       req.body.zoom,
+      req.body.absenceNotification,
+      req.body.exitTicket,
       req.body.students,
     )
       .then((block) => {
@@ -84,6 +87,8 @@ const putEditBlock = async (
       req.body.endTime,
       req.body.block,
       req.body.zoom,
+      req.body.absenceNotification,
+      req.body.exitTicket,
       req.body.students,
     )
       .then((block) => {
@@ -94,6 +99,21 @@ const putEditBlock = async (
         next(ApiError.internal('Unable to edit block'));
       })
   );
+};
+
+const putDeleteBlock = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const block = deleteBlockById(id);
+  res.status(StatusCode.OK).send(block);
 };
 
 const getBlockInfoByStudentId = async (
@@ -116,4 +136,5 @@ export {
   putAddBlock,
   putEditBlock,
   getBlockInfoByStudentId,
+  putDeleteBlock,
 };

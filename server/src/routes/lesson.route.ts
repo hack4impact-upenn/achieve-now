@@ -5,6 +5,7 @@ import {
   deleteResourceHandler,
   addResourceHandler,
   getAllLessonsHandler,
+  getLesson,
 } from '../controllers/lesson.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
@@ -24,5 +25,7 @@ lessonRouter.post(
   deleteResourceHandler,
 );
 lessonRouter.post('/addResource', isAuthenticated, isAdmin, addResourceHandler);
+
+lessonRouter.get('/:id', getLesson);
 
 export default lessonRouter;

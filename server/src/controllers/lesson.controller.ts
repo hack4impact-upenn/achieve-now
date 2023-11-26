@@ -98,6 +98,28 @@ const deleteResourceHandler = async (
     });
 };
 
+const getLesson = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.internal('Request must include a valid userID param'));
+  }
+
+  return (
+    getLessonById(id)
+      .then((lesson) => {
+        res.status(StatusCode.OK).send(lesson);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified lesson'));
+      })
+  );
+};
+
 /**
  * Update lesson resource (add specified).
  */
@@ -147,4 +169,5 @@ export {
   getLessonResourcesHandler,
   deleteResourceHandler,
   addResourceHandler,
+  getLesson,
 };
