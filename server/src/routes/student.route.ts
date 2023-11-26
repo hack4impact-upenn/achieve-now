@@ -7,6 +7,7 @@ import { isAdmin } from '../controllers/admin.middleware';
 import {
   getAdditionalStudentResources,
   getAllStudentResources,
+  getStudentsByTeacherID,
   deleteResource,
   addResource,
   getAllStudents,
@@ -19,6 +20,8 @@ import {
   addCoach,
   updateProgress,
   deleteProgress,
+  isTeacher,
+  inviteStudent,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -47,6 +50,13 @@ router.post(
  * id (string) - The student id of the particular student
  */
 router.post('/resource/all/:id', getAllStudentResources);
+
+
+/**
+ * A GET route to get all resources for a given teacher email, it returns all the students
+ * associated with the teacher
+ */
+router.get('/students-by-teacher/:email', isAuthenticated, isTeacher, getStudentsByTeacherID);
 
 /**
  * A GET route to get all students.
@@ -104,5 +114,15 @@ router.put(
 router.put('/add-coach', addCoach);
 router.put('/progress/:id', updateProgress);
 router.delete('/progress/:id/:date', deleteProgress);
+
+/**
+ * A POST route to invite a new student
+ * Expects a JSON body with the following fields:
+ * - email (string) - The email to invite the student from
+ * - userType (string) - The type of student to invite
+ * - active (boolean) - Whether the student is active or not
+ */
+router.post('/invite', isAuthenticated, isTeacher, inviteStudent);
+
 
 export default router;

@@ -8,6 +8,7 @@ import {
   createResourceHandler,
   updateResourceHandler,
   getAllResources,
+  deleteResourceHandler,
 } from '../controllers/resource.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
@@ -24,5 +25,7 @@ resourceRouter.put(
 );
 
 resourceRouter.post('/', isAuthenticated, isAdmin, createResourceHandler);
+
+resourceRouter.delete('/:resourceId', deleteResourceHandler);
 
 export default resourceRouter;
