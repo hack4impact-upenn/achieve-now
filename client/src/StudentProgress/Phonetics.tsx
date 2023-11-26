@@ -152,7 +152,7 @@ export default function Phonetics() {
         padding: '16px',
       }}
     >
-      <Typography variant="h6" fontWeight={700}>
+      <Typography variant="h5" fontWeight={700}>
         {levels[level][0]}
       </Typography>
       <Typography variant="subtitle1">{levels[level][1]}</Typography>

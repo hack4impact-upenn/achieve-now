@@ -45,6 +45,18 @@ const StudentSchema = new mongoose.Schema({
       required: false,
       default: {},
     },
+    student_next_steps: {
+      type: Map,
+      of: String,
+      required: false,
+      default: {},
+    },
+    student_observations: {
+      type: Map,
+      of: String,
+      required: false,
+      default: {},
+    },
   },
   parent_name: {
     type: String,
@@ -120,6 +132,10 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  updates: {
+    type: String,
+    required: true,
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -134,6 +150,8 @@ interface IStudent extends mongoose.Document {
   coach_additional_resources: [string];
   progress_stats: {
     attendance: Map<number, string>;
+    student_next_steps: Map<number, string>;
+    student_observations: Map<number, string>;
   };
   parent_name: string;
   parent_communication_days: string;
@@ -152,6 +170,7 @@ interface IStudent extends mongoose.Document {
   what_reading_strategies_didnt_work: string;
   progressFlag: boolean;
   academicFlag: boolean;
+  updates: string;
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);

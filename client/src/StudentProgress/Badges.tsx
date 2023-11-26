@@ -12,18 +12,37 @@ export default function Badges() {
         padding: '16px',
       }}
     >
-      <Typography variant="h6" fontWeight={700}>
+      <Typography variant="h5" fontWeight={700}>
         Badges
       </Typography>
       <Grid container spacing={2} mt={1}>
         <Grid item container xs={6} justifyContent="space-evenly">
           <img src="/first_session.svg" alt="" />
+          <Typography
+            sx={{ fontWeight: 600, textAlign: 'center', lineHeight: 1 }}
+          >
+            Attended Your First Session
+          </Typography>
         </Grid>
         <Grid item container xs={6} justifyContent="space-evenly">
           <img src="/vowels.svg" alt="" />
+          <Container>
+            <Typography
+              sx={{ fontWeight: 600, textAlign: 'center', lineHeight: 1 }}
+            >
+              Mastered Vowels
+            </Typography>
+          </Container>
         </Grid>
         <Grid item container xs={6} justifyContent="space-evenly">
           <img src="/ten_sessions.svg" alt="" />
+          <Container>
+            <Typography
+              sx={{ fontWeight: 600, textAlign: 'center', lineHeight: 1 }}
+            >
+              Attended 10 Sessions
+            </Typography>
+          </Container>
         </Grid>
       </Grid>
     </Box>

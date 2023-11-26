@@ -1,38 +1,67 @@
-import React from 'react';
-import { Grid, Stack } from '@mui/material';
+import React, { useRef, useEffect, useState } from 'react';
+import { Box, Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import Badges from './Badges';
 import Phonetics from './Phonetics';
 import Attendance from './Attendance';
 import ProgressSnapshot from './ProgressSnapshot';
+import Updates from './Updates';
 
 export default function StudentProgress() {
   const { id } = useParams<{ id?: string }>();
-  // return (
-  //   <>
-  //     <Header />
-  //     {id && <ProgressSnapshot studentId={id} />}
-  //   </>
-  // );
+  const validId = id ?? '';
+
+  const firstColumnRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState(0);
+
+  useEffect(() => {
+    if (firstColumnRef.current && rowRef.current) {
+      setMaxHeight(
+        firstColumnRef.current.clientHeight - rowRef.current.clientHeight,
+      );
+    }
+  }, []);
+
   return (
     <>
       <Header />
-      <Grid container spacing={4} p={5}>
-        <Grid item container direction="column" xs={3} spacing={4}>
-          <Grid item xs>
-            <Badges />
-          </Grid>
-          <Grid item xs>
-            <Attendance studentId="6510857e100eb371707ca8e7" />
+      <Grid container spacing={3} p={5}>
+        <Grid item xs={12} md={3}>
+          <Grid container direction="column" spacing={3} ref={firstColumnRef}>
+            <Grid item xs={12}>
+              <Badges />
+            </Grid>
+            <Grid item xs={12}>
+              <Attendance studentId={validId} />
+            </Grid>
           </Grid>
         </Grid>
-        <Grid item container direction="column" xs={9} spacing={4}>
-          <Grid item xs>
-            <Phonetics />
-          </Grid>
-          <Grid item xs>
-            <ProgressSnapshot studentId="6510857e100eb371707ca8e7" />
+
+        <Grid item xs={12} md={9}>
+          <Grid container direction="column" spacing={3} sx={{}}>
+            <Grid item container spacing={3} ref={rowRef}>
+              <Grid item xs={12} md={9}>
+                <Updates studentId={validId} />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Phonetics />
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  maxHeight: `${maxHeight}px`,
+                  overflowY: 'auto',
+                  width: '100%',
+                  border: 1,
+                  borderRadius: 3,
+                }}
+              >
+                <ProgressSnapshot studentId={validId} />
+              </Box>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
