@@ -22,6 +22,7 @@ import {
 } from '../services/invite.service';
 import { IInvite } from '../models/invite.model';
 import { emailInviteLink } from '../services/mail.service';
+import { batchReturnList, batchReturnVoid } from '../services/batch.service';
 import { IBlock } from '../models/block.model';
 
 /**
@@ -143,37 +144,58 @@ const inviteUser = async (
   next: express.NextFunction,
 ) => {
   const { email, role } = req.body;
+  let emailList = email.replaceAll(" ", "").split(",");
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
-  if (!email.match(emailRegex)) {
-    next(ApiError.badRequest('Invalid email'));
-  }
-  const lowercaseEmail = email.toLowerCase();
-  const existingUser: IUser | null = await getUserByEmail(lowercaseEmail);
-  if (existingUser) {
-    next(
-      ApiError.badRequest(
-        `An account with email ${lowercaseEmail} already exists.`,
-      ),
-    );
+  
+  function validateEmail(email: string) {
+      if (!email.match(emailRegex)) {
+      next(ApiError.badRequest('Invalid email'));
+    }
     return;
   }
 
-  const existingInvite: IInvite | null = await getInviteByEmail(lowercaseEmail);
-
-  try {
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    if (existingInvite) {
-      await updateInvite(existingInvite, verificationToken);
-    } else {
-      await createInvite(lowercaseEmail, verificationToken, role);
+  function validateNewUser(user: IUser) {
+    if (user) {
+      next(ApiError.badRequest(`An account with email ${user} already exists.`));
     }
-
-    await emailInviteLink(lowercaseEmail, verificationToken);
-    res.sendStatus(StatusCode.CREATED);
-  } catch (err) {
-    next(ApiError.internal('Unable to invite user.'));
+    return;
   }
+
+  function combineEmailInvite(emailList: string[], inviteList: IInvite[]) {
+    let result = []
+    for (let i = 0; i < emailList.length; i++) {
+      result.push([emailList[i], inviteList[i]])
+    }
+    return result;
+  }
+
+  async function sendInvite([lowercaseEmail, existingInvite]: [string, IInvite | null]) {
+    try {
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      if (existingInvite) {
+        await updateInvite(existingInvite, verificationToken);
+      } else {
+        await createInvite(lowercaseEmail, verificationToken, role);
+      }
+  
+      await emailInviteLink(lowercaseEmail, verificationToken);
+      res.sendStatus(StatusCode.CREATED);
+    } catch (err) {
+      next(ApiError.internal('Unable to invite user.'));
+    }
+  }
+  await batchReturnVoid(emailList, 10, validateEmail);
+  const lowercaseEmailList: string[] | null = await batchReturnList(emailList, 10, async (email: string) => {
+    return email.toLowerCase();
+  });
+
+  const existingUserList: any[] | null = await batchReturnList(lowercaseEmailList, 10, getUserByEmail);
+  await batchReturnVoid(existingUserList, 10, validateNewUser);
+
+  const existingInviteList: any[] | null = await batchReturnList(existingUserList, 10, getInviteByEmail);
+  const emailInviteList = combineEmailInvite(lowercaseEmailList, existingInviteList)
+  await batchReturnVoid(emailInviteList, 10, sendInvite);
 };
 
 /**
