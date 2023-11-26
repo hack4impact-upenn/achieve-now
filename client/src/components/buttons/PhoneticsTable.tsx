@@ -14,10 +14,6 @@ import IUser from '../../util/types/user';
 import ILesson from '../../util/types/lesson';
 // import { Button } from '@mui/material';
 
-type PhoneticsTableProps = {
-  teacherID: string;
-};
-
 interface PhoneticsTableRow {
   key: string;
   phonetic_pattern: string;
@@ -28,7 +24,7 @@ interface PhoneticsTableRow {
  * The standalone table component for holding information about the users in
  * the database and allowing admins to remove users and promote users to admins.
  */
-function PhoneticsTable({ teacherID }: PhoneticsTableProps) {
+function PhoneticsTable() {
   // phonetics
   const phonicPatterns = [
     'D',
@@ -185,7 +181,7 @@ function PhoneticsTable({ teacherID }: PhoneticsTableProps) {
   const lessons = useData('lesson/all');
 
   // list of all students with the teacher_id
-  const students = useData(`student/teacher/${teacherID}`);
+  const students = useData(`student/students-by-teacher/${self.email}`);
 
   useEffect(() => {
     if (users) {

@@ -10,6 +10,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
 import { Grid } from '@mui/material';
 import { useData } from './util/api';
+import { useAppSelector } from './util/redux/hooks';
+import { selectUser } from './util/redux/userSlice';
 import { StudentCardFromID } from './Admin/StudentCard';
 import PageHeader from './components/PageHeader';
 import PhoneticsTable from './components/buttons/PhoneticsTable';
@@ -73,16 +75,8 @@ function StudentConcernsCard(props: any) {
 }
 
 function SplitGrid() {
-  const id = '111';
-  // const students = useData(`student/teacher/${id}`);
-  // const studentData = students?.data ?? [];
-
-  const { teacherID } = useParams();
-  let finalId = '111';
-  if (teacherID) {
-    finalId = teacherID;
-  }
-  const students = useData(`student/teacher/${finalId}`);
+  const self = useAppSelector(selectUser);
+  const students = useData(`student/students-by-teacher/${self.email}`);
   const studentData = students?.data ?? [];
 
   const academicFlags = studentData.filter(
@@ -153,7 +147,7 @@ function SplitGrid() {
               </Box>
 
               <Box width="50%" paddingLeft={2}>
-                <PhoneticsTable teacherID={finalId} />
+                <PhoneticsTable />
               </Box>
             </Box>
           </Paper>
