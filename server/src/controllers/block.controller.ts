@@ -8,6 +8,7 @@ import {
   addBlock,
   editBlock,
   getBlockById,
+  deleteBlockById,
   getBlockByStudentId,
 } from '../services/block.service';
 
@@ -92,6 +93,21 @@ const putEditBlock = async (
   );
 };
 
+const putDeleteBlock = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const block = deleteBlockById(id);
+  res.status(StatusCode.OK).send(block);
+};
+
 const getBlockInfoByStudentId = async (
   req: express.Request,
   res: express.Response,
@@ -106,4 +122,4 @@ const getBlockInfoByStudentId = async (
   res.status(StatusCode.OK).send(block);
 }
 
-export { getBlockInfoById, getBlockInfo, putAddBlock, putEditBlock, getBlockInfoByStudentId };
+export { getBlockInfoById, getBlockInfo, putAddBlock, putEditBlock, getBlockInfoByStudentId, putDeleteBlock, };

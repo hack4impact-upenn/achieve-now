@@ -30,6 +30,11 @@ const getStudents = async (id: string) => {
   return response;
 };
 
+const deleteBlockById = async (id: string) => {
+  const block = await Block.findByIdAndDelete(id).exec();
+  return block;
+};
+
 const addBlock = async (
   day: string,
   startTime: string,
@@ -72,18 +77,17 @@ const getAllBlocksfromDB = async () => {
   return blockList;
 };
 
-const getBlockByStudentId = async (
-  studentId: string
-) => {
+const getBlockByStudentId = async (studentId: string) => {
   const blocks = await Block.find({});
   const filteredBlocks = blocks.filter(
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     (blocks: IBlock) =>
       blocks.students &&
       blocks.students.includes &&
       blocks.students.includes(studentId),
-  )
+  );
   return filteredBlocks[0];
-}
+};
 
 export {
   getBlockById,
@@ -93,4 +97,5 @@ export {
   editBlock,
   getAllBlocksfromDB,
   getBlockByStudentId,
+  deleteBlockById,
 };

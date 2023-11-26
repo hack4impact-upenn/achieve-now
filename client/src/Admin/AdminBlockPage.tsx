@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { useData } from '../util/api';
+import { useData, putData } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 
@@ -32,12 +32,14 @@ interface StudentInfo {
   id: string;
   name: string;
   coach: string;
+  nextStep: string;
   lessonLevel: string;
 }
 
 function AdminBlockPage() {
   const params = useParams();
   const blockID = params.id;
+  const navigate = useNavigate();
 
   const columns: TColumn[] = [
     { id: 'student', label: 'Student' },
@@ -47,30 +49,48 @@ function AdminBlockPage() {
   ];
 
   // State for table data
-  const [tableData, setTableData] = useState<BlockInfo[] | null>(null);
+  const [tableData, setTableData] = useState<BlockInfo>();
   const [studentData, setStudentData] = useState<StudentInfo[]>([]);
 
   // Fetch data from the backend
   const getStudentAndCoach = (studentID: string) => {
-    let studentUserId = '';
     axios
       .get(`http://localhost:4000/api/student/student/${studentID}`)
       .then((res) => {
-        studentUserId = res.data.user_id;
-        return axios.get(
-          `http://localhost:4000/api/coach/${res.data.coach_id}`,
-        );
-      })
-      .then((coachData) => {
+        console.log(res.data.lesson_level);
         return axios.all([
-          axios.get(`http://localhost:4000/api/user/${user}`),
-          axios.get(`http://localhost:4000/api/user/${coachData.data.user_id}`),
+          axios.get(
+            `http://localhost:4000/api/lesson/${res.data.lesson_level}`,
+          ),
+          axios.get(`http://localhost:4000/api/coach/${res.data.coach_id[0]}`),
+          axios.get(`http://localhost:4000/api/user/${res.data.user_id}`),
         ]);
       })
       .then(
-        axios.spread((student, coach) => {
-          console.log(student);
-          console.log(coach);
+        axios.spread((lesson, coachData, studentUser) => {
+          return axios.all([
+            lesson,
+            axios.get(
+              `http://localhost:4000/api/user/${coachData.data.user_id}`,
+            ),
+            studentUser,
+          ]);
+        }),
+      )
+      .then(
+        axios.spread((lesson, coach, studentUser) => {
+          const studentInfo: StudentInfo = {
+            // eslint-disable-next-line no-underscore-dangle
+            id: studentUser.data._id,
+            name: `${studentUser.data.firstName} ${studentUser.data.lastName}`,
+            coach: `${coach.data.firstName} ${coach.data.lastName}`,
+            lessonLevel: lesson.data.number,
+            nextStep: 'next step',
+          };
+          setStudentData((prevStudentData) => [
+            ...prevStudentData,
+            studentInfo,
+          ]);
         }),
       );
   };
@@ -83,25 +103,26 @@ function AdminBlockPage() {
         setTableData(response.data);
         response.data.students.forEach((student: string) => {
           getStudentAndCoach(student);
-          // axios
-          //   .get(`http://localhost:4000/api/student/student/${student}`)
-          //   .then((res) => {
-          //     const copy = studentData;
-          //     copy?.push(res.data);
-          //     console.log(res.data);
-          //     setStudentData(copy);
-          //   });
         });
       })
       .catch((error) => {
         console.error('Error fetching block info:', error);
       });
-  }, [blockID, studentData]);
+  }, [blockID]);
 
   // for the button
   const handleEditBlock = () => {
     // todo add functionality
     console.log('Editing block...');
+  };
+
+  const handleDeleteBlock = async () => {
+    try {
+      await putData(`block/delete-block`, { id: blockID });
+      navigate('/admin-sessions');
+    } catch (error) {
+      console.log('error deleting');
+    }
   };
 
   // Used to create the data type to create a row in the table
@@ -139,31 +160,25 @@ function AdminBlockPage() {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column', // Changed from 'row' to 'column'
             alignItems: 'center',
-            justifyContent: 'space-between',
             width: '80%',
-            position: 'relative',
-            paddingBottom: theme.spacing(1),
           }}
         >
           <Typography
             variant="h2"
             sx={{
               fontWeight: theme.typography.fontWeightBold,
-              position: 'absolute',
-              left: '50%',
-              transform: 'translateX(-50%)',
+              marginBottom: theme.spacing(1), // Added margin bottom
             }}
           >
-            Monday 8:50 - 9:50: Block 1
+            {tableData?.day} {tableData?.startTime} - {tableData?.endTime}:{' '}
+            {tableData?.name}
           </Typography>
           <Button
             variant="outlined"
             onClick={handleEditBlock}
             sx={{
-              position: 'absolute',
-              right: '0%',
               backgroundColor: 'white',
               borderColor: 'black',
               '&:hover': {
@@ -173,6 +188,20 @@ function AdminBlockPage() {
             }}
           >
             Edit Block
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={handleDeleteBlock}
+            sx={{
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+            }}
+          >
+            Delete Block
           </Button>
         </Box>
 
@@ -187,20 +216,20 @@ function AdminBlockPage() {
             <PaginationTable
               rows={studentData.map(
                 (
-                  student: any, // Explicitly type the data parameter
+                  student: StudentInfo, // Explicitly type the data parameter
                 ) =>
                   createAdminSessionsRow(
-                    student.key,
-                    student.student,
+                    student.id,
+                    student.name,
                     student.coach,
-                    <a // noteLink
-                      href="../users"
+                    <a
+                      href={`/admin-notes/${student.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Notes
                     </a>,
-                    student.lesson,
+                    student.lessonLevel,
                   ),
               )}
               columns={columns}
