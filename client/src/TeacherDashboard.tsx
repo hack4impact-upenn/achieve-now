@@ -25,7 +25,8 @@ const ScrollableBox = styled(Box)({
 // eslint-disable-next-line
 function createData(data: any) {
   return data.map((student: any) => {
-    return <StudentCardFromID studentID={student.user_id} lesson="Lesson 1" />;
+    /* eslint no-underscore-dangle: 0 */
+    return <StudentCardFromID studentID={student._id} lesson="Lesson 1" />;
   });
 }
 function StudentName(props: any) {
