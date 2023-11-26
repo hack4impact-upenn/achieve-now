@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
@@ -202,6 +202,8 @@ function AdminSessionsPage() {
     }
   };
 
+  const sortedDates = useMemo(() => data.dates.sort((a, b) => b - a), [data]);
+
   return (
     <div>
       <AddDateNotesDialog
@@ -213,13 +215,13 @@ function AdminSessionsPage() {
       <DeleteDateDialog
         open={deleteDateDialogOpen}
         setOpen={() => setDeleteDateDialogOpen(false)}
-        options={data.dates}
+        options={sortedDates}
         deleteDate={deleteDate}
       />
       <EditDateDialog
         open={editDateDialogOpen}
         setOpen={() => setEditDateDialogOpen(false)}
-        options={data.dates}
+        options={sortedDates}
         editDate={addDate}
         table={tableData}
       />
