@@ -155,14 +155,26 @@ const updateUserInfo = async (
   id: string,
   firstName: string,
   lastName: string,
+  email: string,
   phone: string,
 ) => {
-  const user = await User.findByIdAndUpdate(
-    id,
-    { firstName, lastName, phone },
-    { new: true },
-  ).exec();
-  return user;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { firstName, lastName, email, phone },
+      { new: true },
+    ).exec();
+    return user;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+const getAllTeachersFromDB = async () => {
+  // Use the find method to query the database for users with the "teacher" role
+  const teachers = await User.find({ role: 'teacher' }).exec();
+  return teachers;
 };
 
 export {
@@ -177,4 +189,5 @@ export {
   changeUserRole,
   deleteUserById,
   updateUserInfo,
+  getAllTeachersFromDB,
 };
