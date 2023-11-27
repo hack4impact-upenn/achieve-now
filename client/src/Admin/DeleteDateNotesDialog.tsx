@@ -37,7 +37,12 @@ function DeleteDateDialog({
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle sx={{ textAlign: 'center' }}>Delete Date</DialogTitle>
       <DialogActions
-        sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingBottom: 5,
+        }}
       >
         <Stack
           direction="row"
@@ -49,6 +54,13 @@ function DeleteDateDialog({
             sx={{
               minWidth: 150,
             }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: 36 * 5,
+                },
+              },
+            }}
             onChange={(event) => setDate(event.target.value as number)}
           >
             {options.map((option) => (
@@ -57,7 +69,7 @@ function DeleteDateDialog({
               </MenuItem>
             ))}
           </Select>
-          <Button variant="outlined" onClick={handleSubmit}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>

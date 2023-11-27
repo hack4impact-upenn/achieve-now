@@ -2,7 +2,7 @@
  * All the functions for interacting with user data in the MongoDB database
  */
 import { hash } from 'bcrypt';
-import { User } from '../models/user.model';
+import { IUser, User } from '../models/user.model';
 
 const passwordHashSaltRounds = 10;
 const removeSensitiveDataQuery = [
@@ -155,14 +155,30 @@ const updateUserInfo = async (
   id: string,
   firstName: string,
   lastName: string,
+  email: string,
   phone: string,
 ) => {
-  const user = await User.findByIdAndUpdate(
-    id,
-    { firstName, lastName, phone },
-    { new: true },
-  ).exec();
-  return user;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { firstName, lastName, email, phone },
+      { new: true },
+    ).exec();
+    return user;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+const getAllTeachersFromDB = async () => {
+  // Use the find method to query the database for users with the "teacher" role
+  const teachers = await User.find({ role: 'teacher' }).exec();
+  return teachers;
+};
+
+const updateUser = async (id: string, user: IUser) => {
+  return await User.findByIdAndUpdate(id, user, { new: true }).exec();
 };
 
 export {
@@ -177,4 +193,6 @@ export {
   changeUserRole,
   deleteUserById,
   updateUserInfo,
+  updateUser,
+  getAllTeachersFromDB,
 };

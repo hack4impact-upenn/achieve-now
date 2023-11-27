@@ -1,8 +1,10 @@
 /* eslint-disable camelcase */
-import { Coach } from '../models/coach.model';
+import { Coach, ICoach } from '../models/coach.model';
 import { IStudent, Student } from '../models/student.model';
 import { getAllBlocksfromDB } from './block.service';
 import { IBlock } from '../models/block.model';
+import mongoose from 'mongoose';
+import { User } from '../models/user.model';
 
 /**
  * @returns All the {@link Student}s in the database without their passwords.
@@ -87,31 +89,23 @@ const deleteAttendanceOnDate = async (date: number) => {
 
 const getCoachBlocks = async (coach_id: string) => {
   const students = await Student.find({});
-  const filteredStudents = students.filter(
-    (student: IStudent) =>
-      student.coach_id &&
-      student.coach_id.includes &&
-      student.coach_id.includes(coach_id),
-  );
-
-  const blocks: string[] = [];
-  filteredStudents.forEach((student: IStudent) => {
-    if (!student.block_id) {
-      return;
-    }
-    if (!blocks.includes(student.block_id.toString())) {
-      blocks.push(student.block_id.toString());
-    }
-  });
+  const filteredStudents = students
+    .filter(
+      (student: IStudent) =>
+        student.coach_id &&
+        student.coach_id.includes &&
+        student.coach_id.includes(coach_id),
+    )
+    .map((student: IStudent) => student._id.toString());
 
   const rawBlocks: IBlock[] = await getAllBlocksfromDB();
   const filteredBlocks = rawBlocks
-    .map((block) => ({
-      _id: block._id.toString(),
-      name: block.name,
-    }))
-    .filter((block) => blocks.includes(block._id))
-    .map((block) => block.name);
+    .filter((block: IBlock) =>
+      block.students.some((student: string) =>
+        filteredStudents.includes(student.toString()),
+      ),
+    )
+    .map((block: IBlock) => block.name);
 
   return filteredBlocks;
 };
@@ -129,6 +123,18 @@ const getStudentFromCoach = async (coach_id: string) => {
 
 const getCoach = async (coach_id: string) => {
   const coach = await Coach.findOne({ _id: coach_id });
+  return coach;
+};
+
+const updateCoach = async (id: string, coach: ICoach) => {
+  return await Coach.findByIdAndUpdate(id, coach, { new: true }).exec();
+}
+
+const getCoachByUser = async (user_id: string) => {
+  // findOne by user_id isn't matching any coaches
+  const coaches = await Coach.find();
+  // eslint-disable-next-line eqeqeq
+  const coach = coaches.find((c) => c.user_id == user_id);
   return coach;
 };
 
@@ -178,6 +184,8 @@ export {
   getCoachBlocks,
   getStudentFromCoach,
   getCoach,
+  updateCoach,
+  getCoachByUser,
   updateProgressDate,
   deleteProgressDate,
 };

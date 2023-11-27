@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
@@ -7,6 +7,7 @@ import { deleteData, getData, putData, useData } from '../util/api';
 import theme from '../assets/theme';
 import AddDateNotesDialog from './AddDateNotesDialog';
 import DeleteDateDialog from './DeleteDateNotesDialog';
+import EditDateDialog from './EditDateNotesDialog';
 import IStudent from '../util/types/student';
 import ICoach from '../util/types/coach';
 
@@ -32,6 +33,7 @@ function AdminSessionsPage() {
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
+  const [editDateDialogOpen, setEditDateDialogOpen] = useState<boolean>(false);
   const [data, setData] = useState<IAdminNotesTable>({
     dates: [] as number[],
   });
@@ -50,6 +52,7 @@ function AdminSessionsPage() {
   ];
 
   async function getCoach(id: string) {
+    // stored coach_id is the user_id of the coach not the id
     const res = await getData(`coach/${id}`);
     if (!res.error) {
       setCoach(res.data);
@@ -67,8 +70,9 @@ function AdminSessionsPage() {
   }, [studentData]);
 
   useEffect(() => {
-    if (student && coach) {
-      const bigMap = new Map();
+    const bigMap = new Map();
+    if (student) {
+      console.log(student.progress_stats);
       Object.entries(student.progress_stats).forEach(([key, innerMap]) => {
         if (key === 'student_next_steps' || key === 'student_observations') {
           Object.entries(innerMap).forEach(([date, comments]) => {
@@ -79,7 +83,9 @@ function AdminSessionsPage() {
           });
         }
       });
+    }
 
+    if (coach) {
       Object.entries(coach.progress_stats).forEach(([key, innerMap]) => {
         if (key === 'coach_next_steps' || key === 'coach_observations') {
           Object.entries(innerMap).forEach(([date, comments]) => {
@@ -90,20 +96,20 @@ function AdminSessionsPage() {
           });
         }
       });
-
-      const bigTable: IAdminNotesRow[] = [];
-      Array.from(bigMap.entries()).forEach(([date, obj], index) => {
-        bigTable.push({
-          key: date.toString(),
-          date: new Date(parseInt(date, 10)).toLocaleDateString(),
-          studentObservations: obj.student_observations || '',
-          studentNextSteps: obj.student_next_steps || '',
-          coachObservations: obj.coach_observations || '',
-          coachNextSteps: obj.coach_next_steps || '',
-        });
-      });
-      setTableData(bigTable);
     }
+
+    const bigTable: IAdminNotesRow[] = [];
+    Array.from(bigMap.entries()).forEach(([date, obj], index) => {
+      bigTable.push({
+        key: date.toString(),
+        date: new Date(parseInt(date, 10)).toLocaleDateString(),
+        studentObservations: obj.student_observations || '',
+        studentNextSteps: obj.student_next_steps || '',
+        coachObservations: obj.coach_observations || '',
+        coachNextSteps: obj.coach_next_steps || '',
+      });
+    });
+    setTableData(bigTable);
   }, [student, coach]);
 
   // Used to create the data type to create a row in the table
@@ -127,13 +133,15 @@ function AdminSessionsPage() {
 
   const deleteDate = async (date: number) => {
     try {
-      const res = await deleteData(
+      deleteData(
         `student/progress/${student?._id}/${date}`,
       ); /* eslint no-underscore-dangle: 0 */
 
-      deleteData(
-        `coach/progress/${coach?._id}/${date}`,
-      ); /* eslint no-underscore-dangle: 0 */
+      if (coach) {
+        deleteData(
+          `coach/progress/${coach._id}/${date}`,
+        ); /* eslint no-underscore-dangle: 0 */
+      }
 
       const dateStr = new Date(date).toLocaleDateString();
       const updatedTableData = tableData.filter(
@@ -164,15 +172,17 @@ function AdminSessionsPage() {
         studentComments,
       ); /* eslint no-underscore-dangle: 0 */
 
-      const coachComments = {
-        date,
-        observations: coachObservations,
-        next_steps: coachNextSteps,
-      };
-      putData(
-        `coach/progress/${coach?._id}`,
-        coachComments,
-      ); /* eslint no-underscore-dangle: 0 */
+      if (coach) {
+        const coachComments = {
+          date,
+          observations: coachObservations,
+          next_steps: coachNextSteps,
+        };
+        putData(
+          `coach/progress/${coach?._id}`,
+          coachComments,
+        ); /* eslint no-underscore-dangle: 0 */
+      }
 
       const newData = {
         key: date.toString(),
@@ -192,6 +202,8 @@ function AdminSessionsPage() {
     }
   };
 
+  const sortedDates = useMemo(() => data.dates.sort((a, b) => b - a), [data]);
+
   return (
     <div>
       <AddDateNotesDialog
@@ -203,8 +215,15 @@ function AdminSessionsPage() {
       <DeleteDateDialog
         open={deleteDateDialogOpen}
         setOpen={() => setDeleteDateDialogOpen(false)}
-        options={data.dates}
+        options={sortedDates}
         deleteDate={deleteDate}
+      />
+      <EditDateDialog
+        open={editDateDialogOpen}
+        setOpen={() => setEditDateDialogOpen(false)}
+        options={sortedDates}
+        editDate={addDate}
+        table={tableData}
       />
       <Header />
       <Box
@@ -227,7 +246,7 @@ function AdminSessionsPage() {
             justifyContent: 'space-between',
             width: '80%',
             position: 'relative',
-            paddingBottom: theme.spacing(1),
+            paddingBottom: theme.spacing(3),
           }}
         >
           <Typography
@@ -276,9 +295,24 @@ function AdminSessionsPage() {
                 backgroundColor: 'grey.200',
               },
               width: theme.spacing(20),
+              marginRight: theme.spacing(2),
             }}
           >
             Delete Entry
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setEditDateDialogOpen(true)}
+            sx={{
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+            }}
+          >
+            Edit Entry
           </Button>
         </Box>
 
