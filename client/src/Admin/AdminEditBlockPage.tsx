@@ -25,6 +25,8 @@ import IStudent from '../util/types/student';
 import { editBlock } from '../Home/api';
 import { submitError } from './AdminAddBlockPage';
 import IBlock from '../util/types/block';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 function AdminEditBlockPage() {
   const blockId = useParams().id;
@@ -56,6 +58,8 @@ function AdminEditBlockPage() {
   const [studentsInBlock, setStudentsInBlock] = useState<string[]>([]);
   const [coachesInBlock, setCoachesInBlock] = useState<string[]>([]);
   const [blockNames, setBlockNames] = useState<string[]>([]);
+
+  const { setAlert } = useAlert();
 
   useEffect(() => {
     if (!block || !block.data) {
@@ -218,7 +222,7 @@ function AdminEditBlockPage() {
       zoom,
       pairs,
     }).then(() => {
-      window.location.reload();
+      setAlert('Edited block successfully!', AlertType.SUCCESS);
     });
   };
 

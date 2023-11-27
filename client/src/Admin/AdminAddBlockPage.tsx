@@ -25,6 +25,8 @@ import IStudent from '../util/types/student';
 import { addBlock } from '../Home/api';
 import IBlock from '../util/types/block';
 import ICoach from '../util/types/coach';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 interface submitState {
   day: string;
@@ -137,6 +139,8 @@ function AdminAddBlockPage() {
   const [coachesInBlock, setCoachesInBlock] = useState<string[]>([]);
   const [blockNames, setBlockNames] = useState<string[]>([]);
 
+  const { setAlert } = useAlert();
+
   useEffect(() => {
     const data = users?.data || [];
     setTeachers(data.filter((user: IUser) => user.role === 'teacher'));
@@ -175,12 +179,6 @@ function AdminAddBlockPage() {
       setCoachesInBlock(blockCoachIds);
     }
   }, [blocks, students]);
-
-  useEffect(() => {
-    console.log(blockNames);
-    console.log(coachesInBlock);
-    console.log(studentsInBlock);
-  }, [blockNames, coachesInBlock, studentsInBlock]);
 
   const handleDayChange = (event: SelectChangeEvent) => {
     setDay(event.target.value as string);
@@ -268,6 +266,7 @@ function AdminAddBlockPage() {
       zoom,
       pairs,
     });
+    setAlert('Added block successfully!', AlertType.SUCCESS);
     reset();
   };
 
