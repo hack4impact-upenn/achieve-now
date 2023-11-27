@@ -10,15 +10,15 @@ import { IStudent } from '../models/student.model';
 import {
   getStudentByID,
   getResourceByID,
-  updateParentResourcesByID,
   getAllStudentsFromDB,
-  updateCoachResourcesByID,
   updateAttendance,
   deleteAttendanceOnDate,
   createAttendanceOnDate,
   addCoachToStudent,
   updateProgressDate,
   deleteProgressDate,
+  deleteResourceByID,
+  addResourceByID,
 } from '../services/student.service';
 import { getLessonById } from '../services/lesson.service';
 import { getUserById } from '../services/user.service';
@@ -349,39 +349,16 @@ const deleteResource = async (
     return;
   }
 
-  if (role === 'parent') {
-    if (!student.parent_additional_resources) {
-      next(ApiError.notFound(`Student does not have any parent resources.`));
-      return;
-    }
-
-    const updated_resources = student.parent_additional_resources.filter(
-      (item) => item.toString() !== resource.toString(),
-    );
-
-    updateParentResourcesByID(id, updated_resources)
-      .then((studentRes: any) => res.status(StatusCode.OK).send(studentRes))
-      .catch((e: any) => {
-        console.log(e);
-        next(ApiError.internal('Failed to delete resource.'));
-      });
-  } else if (role === 'coach') {
-    if (!student.coach_additional_resources) {
-      next(ApiError.notFound(`Student does not have any coach resources.`));
-      return;
-    }
-
-    const updated_resources = student.coach_additional_resources.filter(
-      (item) => item.toString() !== resource.toString(),
-    );
-
-    updateCoachResourcesByID(id, updated_resources)
-      .then((studentRes) => res.status(StatusCode.OK).send(studentRes))
-      .catch((e: any) => {
-        console.log(e);
-        next(ApiError.internal('Failed to delete resource.'));
-      });
-  }
+  deleteResourceByID(student, resource, role)
+    .then((response) =>
+      response
+        ? res.status(StatusCode.OK).send(response)
+        : res.sendStatus(StatusCode.NOT_FOUND),
+    )
+    .catch((e: any) => {
+      console.log(e);
+      next(ApiError.internal('Failed to delete resource.'));
+    });
 };
 
 /**
@@ -413,33 +390,18 @@ const addResource = async (
     return;
   }
 
-  let resources: string[] = [];
-
-  if (role === 'parent' && student.parent_additional_resources) {
-    resources = student.parent_additional_resources;
-  } else if (role === 'coach' && student.coach_additional_resources) {
-    resources = student.coach_additional_resources;
+  const resourceObj = await getResourceByID(resource);
+  if (!resourceObj) {
+    next(ApiError.notFound(`Resource with id ${resource} does not exist`));
+    return;
   }
 
-  resources.push(resource);
-
-  if (role === 'parent') {
-    updateParentResourcesByID(id, resources)
-      .then((response) => res.status(StatusCode.OK).send(response))
-      .catch((e: any) => {
-        console.log(e);
-        next(ApiError.internal('Failed to add resource.'));
-      });
-  } else if (role === 'coach') {
-    updateCoachResourcesByID(id, resources)
-      .then((response) => res.status(StatusCode.OK).send(response))
-      .catch((e: any) => {
-        console.log(e);
-        next(ApiError.internal('Failed to add resource.'));
-      });
-  } else {
-    next(ApiError.internal('Invalid role.'));
+  const response = await addResourceByID(student, resource, role);
+  if (response) {
+    res.status(StatusCode.OK).send(response);
+    return;
   }
+  res.sendStatus(StatusCode.NOT_FOUND);
 };
 
 const updateStudentAttendance = async (

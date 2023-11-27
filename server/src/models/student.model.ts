@@ -131,8 +131,8 @@ interface IStudent extends mongoose.Document {
   coach_id: [string];
   block_id: string;
   lesson_level: string;
-  parent_additional_resources: [string];
-  coach_additional_resources: [string];
+  parent_additional_resources: string[];
+  coach_additional_resources: string[];
   progress_stats: Map<string, Map<string, string>>;
   parent_name: string;
   parent_communication_days: string;

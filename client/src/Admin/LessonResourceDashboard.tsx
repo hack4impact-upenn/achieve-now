@@ -43,6 +43,9 @@ function LessonResourceDashboard() {
 
   useEffect(() => {
     const getResources = async () => {
+      if (!lessonId) {
+        return;
+      }
       const allResourceData = resourcesRes?.data || [];
       const lessonRes = await postData(`lesson/${lessonId || ''}/resources`);
       const lessonData = lessonRes?.data;
@@ -208,7 +211,7 @@ function LessonResourceDashboard() {
                 ? 'Select a Lesson'
                 : `Lesson ${lessonNumber}`}
             </h1>
-            <h3>Parent Additional Resources</h3>
+            <h3>Parent Resources</h3>
             {!lessonId ? (
               <Box height="100px" />
             ) : (
@@ -227,7 +230,7 @@ function LessonResourceDashboard() {
             }}
           >
             <Box>
-              <h3>Coach Additional Resources</h3>
+              <h3>Coach Resources</h3>
             </Box>
             {!lessonId ? (
               <Box height="40%" />

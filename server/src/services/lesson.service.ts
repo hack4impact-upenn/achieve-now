@@ -1,4 +1,4 @@
-import { Lesson } from '../models/lesson.model';
+import { ILesson, Lesson } from '../models/lesson.model';
 
 const getLessonById = async (id: string) => {
   const lesson = await Lesson.findById(id).exec();
@@ -15,40 +15,62 @@ const getAllLessonsFromDB = async () => {
   return lessonList;
 };
 
-const deleteResource = async (id: string, role: string, resourceId: string) => {
-  if (role === 'parent') {
-    const lesson = await Lesson.findOneAndUpdate(
-      { id },
-      { $pull: { parent_resources: resourceId } },
-    ).exec();
-    return lesson;
+const deleteResource = async (
+  lesson: ILesson,
+  role: string,
+  resourceId: string,
+) => {
+  try {
+    if (role === 'parent') {
+      await Lesson.updateOne(
+        { _id: lesson._id },
+        { $pull: { parent_resources: resourceId } },
+      ).exec();
+    } else if (role === 'coach') {
+      await Lesson.updateOne(
+        { _id: lesson._id },
+        { $pull: { coach_resources: resourceId } },
+      ).exec();
+    } else {
+      throw new Error('Invalid role specified');
+    }
+
+    // Fetch and return the updated lesson object
+    const updatedLesson = await Lesson.findById(lesson._id).exec();
+    return updatedLesson;
+  } catch (error) {
+    console.log('Error updating resources in lesson:', error);
+    throw error; // Propagate the error
   }
-  if (role === 'coach') {
-    const lesson = await Lesson.findOneAndUpdate(
-      { id },
-      { $pull: { coach_resources: resourceId } },
-    ).exec();
-    return lesson;
-  }
-  return null;
 };
 
-const addResource = async (id: string, role: string, resourceId: string) => {
-  if (role === 'parent') {
-    const lesson = await Lesson.findOneAndUpdate(
-      { id },
-      { $push: { parent_resources: resourceId } },
-    ).exec();
-    return lesson;
+const addResource = async (
+  lesson: ILesson,
+  role: string,
+  resourceId: string,
+) => {
+  try {
+    if (role === 'parent') {
+      await Lesson.updateOne(
+        { _id: lesson._id },
+        { $addToSet: { parent_resources: resourceId } },
+      ).exec();
+    } else if (role === 'coach') {
+      await Lesson.updateOne(
+        { _id: lesson._id },
+        { $addToSet: { coach_resources: resourceId } },
+      ).exec();
+    } else {
+      throw new Error('Invalid role specified');
+    }
+
+    // Fetch and return the updated lesson object
+    const updatedLesson = await Lesson.findById(lesson._id).exec();
+    return updatedLesson;
+  } catch (error) {
+    console.log('Error updating resources in lesson:', error);
+    throw error; // Propagate the error
   }
-  if (role === 'coach') {
-    const lesson = await Lesson.findOneAndUpdate(
-      { id },
-      { $push: { coach_resources: resourceId } },
-    ).exec();
-    return lesson;
-  }
-  return null;
 };
 
 export {

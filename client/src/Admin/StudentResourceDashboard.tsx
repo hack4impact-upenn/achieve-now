@@ -225,7 +225,7 @@ function StudentResourceDashboard() {
                 ? 'Select a Student'
                 : `Student: ${studentName}`}
             </h1>
-            <h3>Parent Additional Resources</h3>
+            <h3>Parent Resources</h3>
             {!studentId ? (
               <Box height="100px" />
             ) : (
@@ -244,7 +244,7 @@ function StudentResourceDashboard() {
             }}
           >
             <Box>
-              <h3>Coach Additional Resources</h3>
+              <h3>Coach Resources</h3>
             </Box>
             {!studentId ? (
               <Box height="100px" />
