@@ -3,11 +3,7 @@ import express from 'express';
 import ApiError from '../util/apiError';
 import { getLessonLevelsByTeacherId } from '../services/teacher.service';
 
-const getLessonLevel = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
+const getLessonLevel = async (req: express.Request, res: express.Response) => {
   const { teacher_id } = req.params;
 
   if (!teacher_id) {

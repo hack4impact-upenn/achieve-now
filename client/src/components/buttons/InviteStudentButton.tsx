@@ -5,18 +5,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 import AlertType from '../../util/types/alert';
 import useAlert from '../../util/hooks/useAlert';
 import { postData } from '../../util/api';
 
-function InviteUserButton() {
+function InviteStudentButton() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -28,13 +24,13 @@ function InviteUserButton() {
 
   const handleClose = () => {
     setOpen(false);
-    setRole('');
     setError('');
   };
 
   const handleInvite = async () => {
     setLoading(true);
-    postData('admin/invite', { email, role }).then((res) => {
+    const role = 'parent';
+    postData('student/invite', { email, role }).then((res) => {
       if (res.error) {
         setError(res.error.message);
       } else {
@@ -45,11 +41,6 @@ function InviteUserButton() {
     });
   };
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setError('');
-    setRole(event.target.value);
-  };
-
   const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError('');
     setEmail(event.target.value);
@@ -58,13 +49,13 @@ function InviteUserButton() {
   return (
     <div style={{ marginBottom: '10px' }}>
       <Button variant="contained" onClick={handleClickOpen}>
-        Invite User
+        Invite Student
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <DialogContentText>
-            Please enter the email address and role of the user you would like
-            to invite.
+            Please enter the email address of the student you would like to
+            invite.
           </DialogContentText>
           <TextField
             autoFocus
@@ -77,20 +68,6 @@ function InviteUserButton() {
             onChange={updateEmail}
           />
           <DialogContentText sx={{ color: 'red' }}>{error}</DialogContentText>
-          <FormControl variant="standard" sx={{ mt: 1 }} fullWidth>
-            <InputLabel id="role">Role</InputLabel>
-            <Select
-              value={role}
-              onChange={handleChange}
-              label="Role"
-              labelId="role"
-            >
-              <MenuItem value="parent">Student</MenuItem>
-              <MenuItem value="coach">Coach</MenuItem>
-              <MenuItem value="teacher">Teacher</MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
-            </Select>
-          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button disabled={loading} onClick={handleClose}>
@@ -105,4 +82,4 @@ function InviteUserButton() {
   );
 }
 
-export default InviteUserButton;
+export default InviteStudentButton;
