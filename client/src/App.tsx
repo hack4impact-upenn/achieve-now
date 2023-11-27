@@ -9,6 +9,7 @@ import { store, persistor } from './util/redux/store';
 import NotFoundPage from './NotFound/NotFoundPage';
 import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
+import StudentDashboardPage from './Teacher/StudentDashboard';
 import LessonsPage from './Lessons/LessonsPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
@@ -33,12 +34,13 @@ import TeacherDashboard from './TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
 import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
+import AdminResourcesPage from './Admin/AdminResourcesPage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import StudentProfilePage from './Admin/StudentProfilePage';
 import AdminEditBlockPage from './Admin/AdminEditBlockPage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
-import LessonLevels from './components/LessonLevels';
 import AdminAttendance from './Admin/AdminAttendance';
 import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
@@ -54,8 +56,6 @@ function App() {
               <CssBaseline>
                 <AlertPopup />
                 <Routes>
-                  <Route path="/lessons/:studentID" element={<LessonsPage />} />
-
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
                     <Route path="/login" element={<LoginPage />} />
@@ -79,6 +79,22 @@ function App() {
                   />
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/family-progress"
+                      element={<FamilyProgressSnapshotPage />}
+                    />
+                    <Route
+                      path="/lessons/:studentID"
+                      element={<LessonsPage />}
+                    />
+                    <Route
+                      path="/coach-landing/:id"
+                      element={<CoachLandingPage />}
+                    />
+                    <Route
+                      path="/student-dashboard"
+                      element={<StudentDashboardPage />}
+                    />
                     <Route path="/home" element={<HomePage />} />
                     <Route
                       path="/onboarding/student"
@@ -86,55 +102,48 @@ function App() {
                     />
                     <Route path="/teacher" element={<TeacherDashboard />} />
                   </Route>
+                  {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/resources/student/:studentId"
+                      path="/admin/student-resources"
                       element={<StudentResourceDashboard />}
                     />
                     <Route
-                      path="/resources/lesson/:lessonId"
+                      path="/admin/lesson-resources"
                       element={<LessonResourceDashboard />}
                     />
                     <Route
-                      path="/admin-sessions"
+                      path="/admin/sessions"
                       element={<AdminSessionsPage />}
                     />
                     <Route
-                      path="/admin-add-block"
-                      element={<AdminAddBlockPage />}
-                    />
-                    <Route
-                      path="/admin-edit-block/:id"
-                      element={<AdminEditBlockPage />}
-                    />
-                  </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
-                    <Route
-                      path="/teacher/:teacherID"
-                      element={<TeacherDashboard />}
-                    />
-                  </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
-                    <Route
-                      path="/progress"
-                      element={<FamilyProgressSnapshotPage />}
-                    />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
-                    <Route path="/profiles" element={<ProfilePage />} />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
-                    <Route
-                      path="/admin-lessons"
+                      path="/admin/lessons"
                       element={<AdminLessonsPage />}
+                    />
+                    <Route
+                      path="/admin/student/profile/:id"
+                      element={<StudentProfilePage />}
+                    />
+                    <Route
+                      path="/admin/lessons"
+                      element={<AdminLessonsPage />}
+                    />
+                    <Route path="/admin-notes" element={<AdminNotesPage />} />
+                    <Route
+                      path="/admin/student/profile/:id"
+                      element={<StudentProfilePage />}
                     />
                     <Route
                       path="/admin-notes/:studentId"
                       element={<AdminNotesPage />}
                     />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      element={<AdminResourcesPage />}
+                      path="/admin-resources"
+                    />
                     <Route
                       path="/admin-student-attendance"
                       element={<StudentAttendancePage />}
@@ -142,24 +151,6 @@ function App() {
                     <Route
                       path="/admin-coach-attendance"
                       element={<CoachAttendancePage />}
-                    />
-                  </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
-                    <Route
-                      path="/lessons/:studentID"
-                      element={<LessonsPage />}
-                    />
-                    <Route
-                      path="/progress"
-                      element={<FamilyProgressSnapshotPage />}
-                    />
-                    <Route
-                      path="/coach-landing/:id"
-                      element={<CoachLandingPage />}
-                    />
-                    <Route
-                      path="/teacher-dashboard/:id"
-                      element={<LessonLevels />}
                     />
                     <Route
                       path="/admin-attendance"

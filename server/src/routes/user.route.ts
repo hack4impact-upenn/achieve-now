@@ -4,17 +4,25 @@
  */
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
-import { getUser, putUser } from '../controllers/user.controller';
+import { getUser, getAllTeachers, putUser } from '../controllers/user.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
-const router = express.Router();
+const userRouter = express.Router();
+
+/**
+ * A GET route to get all teachers.
+ */
+userRouter.get('/allTeachers', isAuthenticated, getAllTeachers);
 
 /**
  * A GET route to get a user by their ID
  */
-router.get('/:id', getUser);
+userRouter.get('/:id', getUser);
 
-router.put('/:id', putUser);
+/**
+ * A PUT route to put a user by their ID
+ */
+userRouter.put('/:id', putUser);
 
-export default router;
+export default userRouter;

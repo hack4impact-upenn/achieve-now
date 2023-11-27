@@ -3,6 +3,8 @@ import { Coach, ICoach } from '../models/coach.model';
 import { IStudent, Student } from '../models/student.model';
 import { getAllBlocksfromDB } from './block.service';
 import { IBlock } from '../models/block.model';
+import mongoose from 'mongoose';
+import { User } from '../models/user.model';
 
 /**
  * @returns All the {@link Student}s in the database without their passwords.
@@ -126,6 +128,14 @@ const getCoach = async (coach_id: string) => {
 
 const updateCoach = async (id: string, coach: ICoach) => {
   return await Coach.findByIdAndUpdate(id, coach, { new: true }).exec();
+}
+
+const getCoachByUser = async (user_id: string) => {
+  // findOne by user_id isn't matching any coaches
+  const coaches = await Coach.find();
+  // eslint-disable-next-line eqeqeq
+  const coach = coaches.find((c) => c.user_id == user_id);
+  return coach;
 };
 
 const updateProgressDate = async (
@@ -175,6 +185,7 @@ export {
   getStudentFromCoach,
   getCoach,
   updateCoach,
+  getCoachByUser,
   updateProgressDate,
   deleteProgressDate,
 };

@@ -5,9 +5,9 @@
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import { getUserById, updateUser } from '../services/user.service';
+import { getUserById, getAllTeachersFromDB, updateUser } from '../services/user.service';
 
-// get a specific student
+// get a specific user by id
 const getUser = async (
   req: express.Request,
   res: express.Response,
@@ -28,6 +28,21 @@ const getUser = async (
         next(ApiError.internal('Unable to retrieve specified user'));
       })
   );
+};
+
+const getAllTeachers = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return getAllTeachersFromDB()
+    .then((teacherList) => {
+      res.status(StatusCode.OK).send(teacherList);
+    })
+    .catch((e) => {
+      console.log(e);
+      next(ApiError.internal('Unable to retrieve all teachers'));
+    });
 };
 
 const putUser = async (
@@ -55,4 +70,4 @@ const putUser = async (
   );
 };
 
-export { getUser, putUser };
+export { getUser, getAllTeachers, putUser };
