@@ -118,8 +118,6 @@ export default function RisingReadersComponent({
   const studentResponse = useData(`student/student/${studentId}`);
   const levels = studentResponse?.data.levelsCompleted || Array(62).fill(1);
 
-  console.log(levels);
-
   const risingReadersLevels: Section[] = [
     ['Rising Readers', [levels.slice(0, 20), '#44608B', 1]],
   ];
