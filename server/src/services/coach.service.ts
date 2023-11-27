@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Coach } from '../models/coach.model';
+import { Coach, ICoach } from '../models/coach.model';
 import { IStudent, Student } from '../models/student.model';
 import { getAllBlocksfromDB } from './block.service';
 import { IBlock } from '../models/block.model';
@@ -126,6 +126,10 @@ const getCoach = async (coach_id: string) => {
   return coach;
 };
 
+const updateCoach = async (id: string, coach: ICoach) => {
+  return await Coach.findByIdAndUpdate(id, coach, { new: true }).exec();
+}
+
 const getCoachByUser = async (user_id: string) => {
   // findOne by user_id isn't matching any coaches
   const coaches = await Coach.find();
@@ -180,6 +184,7 @@ export {
   getCoachBlocks,
   getStudentFromCoach,
   getCoach,
+  updateCoach,
   getCoachByUser,
   updateProgressDate,
   deleteProgressDate,

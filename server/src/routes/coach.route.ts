@@ -10,6 +10,7 @@ import {
   updateCoachAttendance,
   getStudentFromCoachById,
   getCoachById,
+  putCoach,
   updateProgress,
   deleteProgress,
   getCoachByUserId,
@@ -17,7 +18,7 @@ import {
 
 const coachRouter = Router();
 
-coachRouter.get('/all', isAuthenticated, isAdmin, getAllCoaches);
+coachRouter.get('/all', getAllCoaches);
 
 coachRouter.post('/', isAuthenticated, isAdmin, createCoach);
 
@@ -44,6 +45,7 @@ coachRouter.get('/student/:id', isAuthenticated, getStudentFromCoachById);
 coachRouter.get('/:id', isAuthenticated, getCoachById);
 coachRouter.get('/user/:id', isAuthenticated, getCoachByUserId);
 
+coachRouter.put('/:id', putCoach);
 coachRouter.put('/progress/:id', updateProgress);
 coachRouter.delete('/progress/:id/:date', deleteProgress);
 
