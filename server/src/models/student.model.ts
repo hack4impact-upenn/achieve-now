@@ -134,7 +134,11 @@ const StudentSchema = new mongoose.Schema({
   },
   updates: {
     type: String,
-    required: true,
+    required: false,
+  },
+  levelsCompleted: {
+    type: [String],
+    required: false,
   },
 });
 
@@ -171,6 +175,7 @@ interface IStudent extends mongoose.Document {
   progressFlag: boolean;
   academicFlag: boolean;
   updates: string;
+  levelsCompleted: string[];
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
