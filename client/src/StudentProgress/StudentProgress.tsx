@@ -40,7 +40,6 @@ export default function StudentProgress() {
               </Grid>
             </Grid>
           </Grid>
-
           <Grid item xs={12} md={9}>
             <Grid container direction="column" spacing={3} sx={{}}>
               <Grid item container spacing={3} ref={rowRef}>

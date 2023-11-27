@@ -53,7 +53,6 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
 
   useEffect(() => {
     if (student && student.progress_stats) {
-      // Convert the serialized map back to a Map object
       const observationsMap = new Map(
         Object.entries(student.progress_stats.student_observations).map(
           ([key, value]) => [Number(key), value],

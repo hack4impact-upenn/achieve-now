@@ -2,7 +2,49 @@ import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { useData } from '../util/api';
 
-type Section = [string, [number[], string, number]];
+type Section = [string, [boolean[], string, number]];
+
+/* <Grid
+      container
+      sx={{
+        fontSize: {
+          xs: '10px',
+          sm: '12px',
+          md: '14px',
+          lg: '16px',
+          xl: '18px',
+        },
+      }}
+    >
+      {sections.map(([title, [levelsComplete, color, startingNumber]]) => (
+        <Grid item container direction="column" xs>
+          <Grid
+            item
+            sx={{
+              fontWeight: 'bold',
+              textAlign: 'center',
+              backgroundColor: '#E7E6E6',
+            }}
+          >
+            {title}
+          </Grid>
+          <Grid item container>
+            {levelsComplete.map((isLevelComplete, index) => (
+              <Grid
+                item
+                sx={{
+                  fontWeight: 'bold',
+                  padding: '4px 24px',
+                  backgroundColor: isLevelComplete ? color : 'white',
+                }}
+              >
+                {startingNumber + index}
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      ))}
+    </Grid> */
 
 interface SectionProps {
   sections: Section[];
@@ -26,7 +68,7 @@ function Section({ sections }: SectionProps) {
           flexDirection: 'row',
         }}
       >
-        {sections.map(([title, [numbers, color, startingNumber]]) => (
+        {sections.map(([title, [completedLevels, color, startingNumber]]) => (
           <div
             key={title}
             style={{
@@ -45,7 +87,7 @@ function Section({ sections }: SectionProps) {
               {title}
             </div>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-              {numbers.map((number, index) => (
+              {completedLevels.map((isLevelComplete, index) => (
                 <div
                   style={{
                     fontWeight: 'bold',
@@ -54,7 +96,7 @@ function Section({ sections }: SectionProps) {
                     borderColor: 'black',
                     borderStyle: 'solid',
                     padding: '4px 28px',
-                    backgroundColor: number === 1 ? color : 'white',
+                    backgroundColor: isLevelComplete ? color : 'white',
                   }}
                 >
                   {startingNumber + index}
@@ -74,7 +116,7 @@ export default function RisingReadersComponent({
   studentId: string;
 }) {
   const studentResponse = useData(`student/student/${studentId}`);
-  const levels = studentResponse?.data.levelsCompleted || Array(62).fill(0);
+  const levels = studentResponse?.data.levelsCompleted || Array(62).fill(1);
 
   console.log(levels);
 
