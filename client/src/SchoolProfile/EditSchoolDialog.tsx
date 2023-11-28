@@ -227,7 +227,9 @@ function EditSchoolDialog({
               label="School Start Time"
               value={dayjs(school_start_time)}
               openTo="hours"
-              onChange={(newValue) => setSchoolStartTime(newValue as Date | null)}
+              onChange={(newValue) =>
+                setSchoolStartTime(newValue as Date | null)
+              }
             />
           </FormControl>
           <FormControl
@@ -253,7 +255,9 @@ function EditSchoolDialog({
               label="First Grade Lunch Start Time"
               value={dayjs(first_grade_lunch_start_time)}
               openTo="hours"
-              onChange={(newValue) => setFirstGradeLunchStartTime(newValue as Date | null)}
+              onChange={(newValue) =>
+                setFirstGradeLunchStartTime(newValue as Date | null)
+              }
             />
           </FormControl>
           <FormControl
@@ -266,7 +270,9 @@ function EditSchoolDialog({
               label="First Grade Lunch End Time"
               value={dayjs(first_grade_lunch_end_time)}
               openTo="hours"
-              onChange={(newValue) => setFirstGradeLunchEndTime(newValue as Date | null)}
+              onChange={(newValue) =>
+                setFirstGradeLunchEndTime(newValue as Date | null)
+              }
             />
           </FormControl>
           <FormControl
@@ -279,7 +285,9 @@ function EditSchoolDialog({
               label="Second Grade Lunch Start Time"
               value={dayjs(second_grade_lunch_start_time)}
               openTo="hours"
-              onChange={(newValue) => setSecondGradeLunchStartTime(newValue as Date | null)}
+              onChange={(newValue) =>
+                setSecondGradeLunchStartTime(newValue as Date | null)
+              }
             />
           </FormControl>
           <FormControl
@@ -292,7 +300,9 @@ function EditSchoolDialog({
               label="Second Grade Lunch End Time"
               value={dayjs(second_grade_lunch_end_time)}
               openTo="hours"
-              onChange={(newValue) => setSecondGradeLunchEndTime(newValue as Date | null)}
+              onChange={(newValue) =>
+                setSecondGradeLunchEndTime(newValue as Date | null)
+              }
             />
           </FormControl>
           <Button variant="outlined" onClick={handleSubmit}>

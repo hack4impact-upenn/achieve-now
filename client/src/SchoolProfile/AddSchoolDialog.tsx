@@ -93,7 +93,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
     console.log('added');
     setOpen(false);
   };
-  
   const defaultDate = dayjs('2022-04-17T00:00');
 
   const [teacherName, setTeacherName] = React.useState<string[]>([]);
