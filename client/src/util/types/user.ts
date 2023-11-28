@@ -6,9 +6,14 @@ interface IUser {
   firstName: string;
   lastName: string;
   email: string;
-  admin: boolean;
-  role: string;
+  phone: string;
+  password: string;
+  verified: boolean;
+  verificationToken: string | null | undefined;
+  resetPasswordToken: string | null | undefined;
+  resetPasswordTokenExpiryDate: Date | null | undefined;
   active: boolean;
+  role: string;
 }
 
 export default IUser;

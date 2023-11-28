@@ -8,6 +8,12 @@ import {
   getAllCoachesFromDB,
   getCoachBlocks,
   updateAttendance,
+  getStudentFromCoach,
+  getCoach,
+  updateCoach,
+  getCoachByUser,
+  updateProgressDate,
+  deleteProgressDate,
 } from '../services/coach.service';
 import StatusCode from '../util/statusCode';
 
@@ -136,6 +142,114 @@ const getCoachBlocksById = async (
   res.status(StatusCode.OK).send(blocks);
 };
 
+const getStudentFromCoachById = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const blocks = await getStudentFromCoach(id);
+  res.status(StatusCode.OK).send(blocks);
+};
+
+const getCoachById = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+
+  const coach = await getCoach(id);
+  if (!coach) {
+    next(ApiError.notFound('Coach not found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(coach);
+};
+
+const getCoachByUserId = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+  const coach = await getCoachByUser(id);
+  if (!coach) {
+    next(ApiError.notFound('Coach not found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(coach);
+};
+
+const putCoach = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const coach = req.body;
+
+  if (!id || !coach) {
+    next(ApiError.missingFields(['id', 'coach']));
+  }
+
+  const newCoach = await updateCoach(id, coach);
+  if (!coach) {
+    next(ApiError.notFound('Coach not found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(newCoach);
+};
+
+const updateProgress = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+
+  const { date } = req.body;
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+  }
+  const { observations } = req.body || '';
+  const { next_steps } = req.body || '';
+
+  const coach = await updateProgressDate(id, date, observations, next_steps);
+  res.status(StatusCode.OK).send(coach);
+};
+
+const deleteProgress = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id, date } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+  if (!date) {
+    next(ApiError.missingFields(['date']));
+  }
+
+  const coach = await deleteProgressDate(id, date);
+  res.status(StatusCode.OK).send(coach);
+};
+
 export {
   getAllCoaches,
   createCoach,
@@ -143,4 +257,10 @@ export {
   createCoachAttendanceByDate,
   deleteCoachAttendanceByDate,
   getCoachBlocksById,
+  getStudentFromCoachById,
+  getCoachById,
+  getCoachByUserId,
+  putCoach,
+  updateProgress,
+  deleteProgress,
 };

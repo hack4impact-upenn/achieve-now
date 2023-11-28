@@ -55,11 +55,21 @@ const createSchoolInDB = async (
 /**
  * @returns All the {@link Schools}s in the database without their passwords.
  */
-const getAllSchoolsFromDB = async () => {
+const getAllSchoolsInDB = async () => {
   const schoolList = await School.find({})
     .select(removeSensitiveDataQuery)
     .exec();
   return schoolList;
+};
+
+/**
+ * A function that updates a school's attendance
+ * @param id: The id of the school to query
+ * @returns The updated {@link School}
+ */
+const getSchoolByIdInDB = async (id: string) => {
+  const school = await School.findById(id);
+  return school;
 };
 
 /**
@@ -112,7 +122,8 @@ const updateSchoolById = async (
 export {
   passwordHashSaltRounds,
   createSchoolInDB,
-  getAllSchoolsFromDB,
+  getAllSchoolsInDB,
+  getSchoolByIdInDB,
   deleteSchoolById,
   updateSchoolById,
 };

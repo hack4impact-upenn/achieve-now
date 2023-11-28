@@ -2,24 +2,14 @@
  * All the functions for interacting with student data in the MongoDB database
  */
 import mongoose from 'mongoose';
-import { Lesson } from '../models/lesson.model';
 import { IResource, Resource } from '../models/resource.model';
-
-const passwordHashSaltRounds = 10;
-const removeSensitiveDataQuery = [
-  '-password',
-  '-verificationToken',
-  '-resetPasswordToken',
-  '-resetPasswordTokenExpiryDate',
-];
+import { Lesson } from '../models/lesson.model';
 
 /**
  * @returns All the {@link Resource}s in the database without their passwords.
  */
 const getAllResourcesFromDB = async () => {
-  const userList = await Resource.find({})
-    .select(removeSensitiveDataQuery)
-    .exec();
+  const userList = await Resource.find({}).exec();
   return userList;
 };
 
@@ -44,6 +34,7 @@ const getLessonResources = async (lessonId: string) => {
 };
 
 const updateResource = async (resourceId: string, resource: IResource) => {
+  console.log(resourceId);
   const updatedResource = await Resource.findByIdAndUpdate(
     resourceId,
     resource,
@@ -60,10 +51,15 @@ const createResource = async (resource: IResource) => {
   return newResource;
 };
 
+const deleteResource = async (resourceId: string) => {
+  const deletedResource = await Resource.findByIdAndDelete(resourceId);
+  return deletedResource;
+};
+
 export {
-  passwordHashSaltRounds,
   getAllResourcesFromDB,
   getLessonResources,
   updateResource,
   createResource,
+  deleteResource,
 };

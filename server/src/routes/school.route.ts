@@ -3,6 +3,7 @@ import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getAllSchools,
+  getSchool,
   createSchool,
   deleteSchool,
   updateSchool,
@@ -10,16 +11,30 @@ import {
 
 const schoolRouter = Router();
 
-// get all schools
+/**
+ * A GET route to get all schools.
+ */
 schoolRouter.get('/all', isAuthenticated, isAdmin, getAllSchools);
 
-// create school
+/**
+ * A GET route with specific school id
+ * id (string) - The school id of the particular school
+ */
+schoolRouter.get('/:id', getSchool);
+
+/**
+ * A POST route to create a school.
+ */
 schoolRouter.post('/create', isAuthenticated, isAdmin, createSchool);
 
-// delete school
+/**
+ * A PUT route to delete a school.
+ */
 schoolRouter.put('/delete', isAuthenticated, isAdmin, deleteSchool);
 
-// update school
+/**
+ * A PUT route to update a school.
+ */
 // schoolRouter.put('/:schoolId', isAuthenticated, isAdmin, updateSchool);
 schoolRouter.put('/update', isAuthenticated, isAdmin, updateSchool);
 
