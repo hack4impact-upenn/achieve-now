@@ -54,7 +54,12 @@ function ResourceButton({ link }: { link: string }) {
     <Button
       variant="contained"
       endIcon={<CallMade />}
-      onClick={() => window.open(link, '_blank')}
+      onClick={() => {
+        const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+        if (newWindow) {
+          newWindow.opener = null;
+        }
+      }}
     >
       View Resource
     </Button>
