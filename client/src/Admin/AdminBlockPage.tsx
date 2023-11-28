@@ -62,21 +62,10 @@ function AdminBlockPage() {
           axios.get(
             `http://localhost:4000/api/lesson/${res.data.lesson_level}`,
           ),
-          axios.get(`http://localhost:4000/api/coach/${res.data.coach_id[0]}`),
+          axios.get(`http://localhost:4000/api/user/${res.data.coach_id[0]}`),
           axios.get(`http://localhost:4000/api/user/${res.data.user_id}`),
         ]);
       })
-      .then(
-        axios.spread((lesson, coachData, studentUser) => {
-          return axios.all([
-            lesson,
-            axios.get(
-              `http://localhost:4000/api/user/${coachData.data.user_id}`,
-            ),
-            studentUser,
-          ]);
-        }),
-      )
       .then(
         axios.spread((lesson, coach, studentUser) => {
           const studentInfo: StudentInfo = {

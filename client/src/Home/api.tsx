@@ -46,7 +46,7 @@ async function addBlock(values: any) {
     if (pair[0] === null || pair[1] === null) {
       return;
     }
-    students.add(pair[1].user_id);
+    students.add(pair[1]._id);
 
     coachPromises.push(
       putData('student/add-coach', {
