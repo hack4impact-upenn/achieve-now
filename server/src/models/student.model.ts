@@ -80,6 +80,10 @@ const StudentSchema = new mongoose.Schema({
     required: false,
   },
   grade: {
+    type: Number,
+    required: false,
+  },
+  admin_updates: {
     type: String,
     required: false,
   },
@@ -87,7 +91,7 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  favorite_food: {
+  fav_food: {
     type: String,
     required: false,
   },
@@ -96,18 +100,6 @@ const StudentSchema = new mongoose.Schema({
     required: false,
   },
   dislikes: {
-    type: String,
-    required: false,
-  },
-  what_motivates_them: {
-    type: String,
-    required: false,
-  },
-  what_reading_strategies_worked: {
-    type: String,
-    required: false,
-  },
-  what_reading_strategies_didnt_work: {
     type: String,
     required: false,
   },
@@ -121,6 +113,33 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  motivation: {
+    type: String,
+    required: false,
+  },
+  good_strategies: {
+    type: String,
+    required: false,
+  },
+  bad_strategies: {
+    type: String,
+    required: false,
+  },
+  badges: {
+    type: [String],
+    required: false,
+    default: [],
+  },
+  risingReadersScore: {
+    type: [Number],
+    required: false,
+    default: [],
+  },
+  generalProgramScore: {
+    type: [Number],
+    required: false,
+    default: [],
+  },
 });
 
 interface IStudent extends mongoose.Document {
@@ -131,8 +150,8 @@ interface IStudent extends mongoose.Document {
   coach_id: [string];
   block_id: string;
   lesson_level: string;
-  parent_additional_resources: [string];
-  coach_additional_resources: [string];
+  parent_additional_resources: string[];
+  coach_additional_resources: string[];
   progress_stats: Map<string, Map<string, string>>;
   parent_name: string;
   parent_communication_days: string;
@@ -141,18 +160,21 @@ interface IStudent extends mongoose.Document {
   personality: string;
   media_waiver: boolean;
   work_habits: string;
-  grade: string;
-  family: string;
-  favorite_food: string;
-  likes: string;
-  dislikes: string;
-  what_motivates_them: string;
-  what_reading_strategies_worked: string;
-  what_reading_strategies_didnt_work: string;
+  grade: number;
   progressFlag: boolean;
   academicFlag: boolean;
+  admin_updates: string;
+  family: string;
+  fav_food: string;
+  likes: string;
+  dislikes: string;
+  motivation: string;
+  good_strategies: string;
+  bad_strategies: string;
+  badges: [string];
+  risingReadersScore: [number];
+  generalProgramScore: [number];
 }
 
 const Student = mongoose.model<IStudent>('Student', StudentSchema);
-
 export { IStudent, Student };

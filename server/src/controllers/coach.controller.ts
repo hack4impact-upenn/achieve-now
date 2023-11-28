@@ -11,6 +11,8 @@ import {
   updateAttendance,
   getStudentFromCoach,
   getCoach,
+  updateCoach,
+  getCoachByUser,
   updateProgressDate,
   deleteProgressDate,
 } from '../services/coach.service';
@@ -174,6 +176,43 @@ const getCoachById = async (
   res.status(StatusCode.OK).send(coach);
 };
 
+const getCoachByUserId = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+  }
+  const coach = await getCoachByUser(id);
+  if (!coach) {
+    next(ApiError.notFound('Coach not found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(coach);
+};
+
+const putCoach = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const coach = req.body;
+
+  if (!id || !coach) {
+    next(ApiError.missingFields(['id', 'coach']));
+  }
+
+  const newCoach = await updateCoach(id, coach);
+  if (!coach) {
+    next(ApiError.notFound('Coach not found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(newCoach);
+};
+
 const updateProgress = async (
   req: express.Request,
   res: express.Response,
@@ -221,6 +260,8 @@ export {
   getCoachBlocksById,
   getStudentFromCoachById,
   getCoachById,
+  getCoachByUserId,
+  putCoach,
   updateProgress,
   deleteProgress,
 };

@@ -12,6 +12,7 @@ import {
   putAddBlock,
   putEditBlock,
   getBlockInfoByStudentId,
+  getBlocks,
 } from '../controllers/block.controller';
 import 'dotenv/config';
 
@@ -46,5 +47,7 @@ router.put('/add-block', isAuthenticated, isAdmin, isExist, putAddBlock);
 router.put('/edit-block', isAuthenticated, isAdmin, putEditBlock);
 
 router.get('/student/:id', isAuthenticated, isAdmin, getBlockInfoByStudentId);
+
+router.get('/all', getBlocks);
 
 export default router;
