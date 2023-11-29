@@ -51,16 +51,7 @@ function AdminCurriculum() {
             size="large"
             href="/"
           >
-            Assign Additional Resources: Families
-          </PrimaryButton>
-          <PrimaryButton
-            fullWidth
-            variant="contained"
-            sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
-            size="large"
-            href="/"
-          >
-            Assign Additional Resources: Coaches
+            Assign Additional Resources
           </PrimaryButton>
           <PrimaryButton
             fullWidth

@@ -125,10 +125,6 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route
-                      path="/admin-lessons"
-                      element={<AdminLessonsPage />}
-                    />
-                    <Route
                       path="/admin-notes/:studentId"
                       element={<AdminNotesPage />}
                     />
