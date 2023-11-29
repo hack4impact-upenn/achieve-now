@@ -30,7 +30,7 @@ export default function Header() {
     navigator('/admin-menu');
   };
   const handleAdminSessions = () => {
-    navigator('/admin-sessions');
+    navigator('/admin/sessions');
   };
   const handleAdminAttendance = () => {
     navigator('/admin-attendance');

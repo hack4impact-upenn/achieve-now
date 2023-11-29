@@ -130,7 +130,7 @@ function AdminSessionsPage() {
                     </Typography>
                     {blockDict[day][slot].map((block: IBlock) => (
                       /* eslint no-underscore-dangle: 0 */
-                      <Link href={`/admin-block/${block._id}`}>
+                      <Link href={`/admin/block/${block._id}`}>
                         <Typography variant="subtitle1">
                           {block.name}
                         </Typography>
