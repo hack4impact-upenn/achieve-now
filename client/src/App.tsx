@@ -126,6 +126,14 @@ function App() {
                       element={<AdminSessionsPage />}
                     />
                     <Route
+                      path="/admin/add-block"
+                      element={<AdminAddBlockPage />}
+                    />
+                    <Route
+                      path="/admin/edit-block/:id"
+                      element={<AdminEditBlockPage />}
+                    />
+                    <Route
                       path="/admin/lessons"
                       element={<AdminLessonsPage />}
                     />

@@ -434,7 +434,11 @@ function AdminEditBlockPage() {
             </Grid>
             {error && (
               <Grid item container justifyContent="center">
-                <Typography justifyContent="center" color="red">
+                <Typography
+                  justifyContent="center"
+                  color="red"
+                  style={{ paddingBottom: '20px' }}
+                >
                   {error}
                 </Typography>
               </Grid>
