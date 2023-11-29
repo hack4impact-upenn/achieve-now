@@ -13,6 +13,7 @@ const getAllResourcesFromDB = async () => {
 };
 
 const updateResource = async (resourceId: string, resource: IResource) => {
+  console.log(resourceId);
   const updatedResource = await Resource.findByIdAndUpdate(
     resourceId,
     resource,
@@ -29,4 +30,14 @@ const createResource = async (resource: IResource) => {
   return newResource;
 };
 
-export { getAllResourcesFromDB, updateResource, createResource };
+const deleteResource = async (resourceId: string) => {
+  const deletedResource = await Resource.findByIdAndDelete(resourceId);
+  return deletedResource;
+};
+
+export {
+  getAllResourcesFromDB,
+  updateResource,
+  createResource,
+  deleteResource,
+};
