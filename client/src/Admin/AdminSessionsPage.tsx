@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Button, Box, Typography } from '@mui/material';
+import { Button, Box, Typography, Link } from '@mui/material';
 import { BlockOutlined } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import { useData } from '../util/api';
@@ -13,6 +13,7 @@ function AdminSessionsPage() {
   const [blockDict, setBlockDict] = useState<{ [key: string]: any }>({});
   const [uniqueDays, setUniqueDays] = useState<string[]>([]);
   const blocks = useData('admin/blocks');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const data = blocks?.data || {};
@@ -20,6 +21,9 @@ function AdminSessionsPage() {
     setUniqueDays(Object.keys(data));
   }, [blocks]);
 
+  const handleAddBlock = () => {
+    navigate(`/admin/add-block`);
+  };
   return (
     <div>
       <Header />
@@ -57,23 +61,22 @@ function AdminSessionsPage() {
           >
             Sessions
           </Typography>
-          <Link to="/admin-add-block">
-            <Button
-              variant="outlined"
-              sx={{
-                position: 'absolute',
-                right: '0%',
-                backgroundColor: 'white',
-                borderColor: 'black',
-                '&:hover': {
-                  backgroundColor: 'grey.200',
-                },
-                width: theme.spacing(20),
-              }}
-            >
-              Add Block
-            </Button>
-          </Link>
+          <Button
+            variant="outlined"
+            onClick={handleAddBlock}
+            sx={{
+              position: 'absolute',
+              right: '0%',
+              backgroundColor: 'white',
+              borderColor: 'black',
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
+              width: theme.spacing(20),
+            }}
+          >
+            Add Block
+          </Button>
         </Box>
 
         <Box p={4}>
@@ -125,20 +128,14 @@ function AdminSessionsPage() {
                         'LT',
                       )}
                     </Typography>
-                    {blockDict[day][slot].map((block: IBlock) =>
-                      // eslint-disable-next-line
-                      block && block._id ? (
-                        <a
-                          // eslint-disable-next-line
-                          href={`admin-edit-block/${block._id}`}
-                          style={{ color: theme.palette.primary.main }}
-                        >
-                          <Typography variant="subtitle1">
-                            {block.name}
-                          </Typography>
-                        </a>
-                      ) : null,
-                    )}
+                    {blockDict[day][slot].map((block: IBlock) => (
+                      /* eslint no-underscore-dangle: 0 */
+                      <Link href={`/admin-block/${block._id}`}>
+                        <Typography variant="subtitle1">
+                          {block.name}
+                        </Typography>
+                      </Link>
+                    ))}
                   </Box>
                 ))}
               </Box>

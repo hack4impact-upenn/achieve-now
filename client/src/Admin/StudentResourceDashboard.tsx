@@ -31,6 +31,9 @@ function StudentResourceDashboard() {
   useEffect(() => {
     const allStudentData = studentsRes?.data || [];
     const name = allStudentData.find((student: any) => {
+      if (!studentId) {
+        return false;
+      }
       return student.studentId === studentId;
     });
     setStudentName(name ? `${name.firstName} ${name.lastName}` : '');
@@ -44,6 +47,9 @@ function StudentResourceDashboard() {
 
   useEffect(() => {
     const getResources = async () => {
+      if (!studentId) {
+        return;
+      }
       const allResourceData = resourcesRes?.data || [];
 
       const parentRes = await postData(
@@ -175,7 +181,7 @@ function StudentResourceDashboard() {
         display="flex"
         flexDirection="row"
         width="100%"
-        maxHeight="calc(100vh - 66px)"
+        height="calc(100vh - 66px)"
       >
         <Paper
           sx={{
@@ -215,13 +221,13 @@ function StudentResourceDashboard() {
             }}
           >
             <h1>
-              {studentName !== ''
-                ? `Student: ${studentName}`
-                : 'Invalid Selected Student'}
+              {!studentId || studentName === ''
+                ? 'Select a Student'
+                : `Student: ${studentName}`}
             </h1>
-            <h3>Parent Additional Resources</h3>
+            <h3>Parent Resources</h3>
             {!studentId ? (
-              <h3>No Student Selected </h3>
+              <Box height="100px" />
             ) : (
               <ResourceTable
                 allResources={parentResources}
@@ -238,10 +244,10 @@ function StudentResourceDashboard() {
             }}
           >
             <Box>
-              <h3>Coach Additional Resources</h3>
+              <h3>Coach Resources</h3>
             </Box>
             {!studentId ? (
-              <h4>No Student Selected </h4>
+              <Box height="100px" />
             ) : (
               <ResourceTable
                 allResources={coachResources}

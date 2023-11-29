@@ -10,12 +10,12 @@ const fieldsMapping = {
   work_habits: 'Work Habits',
   personality: 'Personality & Interests',
   family: 'Family',
-  favorite_food: 'Favorite Food',
+  fav_food: 'Favorite Food',
   likes: 'Likes',
   dislikes: 'Dislikes',
-  what_motivates_them: 'What Motivates Them',
-  what_reading_strategies_worked: 'What Reading Strategies Worked',
-  what_reading_strategies_didnt_work: "What Reading Strategies Didn't Work",
+  motivation: 'What Motivates Them',
+  good_strategies: 'What Reading Strategies Worked',
+  bad_strategies: "What Reading Strategies Didn't Work",
 
   school_name: 'School Name',
   school_info: 'School Info',
@@ -26,8 +26,8 @@ function CoachLandingPage() {
   const [coach, setCoach] = useState<any>({});
   const [student, setStudent] = useState<any>({});
 
-  const zoomLink = () => {
-    window.open(student.zoom_link);
+  const openLink = (link: string) => {
+    window.open(link);
   };
 
   useEffect(() => {
@@ -85,7 +85,7 @@ function CoachLandingPage() {
       <Stack
         direction="column"
         sx={{
-          padding: '1rem',
+          padding: '1rem 3rem 2rem 3rem',
         }}
         spacing={2}
       >
@@ -97,14 +97,35 @@ function CoachLandingPage() {
           }}
         >
           <Typography variant="h3">{student.firstName}</Typography>
-          <Button variant="outlined" onClick={zoomLink}>
-            Zoom
-          </Button>
+          <Box>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Absence Notification
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Exit Ticket
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Zoom
+            </Button>
+          </Box>
         </Box>
         <Card
           variant="outlined"
           sx={{
             padding: '1rem',
+            border: '1px solid black',
           }}
         >
           <Stack direction="column">
@@ -120,6 +141,7 @@ function CoachLandingPage() {
           variant="outlined"
           sx={{
             padding: '1rem',
+            border: '1px solid black',
           }}
         >
           <Stack direction="column">

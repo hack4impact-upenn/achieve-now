@@ -23,6 +23,10 @@ import { getData, useData } from '../util/api';
 import IUser from '../util/types/user';
 import IStudent from '../util/types/student';
 import { editBlock } from '../Home/api';
+import { submitError } from './AdminAddBlockPage';
+import IBlock from '../util/types/block';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 function AdminEditBlockPage() {
   const blockId = useParams().id;
@@ -35,9 +39,11 @@ function AdminEditBlockPage() {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [zoom, setZoom] = useState('');
+  const [absenceNotification, setAbsenceNotification] = useState('');
+  const [exitTicket, setExitTicket] = useState('');
   const [teachers, setTeachers] = useState<IUser[]>([]);
   const [coaches, setCoaches] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<IStudent[]>([]);
   const [allUsers, setAllUsers] = useState<IUser[]>([]);
   const [teacher, setTeacher] = useState<IUser | null>(null);
 
@@ -45,11 +51,18 @@ function AdminEditBlockPage() {
     [null, null],
   ]);
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const [nameError, setNameError] = useState('');
 
   const users = useData('admin/all');
   const studentList = useData('student/all');
+  const blocks = useData('block/all');
+
+  const [studentsInBlock, setStudentsInBlock] = useState<string[]>([]);
+  const [coachesInBlock, setCoachesInBlock] = useState<string[]>([]);
+  const [blockNames, setBlockNames] = useState<string[]>([]);
+
+  const { setAlert } = useAlert();
 
   useEffect(() => {
     if (!block || !block.data) {
@@ -63,6 +76,8 @@ function AdminEditBlockPage() {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
     setZoom(data.zoom);
+    setAbsenceNotification(data.absenceNotification);
+    setExitTicket(data.exitTicket);
 
     if (data.students && data.students.length > 0) {
       const resolvedStudents = data.students.map((studentId: string) => {
@@ -95,6 +110,35 @@ function AdminEditBlockPage() {
       setPairs(p);
     }
   }, [block, students, teachers, coaches]);
+
+  useEffect(() => {
+    const blockData: IBlock[] = blocks?.data;
+    if (blockData) {
+      const currBlockNames: string[] = [];
+      const blockStudentIds: string[] = [];
+      const blockCoachIds: string[] = [];
+      blockData.forEach((existingBlock: IBlock) => {
+        if (existingBlock._id === blockId) return;
+        currBlockNames.push(existingBlock.name);
+        existingBlock.students.forEach((studentId: string) => {
+          blockStudentIds.push(studentId);
+          const foundStudent: IStudent | undefined = students.find(
+            (currStudent: IStudent) => currStudent.user_id === studentId,
+          );
+          if (
+            foundStudent !== undefined &&
+            foundStudent.coach_id &&
+            foundStudent.coach_id.length > 0
+          ) {
+            blockCoachIds.push(foundStudent.coach_id[0]);
+          }
+        });
+      });
+      setBlockNames(currBlockNames);
+      setStudentsInBlock(blockStudentIds);
+      setCoachesInBlock(blockCoachIds);
+    }
+  }, [blocks, students, blockId]);
 
   useEffect(() => {
     const data = users?.data || [];
@@ -142,6 +186,17 @@ function AdminEditBlockPage() {
     setZoom(event.target.value as string);
   };
 
+  const handleAbsenceNotiChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setAbsenceNotification(event.target.value as string);
+  };
+  const handleExitTicketChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setExitTicket(event.target.value as string);
+  };
+
   const displayName = (user: IUser | null) => {
     if (user === null) {
       return '';
@@ -164,17 +219,25 @@ function AdminEditBlockPage() {
   };
 
   const handleSubmit = () => {
-    if (
-      day === '' ||
-      name === '' ||
-      startTime === '' ||
-      endTime === '' ||
-      zoom === '' ||
-      teacher === null
-    ) {
-      setError(true);
+    const desc = submitError({
+      day,
+      name,
+      startTime,
+      endTime,
+      zoom,
+      absenceNotification,
+      exitTicket,
+      teacher,
+      pairs,
+      coachesInBlock,
+      studentsInBlock,
+      blockNames,
+    });
+    if (desc) {
+      setError(desc);
       return;
     }
+
     editBlock({
       blockId,
       day,
@@ -182,9 +245,12 @@ function AdminEditBlockPage() {
       startTime,
       endTime,
       zoom,
+      absenceNotification,
+      exitTicket,
       pairs,
+    }).then(() => {
+      setAlert('Edited block successfully!', AlertType.SUCCESS);
     });
-    window.location.reload();
   };
 
   return valid ? (
@@ -265,6 +331,26 @@ function AdminEditBlockPage() {
                 placeholder="Zoom link"
               />
             </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={absenceNotification}
+                onChange={handleAbsenceNotiChange}
+                label="Absence Notification Link"
+                variant="standard"
+                placeholder="Absence notification link"
+              />
+            </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={exitTicket}
+                onChange={handleExitTicketChange}
+                label="Exit Ticket Link"
+                variant="standard"
+                placeholder="Exit Ticket link"
+              />
+            </Grid>
             <Grid item width="1" marginBottom="1">
               <Autocomplete
                 disablePortal
@@ -292,6 +378,7 @@ function AdminEditBlockPage() {
                   <Grid
                     display="flex"
                     flexDirection="row"
+                    gap={2}
                     sx={{
                       marginTop: '10px',
                     }}
@@ -399,8 +486,12 @@ function AdminEditBlockPage() {
             </Grid>
             {error && (
               <Grid item container justifyContent="center">
-                <Typography justifyContent="center" color="red">
-                  Please fill out all fields
+                <Typography
+                  justifyContent="center"
+                  color="red"
+                  style={{ paddingBottom: '20px' }}
+                >
+                  {error}
                 </Typography>
               </Grid>
             )}

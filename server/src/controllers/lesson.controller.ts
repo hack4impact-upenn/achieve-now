@@ -86,16 +86,38 @@ const deleteResourceHandler = async (
     return;
   }
 
-  deleteResource(id, role, resource)
+  deleteResource(lesson, role, resource)
     .then((response) =>
       response
-        ? res.sendStatus(StatusCode.OK).send(response)
+        ? res.status(StatusCode.OK).send(response)
         : res.sendStatus(StatusCode.NOT_FOUND),
     )
     .catch((e: any) => {
       console.log(e);
       next(ApiError.internal('Failed to delete resource.'));
     });
+};
+
+const getLesson = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.internal('Request must include a valid userID param'));
+  }
+
+  return (
+    getLessonById(id)
+      .then((lesson) => {
+        res.status(StatusCode.OK).send(lesson);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified lesson'));
+      })
+  );
 };
 
 /**
@@ -107,6 +129,7 @@ const addResourceHandler = async (
   next: express.NextFunction,
 ) => {
   const { id, resource, role } = req.body;
+
   if (!id) {
     next(ApiError.missingFields(['id']));
     return;
@@ -134,9 +157,9 @@ const addResourceHandler = async (
     return;
   }
 
-  const response = await addResource(id, role, resource);
+  const response = await addResource(lesson, role, resource);
   if (response) {
-    res.sendStatus(StatusCode.OK).send(response);
+    res.status(StatusCode.OK).send(response);
     return;
   }
   res.sendStatus(StatusCode.NOT_FOUND);
@@ -147,4 +170,5 @@ export {
   getLessonResourcesHandler,
   deleteResourceHandler,
   addResourceHandler,
+  getLesson,
 };

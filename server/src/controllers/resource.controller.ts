@@ -11,6 +11,7 @@ import {
   createResource,
   updateResource,
   deleteResource,
+  getLessonResources,
 } from '../services/resource.service';
 
 /**
@@ -31,6 +32,16 @@ const getAllResources = async (
         next(ApiError.internal('Unable to retrieve all resources'));
       })
   );
+};
+
+const getLessonResourcesHandler: RequestHandler = async (req, res) => {
+  const { lessonId } = req.params;
+  const resources = await getLessonResources(lessonId);
+  if (!resources) {
+    res.sendStatus(StatusCode.NOT_FOUND);
+    return;
+  }
+  res.status(StatusCode.OK).send(resources);
 };
 
 const updateResourceHandler = async (
@@ -65,13 +76,12 @@ const createResourceHandler = async (
 
 const deleteResourceHandler: RequestHandler = async (req, res) => {
   const { resourceId } = req.params;
-  console.log(resourceId);
   const deletedResource = await deleteResource(resourceId);
-  console.log(deletedResource);
   res.status(StatusCode.OK).send(deletedResource);
 };
 
 export {
+  getLessonResourcesHandler,
   updateResourceHandler,
   createResourceHandler,
   getAllResources,

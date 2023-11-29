@@ -97,6 +97,13 @@ function EditDateDialog({
             sx={{
               minWidth: 150,
             }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: 36 * 5,
+                },
+              },
+            }}
             onChange={(event) => setDate(event.target.value as number)}
           >
             {options.map((option) => (
