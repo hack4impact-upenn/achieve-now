@@ -14,6 +14,7 @@ import {
   updateProgress,
   deleteProgress,
   getCoachByUserId,
+  getAllCoachResources,
 } from '../controllers/coach.controller';
 
 const coachRouter = Router();
@@ -48,5 +49,6 @@ coachRouter.get('/user/:id', isAuthenticated, getCoachByUserId);
 coachRouter.put('/:id', putCoach);
 coachRouter.put('/progress/:id', updateProgress);
 coachRouter.delete('/progress/:id/:date', deleteProgress);
+coachRouter.get('/resources/:id', isAuthenticated, getAllCoachResources);
 
 export default coachRouter;
