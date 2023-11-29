@@ -34,6 +34,8 @@ interface submitState {
   startTime: string;
   endTime: string;
   zoom: string;
+  absenceNotification: string;
+  exitTicket: string;
   teacher: IUser | null;
   pairs: [IUser | null, IStudent | null][];
   coachesInBlock: string[];
@@ -47,6 +49,8 @@ export function submitError({
   startTime,
   endTime,
   zoom,
+  absenceNotification,
+  exitTicket,
   teacher,
   pairs,
   coachesInBlock,
@@ -59,6 +63,8 @@ export function submitError({
     startTime === '' ||
     endTime === '' ||
     zoom === '' ||
+    absenceNotification === '' ||
+    exitTicket === '' ||
     teacher === null
   ) {
     return 'Please fill out all fields';
@@ -119,6 +125,8 @@ function AdminAddBlockPage() {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [zoom, setZoom] = useState('');
+  const [absenceNotification, setAbsenceNotification] = useState('');
+  const [exitTicket, setExitTicket] = useState('');
   const [teachers, setTeachers] = useState<IUser[]>([]);
   const [coaches, setCoaches] = useState([]);
   const [students, setStudents] = useState<IStudent[]>([]);
@@ -207,6 +215,16 @@ function AdminAddBlockPage() {
   ) => {
     setZoom(event.target.value as string);
   };
+  const handleAbsenceNotiChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setAbsenceNotification(event.target.value as string);
+  };
+  const handleExitTicketChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setExitTicket(event.target.value as string);
+  };
 
   const displayName = (user: IUser | null) => {
     if (user === null) {
@@ -238,6 +256,8 @@ function AdminAddBlockPage() {
     setTeacher(null);
     setPairs([[null, null]]);
     setZoom('');
+    setAbsenceNotification('');
+    setExitTicket('');
   };
 
   const handleSubmit = () => {
@@ -247,6 +267,8 @@ function AdminAddBlockPage() {
       startTime,
       endTime,
       zoom,
+      absenceNotification,
+      exitTicket,
       teacher,
       pairs,
       coachesInBlock,
@@ -264,6 +286,8 @@ function AdminAddBlockPage() {
       startTime,
       endTime,
       zoom,
+      absenceNotification,
+      exitTicket,
       pairs,
     });
     setAlert('Added block successfully!', AlertType.SUCCESS);
@@ -341,6 +365,26 @@ function AdminAddBlockPage() {
                 label="Zoom link"
                 variant="standard"
                 placeholder="Zoom link"
+              />
+            </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={absenceNotification}
+                onChange={handleAbsenceNotiChange}
+                label="Absence Notification Link"
+                variant="standard"
+                placeholder="Absence notification link"
+              />
+            </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={exitTicket}
+                onChange={handleExitTicketChange}
+                label="Exit Ticket Link"
+                variant="standard"
+                placeholder="Exit Ticket link"
               />
             </Grid>
             <Grid item width="1" marginBottom="1">

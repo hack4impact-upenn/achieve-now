@@ -34,6 +34,14 @@ const BlockSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  absenceNotification: {
+    type: String,
+    required: true,
+  },
+  exitTicket: {
+    type: String,
+    required: true,
+  },
   students: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     required: true,
@@ -49,6 +57,8 @@ interface IBlock extends mongoose.Document {
   endTime: string;
   block: number;
   zoom: string;
+  absenceNotification: string;
+  exitTicket: string;
   students: [string];
 }
 
