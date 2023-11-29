@@ -13,7 +13,6 @@ import StudentDashboardPage from './Teacher/StudentDashboard';
 import LessonsPage from './Lessons/LessonsPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
-import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
 import CoachProfilePage from './Admin/CoachProfilePage';
 import AdminAddBlockPage from './Admin/AdminAddBlockPage';
@@ -134,16 +133,8 @@ function App() {
                       element={<AdminEditBlockPage />}
                     />
                     <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
-                    />
-                    <Route
                       path="/admin/student/profile/:id"
                       element={<StudentProfilePage />}
-                    />
-                    <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
                     />
                     <Route path="/admin-notes" element={<AdminNotesPage />} />
                     <Route
