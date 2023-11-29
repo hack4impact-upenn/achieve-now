@@ -85,7 +85,7 @@ function App() {
                     />
                     <Route path="/lessons" element={<LessonsPage />} />
                     <Route
-                      path="/coach-landing/:id"
+                      path="/coach-landing"
                       element={<CoachLandingPage />}
                     />
                     <Route
