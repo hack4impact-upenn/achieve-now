@@ -58,6 +58,10 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
     router: blockRouter,
   },
   {
+    prefix: '/api/thumbnail',
+    router: thumbnailRouter,
+  },
+  {
     prefix: '/api/school',
     router: schoolRouter,
   },

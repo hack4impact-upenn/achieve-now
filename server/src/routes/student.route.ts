@@ -5,8 +5,10 @@
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
+  getStudentInformation,
   getAdditionalStudentResources,
   getAllStudentResources,
+  getStudentsByTeacherID,
   deleteResource,
   addResource,
   getAllStudents,
@@ -19,10 +21,12 @@ import {
   addCoach,
   updateProgress,
   deleteProgress,
+  isTeacher,
+  inviteStudent,
+  updateStudentInformation,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
-import { addListener } from 'process';
 
 const router = express.Router();
 
@@ -47,6 +51,33 @@ router.post(
  * id (string) - The student id of the particular student
  */
 router.post('/resource/all/:id', getAllStudentResources);
+
+/**
+ * A GET route to get all resources for a given teacher email, it returns all the students
+ * associated with the teacher
+ */
+router.get(
+  '/students-by-teacher/:email',
+  isAuthenticated,
+  isTeacher,
+  getStudentsByTeacherID,
+);
+
+/**
+ * A GET route to get (both the student obj and the user obj)
+ * of the student’s information by their student ID
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
+ */
+router.get('/allInfo/:id', isAuthenticated, getStudentInformation);
+
+/**
+ * A POST route to edit (both the student obj and the user obj)
+ * of the student’s information by their student ID
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
+ */
+router.post('/allInfo/:id', isAuthenticated, updateStudentInformation);
 
 /**
  * A GET route to get all students.
@@ -104,5 +135,14 @@ router.put(
 router.put('/add-coach', addCoach);
 router.put('/progress/:id', updateProgress);
 router.delete('/progress/:id/:date', deleteProgress);
+
+/**
+ * A POST route to invite a new student
+ * Expects a JSON body with the following fields:
+ * - email (string) - The email to invite the student from
+ * - userType (string) - The type of student to invite
+ * - active (boolean) - Whether the student is active or not
+ */
+router.post('/invite', isAuthenticated, isTeacher, inviteStudent);
 
 export default router;

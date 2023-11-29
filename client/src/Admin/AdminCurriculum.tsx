@@ -58,7 +58,7 @@ function AdminCurriculum() {
             variant="contained"
             sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
             size="large"
-            href="/"
+            href="/admin-resources"
           >
             Edit/Add Resources
           </PrimaryButton>
