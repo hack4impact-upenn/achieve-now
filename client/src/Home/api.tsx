@@ -42,11 +42,8 @@ async function addBlock(values: any) {
   const students = new Set();
   const coachPromises: Promise<ResolvedReq>[] = [];
 
-  pairs.forEach((pair: [IUser | null, IStudent | null]) => {
-    if (pair[0] === null || pair[1] === null) {
-      return;
-    }
-    students.add(pair[1]._id);
+  pairs.forEach((pair: [IUser, IStudent]) => {
+    students.add(pair[1].user_id);
 
     coachPromises.push(
       putData('student/add-coach', {
@@ -55,6 +52,7 @@ async function addBlock(values: any) {
       }),
     );
   });
+  console.log(students);
 
   await Promise.all(coachPromises);
 
@@ -71,6 +69,7 @@ async function addBlock(values: any) {
   if (res.error) {
     throw Error(res.error.message);
   }
+  return res;
 }
 
 async function editBlock(values: any) {
@@ -89,10 +88,7 @@ async function editBlock(values: any) {
   const students = new Set();
   const coachPromises: Promise<ResolvedReq>[] = [];
 
-  pairs.forEach((pair: [IUser | null, IStudent | null]) => {
-    if (pair[0] === null || pair[1] === null) {
-      return;
-    }
+  pairs.forEach((pair: [IUser, IStudent]) => {
     students.add(pair[1].user_id);
 
     coachPromises.push(

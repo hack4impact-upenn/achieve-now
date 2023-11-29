@@ -3,7 +3,8 @@
  * relating to admin users.
  */
 import express from 'express';
-import { getAllTeachers, getUser } from '../controllers/user.controller';
+import { isAdmin } from '../controllers/admin.middleware';
+import { getUser, getAllTeachers, putUser } from '../controllers/user.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
@@ -18,5 +19,10 @@ userRouter.get('/allTeachers', isAuthenticated, getAllTeachers);
  * A GET route to get a user by their ID
  */
 userRouter.get('/:id', getUser);
+
+/**
+ * A PUT route to put a user by their ID
+ */
+userRouter.put('/:id', putUser);
 
 export default userRouter;

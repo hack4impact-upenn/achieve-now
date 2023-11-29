@@ -14,8 +14,8 @@ import LessonsPage from './Lessons/LessonsPage';
 import AdminBlockPage from './Admin/AdminBlockPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
-import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
+import CoachProfilePage from './Admin/CoachProfilePage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -105,43 +105,42 @@ function App() {
                   {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
-                    <Route
-                      path="/admin/student-resources"
-                      element={<StudentResourceDashboard />}
-                    />
-                    <Route
-                      path="/admin/lesson-resources"
-                      element={<LessonResourceDashboard />}
-                    />
+                    <Route path="/resources">
+                      <Route path="student">
+                        <Route
+                          path=":studentId"
+                          element={<StudentResourceDashboard />}
+                        />
+                        <Route path="" element={<StudentResourceDashboard />} />
+                      </Route>
+                      <Route path="lesson">
+                        <Route
+                          path=":lessonId"
+                          element={<LessonResourceDashboard />}
+                        />
+                        <Route path="" element={<LessonResourceDashboard />} />
+                      </Route>
+                    </Route>
                     <Route
                       path="/admin/sessions"
                       element={<AdminSessionsPage />}
                     />
+                    <Route path="/admin/profiles" element={<ProfilePage />} />
                     <Route
-                      path="/admin/edit-block/:id"
-                      element={<AdminEditBlockPage />}
+                      path="/admin/block/:id"
+                      element={<AdminBlockPage />}
                     />
                     <Route
                       path="/admin/add-block"
                       element={<AdminAddBlockPage />}
                     />
                     <Route
-                      path="/admin-block/:id"
-                      element={<AdminBlockPage />}
-                    />
-                    <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
+                      path="/admin/edit-block/:id"
+                      element={<AdminEditBlockPage />}
                     />
                     <Route
                       path="/admin/student/profile/:id"
                       element={<StudentProfilePage />}
-                    />
-                    <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
                     />
                     <Route path="/admin-notes" element={<AdminNotesPage />} />
                     <Route
@@ -173,6 +172,12 @@ function App() {
                     <Route
                       path="/admin-curriculum"
                       element={<AdminCurriculum />}
+                    />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/admin/coach/profile/:id"
+                      element={<CoachProfilePage />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}

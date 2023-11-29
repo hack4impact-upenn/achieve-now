@@ -86,10 +86,10 @@ const deleteResourceHandler = async (
     return;
   }
 
-  deleteResource(id, role, resource)
+  deleteResource(lesson, role, resource)
     .then((response) =>
       response
-        ? res.sendStatus(StatusCode.OK).send(response)
+        ? res.status(StatusCode.OK).send(response)
         : res.sendStatus(StatusCode.NOT_FOUND),
     )
     .catch((e: any) => {
@@ -129,6 +129,7 @@ const addResourceHandler = async (
   next: express.NextFunction,
 ) => {
   const { id, resource, role } = req.body;
+
   if (!id) {
     next(ApiError.missingFields(['id']));
     return;
@@ -156,9 +157,9 @@ const addResourceHandler = async (
     return;
   }
 
-  const response = await addResource(id, role, resource);
+  const response = await addResource(lesson, role, resource);
   if (response) {
-    res.sendStatus(StatusCode.OK).send(response);
+    res.status(StatusCode.OK).send(response);
     return;
   }
   res.sendStatus(StatusCode.NOT_FOUND);
