@@ -30,7 +30,7 @@ export default function Header() {
     navigator('/admin-menu');
   };
   const handleAdminSessions = () => {
-    navigator('/admin-sessions');
+    navigator('/admin/sessions');
   };
   const handleAdminAttendance = () => {
     navigator('/admin-attendance');
@@ -53,7 +53,7 @@ export default function Header() {
     navigator('/progress');
   };
   const noBackButton = [
-    '/admin-sessions',
+    '/admin/sessions',
     '/admin-attendance',
     '/admin-profiles',
     '/admin-curriculum',
@@ -132,7 +132,7 @@ export default function Header() {
         >
           {user && user.role === 'admin' ? (
             <div>
-              {path !== '/admin-sessions' ? (
+              {path !== '/admin/sessions' ? (
                 <Button
                   sx={{
                     color: 'white',

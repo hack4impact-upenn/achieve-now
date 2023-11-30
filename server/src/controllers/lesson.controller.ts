@@ -7,6 +7,7 @@ import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import {
   getLessonById,
+  getLessonByLevel,
   deleteResource,
   addResource,
   getAllLessonsFromDB,
@@ -120,6 +121,24 @@ const getLesson = async (
   );
 };
 
+const getLessonFromLevel = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { level } = req.params;
+  if (!level) {
+    next(ApiError.missingFields(['level']));
+    return;
+  }
+  const lesson = await getLessonByLevel(level);
+  if (!lesson) {
+    next(ApiError.badRequest('No Lesson Level Found'));
+    return;
+  }
+  res.status(StatusCode.OK).send(lesson);
+};
+
 /**
  * Update lesson resource (add specified).
  */
@@ -171,4 +190,5 @@ export {
   deleteResourceHandler,
   addResourceHandler,
   getLesson,
+  getLessonFromLevel,
 };
