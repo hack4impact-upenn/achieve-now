@@ -63,8 +63,9 @@ function InviteUserButton() {
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <DialogContentText>
-            Please enter the email address and role of the user you would like
-            to invite.
+            Please enter one or more email addresses separated by commas and
+            role of the user you would like to invite. (ex. a@gmail.com,
+            b@outlook.com)
           </DialogContentText>
           <TextField
             autoFocus
