@@ -269,12 +269,12 @@ function PhoneticsTable() {
     //   };
     //   rows.push(row);
     // });
-
     setRows(rows);
   }
 
   useEffect(() => {
     createRows();
+    console.log('created');
   });
 
   // if the userlist is not yet populated, display a loading spinner

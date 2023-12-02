@@ -12,6 +12,9 @@ import {
 import { Card, CardActionArea, CardContent } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useData } from '../util/api';
+import { useAppSelector } from '../util/redux/hooks';
+import { selectUser } from '../util/redux/userSlice';
 
 Chart.register(
   LinearScale,
@@ -23,7 +26,8 @@ Chart.register(
 );
 
 function LessonLevels() {
-  const { id } = useParams();
+  const self = useAppSelector(selectUser);
+  const id = useData(`user/${self.email}`);
 
   const [labels, setLabels] = useState<number[]>([]);
   const [data, setData] = useState<number[]>([]);

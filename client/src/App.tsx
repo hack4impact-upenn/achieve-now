@@ -109,12 +109,12 @@ function App() {
                       element={<AdminEditBlockPage />}
                     />
                   </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
+                  {/* <Route element={<ProtectedRoutesWrapper />}>
                     <Route
                       path="/teacher-dashboard"
                       element={<TeacherDashboard />}
                     />
-                  </Route>
+                  </Route> */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route
                       path="/progress"
