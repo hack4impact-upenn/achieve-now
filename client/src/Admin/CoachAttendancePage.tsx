@@ -107,7 +107,7 @@ function CoachAttendancePage() {
       });
     });
 
-    dates.sort();
+    dates.sort((a, b) => b - a);
 
     setRawData({ dates, attendance: attendances });
     setData({

@@ -125,7 +125,7 @@ function StudentAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
-    dates.sort();
+    dates.sort((a, b) => b - a);
 
     setRawData({ dates, attendance: attendances });
     setData({
