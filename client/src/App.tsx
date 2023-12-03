@@ -83,12 +83,9 @@ function App() {
                       path="/family-progress"
                       element={<FamilyProgressSnapshotPage />}
                     />
+                    <Route path="/lessons" element={<LessonsPage />} />
                     <Route
-                      path="/lessons/:studentID"
-                      element={<LessonsPage />}
-                    />
-                    <Route
-                      path="/coach-landing/:id"
+                      path="/coach-landing"
                       element={<CoachLandingPage />}
                     />
                     <Route

@@ -18,6 +18,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers';
 import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
@@ -74,6 +75,8 @@ function StudentAttendancePage() {
   const [blocks, setBlocks] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
   const [block, setBlock] = useState<string>('All Blocks');
+  const [startDate, setStartDate] = useState<dayjs.Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<dayjs.Dayjs | null>(null);
 
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
@@ -122,6 +125,7 @@ function StudentAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
+    dates.sort();
 
     setRawData({ dates, attendance: attendances });
     setData({
@@ -162,6 +166,10 @@ function StudentAttendancePage() {
   };
 
   const addDate = async (date: number) => {
+    if (data.dates.includes(date)) {
+      return;
+    }
+
     await axios.put('http://localhost:4000/api/student/attendance/create', {
       date,
     });
@@ -180,6 +188,10 @@ function StudentAttendancePage() {
     date: number,
     attendance: string,
   ) => {
+    if (!data.dates.includes(date)) {
+      return;
+    }
+
     await axios.put('http://localhost:4000/api/student/attendance', {
       id,
       date,
@@ -224,6 +236,22 @@ function StudentAttendancePage() {
               ))}
             </Select>
           )}
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(date) => setStartDate(date)}
+            slotProps={{
+              field: { clearable: true, onClear: () => setStartDate(null) },
+            }}
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(date) => setEndDate(date)}
+            slotProps={{
+              field: { clearable: true, onClear: () => setEndDate(null) },
+            }}
+          />
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"
@@ -249,28 +277,42 @@ function StudentAttendancePage() {
           <TableHead>
             <TableRow>
               <TableCell>Student</TableCell>
-              {data.dates.map((date) => (
-                <TableCell>{dayjs.unix(date).format('MM/DD/YYYY')}</TableCell>
-              ))}
+              {data.dates.map(
+                (date) =>
+                  (!startDate || date >= startDate?.unix()) &&
+                  (!endDate || date <= endDate?.unix()) && (
+                    <TableCell>
+                      {dayjs.unix(date).format('MM/DD/YYYY')}
+                    </TableCell>
+                  ),
+              )}
             </TableRow>
           </TableHead>
           {data.attendance.map((student) => (
             <TableRow>
               <TableCell>{student.name}</TableCell>
-              {data.dates.map((date) => (
-                <TableCell>
-                  <Select
-                    value={student.attendance[date]}
-                    onChange={(e) =>
-                      handleChangeAttendance(student.id, date, e.target.value)
-                    }
-                  >
-                    {studentStatusOptions.map((option) => (
-                      <MenuItem value={option}>{option}</MenuItem>
-                    ))}
-                  </Select>
-                </TableCell>
-              ))}
+              {data.dates.map(
+                (date) =>
+                  (!startDate || date >= startDate?.unix()) &&
+                  (!endDate || date <= endDate?.unix()) && (
+                    <TableCell>
+                      <Select
+                        value={student.attendance[date]}
+                        onChange={(e) =>
+                          handleChangeAttendance(
+                            student.id,
+                            date,
+                            e.target.value,
+                          )
+                        }
+                      >
+                        {studentStatusOptions.map((option) => (
+                          <MenuItem value={option}>{option}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                  ),
+              )}
             </TableRow>
           ))}
         </Table>

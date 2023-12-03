@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import LessonCard from './LessonCard';
-import { postData, useData } from '../util/api';
+import { getData, postData, useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 
@@ -27,21 +27,26 @@ interface ICard extends IResource {
  * for students and coaches to reference.
  */
 function LessonsPage() {
-  const { studentID } = useParams();
   const user = useAppSelector(selectUser);
   // const user = {
   //   role: 'parent',
   // };
-  const { role } = user;
+  const { role, id } = user;
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
   const [addCardsWithImages, setAddCardsWithImages] = useState<ICard[]>([]);
   const [lessonNumber, setLessonNumber] = useState<string>('');
 
   useEffect(() => {
     const fetchResources = async () => {
-      const resources = await postData(`student/resource/all/${studentID}`, {
-        role,
-      });
+      let resources;
+      if (role === 'parent') {
+        resources = await postData(`student/resource/all/${id}`, {
+          role,
+        });
+      } else {
+        resources = await getData(`coach/resources/${id}`);
+      }
+
       const lessonResources = resources?.data.resources || [];
       const addResources = resources?.data.additional_resources || [];
       const num = resources?.data.lesson_level || '';
@@ -84,7 +89,7 @@ function LessonsPage() {
       setCardsWithImages(updatedCards);
     };
     fetchResources();
-  }, [role, studentID]);
+  }, [role, id]);
 
   return (
     <div>

@@ -23,6 +23,11 @@ const getStudentByID = async (id: string) => {
   return student;
 };
 
+const getStudentByUserId = async (user_id: string) => {
+  const student = await Student.findOne({ user_id }).exec();
+  return student;
+};
+
 /**
  * Gets a resource from the database by its id.
  * @param id The id of the resource to get.
@@ -289,4 +294,5 @@ export {
   deleteResourceByID,
   addResourceByID,
   updateStudentInfo,
+  getStudentByUserId,
 };
