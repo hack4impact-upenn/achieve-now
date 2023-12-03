@@ -11,12 +11,11 @@ import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import StudentDashboardPage from './Teacher/StudentDashboard';
 import LessonsPage from './Lessons/LessonsPage';
+import AdminBlockPage from './Admin/AdminBlockPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
-import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
 import CoachProfilePage from './Admin/CoachProfilePage';
-import AdminAddBlockPage from './Admin/AdminAddBlockPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -38,6 +37,7 @@ import AdminResourcesPage from './Admin/AdminResourcesPage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
 import StudentProfilePage from './Admin/StudentProfilePage';
 import AdminEditBlockPage from './Admin/AdminEditBlockPage';
+import AdminAddBlockPage from './Admin/AdminAddBlockPage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
@@ -122,17 +122,22 @@ function App() {
                       path="/admin/sessions"
                       element={<AdminSessionsPage />}
                     />
+                    <Route path="/admin/profiles" element={<ProfilePage />} />
                     <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
+                      path="/admin/block/:id"
+                      element={<AdminBlockPage />}
+                    />
+                    <Route
+                      path="/admin/add-block"
+                      element={<AdminAddBlockPage />}
+                    />
+                    <Route
+                      path="/admin/edit-block/:id"
+                      element={<AdminEditBlockPage />}
                     />
                     <Route
                       path="/admin/student/profile/:id"
                       element={<StudentProfilePage />}
-                    />
-                    <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
                     />
                     <Route path="/admin-notes" element={<AdminNotesPage />} />
                     <Route

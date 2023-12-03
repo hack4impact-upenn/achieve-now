@@ -39,6 +39,8 @@ function AdminEditBlockPage() {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [zoom, setZoom] = useState('');
+  const [absenceNotification, setAbsenceNotification] = useState('');
+  const [exitTicket, setExitTicket] = useState('');
   const [teachers, setTeachers] = useState<IUser[]>([]);
   const [coaches, setCoaches] = useState([]);
   const [students, setStudents] = useState<IStudent[]>([]);
@@ -73,6 +75,8 @@ function AdminEditBlockPage() {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
     setZoom(data.zoom);
+    setAbsenceNotification(data.absenceNotification);
+    setExitTicket(data.exitTicket);
 
     if (data.students && data.students.length > 0) {
       const resolvedStudents = data.students.map((studentId: string) => {
@@ -174,6 +178,17 @@ function AdminEditBlockPage() {
     setZoom(event.target.value as string);
   };
 
+  const handleAbsenceNotiChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setAbsenceNotification(event.target.value as string);
+  };
+  const handleExitTicketChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setExitTicket(event.target.value as string);
+  };
+
   const displayName = (user: IUser | null) => {
     if (user === null) {
       return '';
@@ -202,6 +217,8 @@ function AdminEditBlockPage() {
       startTime,
       endTime,
       zoom,
+      absenceNotification,
+      exitTicket,
       teacher,
       pairs,
       coachesInBlock,
@@ -220,6 +237,8 @@ function AdminEditBlockPage() {
       startTime,
       endTime,
       zoom,
+      absenceNotification,
+      exitTicket,
       pairs,
     }).then(() => {
       setAlert('Edited block successfully!', AlertType.SUCCESS);
@@ -297,6 +316,26 @@ function AdminEditBlockPage() {
                 label="Zoom link"
                 variant="standard"
                 placeholder="Zoom link"
+              />
+            </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={absenceNotification}
+                onChange={handleAbsenceNotiChange}
+                label="Absence Notification Link"
+                variant="standard"
+                placeholder="Absence notification link"
+              />
+            </Grid>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                value={exitTicket}
+                onChange={handleExitTicketChange}
+                label="Exit Ticket Link"
+                variant="standard"
+                placeholder="Exit Ticket link"
               />
             </Grid>
             <Grid item width="1" marginBottom="1">
@@ -434,7 +473,11 @@ function AdminEditBlockPage() {
             </Grid>
             {error && (
               <Grid item container justifyContent="center">
-                <Typography justifyContent="center" color="red">
+                <Typography
+                  justifyContent="center"
+                  color="red"
+                  style={{ paddingBottom: '20px' }}
+                >
                   {error}
                 </Typography>
               </Grid>
