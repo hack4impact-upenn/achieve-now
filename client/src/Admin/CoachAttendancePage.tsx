@@ -100,6 +100,7 @@ function CoachAttendancePage() {
       blocks: coach.blocks,
       attendance: coach.progress_stats.attendance ?? {},
     }));
+    attendances.sort((a, b) => (a.name > b.name ? 1 : -1));
     const dates: number[] = [];
     attendances.forEach((coach: any) => {
       Object.keys(coach.attendance).forEach((date) => {
