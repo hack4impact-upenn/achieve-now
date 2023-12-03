@@ -332,6 +332,13 @@ function AdminBlockPage() {
                         onChange={(e: SelectChangeEvent) =>
                           updateLessonLevel(student.studentId, e.target.value)
                         }
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 200, // Set the maximum height as per your requirement
+                            },
+                          },
+                        }}
                       >
                         {lessonList.map((lesson) => (
                           <MenuItem value={lesson} id={student.id}>
@@ -357,10 +364,10 @@ function AdminBlockPage() {
         >
           <Box sx={modalStyle}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Are you sure you want to delete this session?
+              Are you sure you want to delete this Block?
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              This will delete the session and its associated data.
+              This will delete the Block and its associated data.
             </Typography>
             <div
               style={{
