@@ -45,6 +45,7 @@ import AdminAttendance from './Admin/AdminAttendance';
 import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
 import AdminMenu from './Admin/AdminMenu';
+import StudentProgress from './StudentProgress/StudentProgress';
 
 function App() {
   return (
@@ -83,12 +84,9 @@ function App() {
                       path="/family-progress"
                       element={<FamilyProgressSnapshotPage />}
                     />
+                    <Route path="/lessons" element={<LessonsPage />} />
                     <Route
-                      path="/lessons/:studentID"
-                      element={<LessonsPage />}
-                    />
-                    <Route
-                      path="/coach-landing/:id"
+                      path="/coach-landing"
                       element={<CoachLandingPage />}
                     />
                     <Route
@@ -175,6 +173,10 @@ function App() {
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/student-progress/:id"
+                      element={<StudentProgress />}
+                    />
                     <Route
                       path="/admin/coach/profile/:id"
                       element={<CoachProfilePage />}

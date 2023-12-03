@@ -3,6 +3,8 @@
  * relating to admin users.
  */
 import express from 'express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { addListener } from 'process';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getStudentInformation,

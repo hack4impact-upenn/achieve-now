@@ -22,6 +22,7 @@ import {
   addResourceByID,
   updateProgressDate,
   updateLessonLevel,
+  getStudentByUserId,
 } from '../services/student.service';
 import {
   getAllUsersFromDB,
@@ -529,9 +530,9 @@ const getAllStudentResources = async (
     return;
   }
 
-  const student: IStudent | null = await getStudentByID(id);
+  const student: IStudent | null = await getStudentByUserId(id);
   if (!student) {
-    next(ApiError.notFound(`Student with id ${id} does not exist`));
+    next(ApiError.notFound(`Student with user_id ${id} does not exist`));
     return;
   }
 
@@ -545,94 +546,38 @@ const getAllStudentResources = async (
     return;
   }
 
-  try {
-    if (role === 'coach') {
-      const coachPromises = lesson.coach_resources.map((resource_id: string) =>
-        getResourceByID(resource_id.toString()),
-      );
-      Promise.all(coachPromises)
-        .then((resources) => {
-          if (!student.coach_additional_resources) {
-            const responseObj = {
-              lesson_level: lesson.number,
-              resources,
-              additional_resources: [],
-            };
-            res.status(StatusCode.OK).send(responseObj);
-          } else {
-            const addPromises = student.coach_additional_resources.map(
-              (resource_id) => getResourceByID(resource_id.toString()),
-            );
-            Promise.all(addPromises)
-              .then((addResources) => {
-                const responseObj = {
-                  lesson_level: lesson.number,
-                  resources,
-                  additional_resources: addResources,
-                };
-                res.status(StatusCode.OK).send(responseObj);
-              })
-              .catch((err) => {
-                console.log(err);
-                next(
-                  ApiError.internal(
-                    'Unable to retrieve additional coach resources',
-                  ),
-                );
-              });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          next(ApiError.internal('Unable to retrieve coach resources'));
-        });
-    } else if (role === 'parent') {
-      const studentPromises = lesson.parent_resources.map(
-        (resource_id: string) => getResourceByID(resource_id.toString()),
-      );
-      Promise.all(studentPromises)
-        .then((resources) => {
-          if (!student.parent_additional_resources) {
-            const responseObj = {
-              lesson_level: lesson.number,
-              resources,
-              additional_resources: [],
-            };
-            res.status(StatusCode.OK).send(responseObj);
-          } else {
-            const addPromises: any[] = student.parent_additional_resources.map(
-              (resource_id) => getResourceByID(resource_id.toString()),
-            );
-            Promise.all(addPromises)
-              .then((addResources) => {
-                const responseObj = {
-                  lesson_level: lesson.number,
-                  resources,
-                  additional_resources: addResources,
-                };
-                res.status(StatusCode.OK).send(responseObj);
-              })
-              .catch((err) => {
-                console.log(err);
-                next(
-                  ApiError.internal(
-                    'Unable to retrieve additional parent resources',
-                  ),
-                );
-              });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          next(ApiError.internal('Unable to retrieve parent resources'));
-        });
+  const studentPromises = lesson.parent_resources.map((resource_id: string) =>
+    getResourceByID(resource_id.toString()),
+  );
+  Promise.all(studentPromises).then((resources) => {
+    if (!student.parent_additional_resources) {
+      const responseObj = {
+        lesson_level: lesson.number,
+        resources,
+        additional_resources: [],
+      };
+      res.status(StatusCode.OK).send(responseObj);
     } else {
-      next(ApiError.internal('Invalid role'));
+      const addPromises: any[] = student.parent_additional_resources.map(
+        (resource_id) => getResourceByID(resource_id.toString()),
+      );
+      Promise.all(addPromises)
+        .then((addResources) => {
+          const responseObj = {
+            lesson_level: lesson.number,
+            resources,
+            additional_resources: addResources,
+          };
+          res.status(StatusCode.OK).send(responseObj);
+        })
+        .catch((err) => {
+          console.log(err);
+          next(
+            ApiError.internal('Unable to retrieve additional parent resources'),
+          );
+        });
     }
-  } catch (err) {
-    console.log(err);
-    next(ApiError.internal('Unable to retrieve resources'));
-  }
+  });
 };
 
 /**

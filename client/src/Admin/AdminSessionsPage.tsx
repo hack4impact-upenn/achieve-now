@@ -91,16 +91,24 @@ function AdminSessionsPage() {
               >
                 {day}
               </Typography>
-              <Box display="flex" justifyContent="left">
+              <Box
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: 'left',
+                  width: '70vw',
+                }}
+              >
                 {Object.keys(blockDict[day]).map((slot) => (
                   <Box
-                    // key={session.key}
+                    key={slot}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
+                      width: theme.spacing(30),
                       alignItems: 'center',
                       padding: theme.spacing(2),
-                      margin: theme.spacing(3),
+                      margin: theme.spacing(1.5),
                       backgroundColor: 'LightGray',
                       borderRadius: '8px',
                     }}
@@ -114,8 +122,8 @@ function AdminSessionsPage() {
                       {moment(
                         blockDict[day][slot][0].startTime,
                         'HH:mm',
-                      ).format('LT')}
-                      -
+                      ).format('LT')}{' '}
+                      -{' '}
                       {moment(blockDict[day][slot][0].endTime, 'HH:mm').format(
                         'LT',
                       )}
