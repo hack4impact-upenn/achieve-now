@@ -237,9 +237,10 @@ function AdminResourcesPage() {
               paddingBottom: theme.spacing(2),
               display: 'flex',
               justifyContent: 'space-between',
+              flexWrap: 'nowrap',
             }}
           >
-            <Box>
+            <Box sx={{ display: 'flex', flexBasis: '40%' }}>
               <FormControl
                 variant="outlined"
                 sx={{
@@ -263,7 +264,10 @@ function AdminResourcesPage() {
                   value={resourceType}
                   onChange={selectChangeHandler}
                   input={<OutlinedInput label="Type" />}
-                  sx={{ width: 200 }}
+                  sx={{
+                    width: 150,
+                    flexShrink: 100,
+                  }}
                 >
                   <MenuItem value="Video">Video</MenuItem>
                   <MenuItem value="Slides">Slides</MenuItem>
@@ -287,7 +291,6 @@ function AdminResourcesPage() {
                   '&:hover': {
                     backgroundColor: 'grey.200',
                   },
-                  width: theme.spacing(20),
                   marginRight: theme.spacing(2),
                 }}
               >
@@ -303,7 +306,6 @@ function AdminResourcesPage() {
                   '&:hover': {
                     backgroundColor: 'grey.200',
                   },
-                  width: theme.spacing(20),
                   marginRight: theme.spacing(2),
                 }}
               >
@@ -318,7 +320,6 @@ function AdminResourcesPage() {
                   '&:hover': {
                     backgroundColor: 'grey.200',
                   },
-                  width: theme.spacing(20),
                 }}
               >
                 Edit Entry
