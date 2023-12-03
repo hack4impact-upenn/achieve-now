@@ -17,6 +17,7 @@ interface AdminDashboardRow {
   first: string;
   last: string;
   email: string;
+  userRole: string;
   remove: React.ReactElement;
 }
 
@@ -30,6 +31,7 @@ function UserTable() {
     { id: 'first', label: 'First Name' },
     { id: 'last', label: 'Last Name' },
     { id: 'email', label: 'Email' },
+    { id: 'userRole', label: 'Role' },
     { id: 'remove', label: 'Remove User' },
   ];
 
@@ -38,12 +40,18 @@ function UserTable() {
     user: IUser,
     remove: React.ReactElement,
   ): AdminDashboardRow {
-    const { _id, firstName, lastName, email } = user;
+    const { _id, firstName, lastName, email, role } = user;
+    let userRole = role;
+    if (userRole === 'parent') {
+      userRole = 'family';
+    }
+    userRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
     return {
       key: _id,
       first: firstName,
       last: lastName,
       email,
+      userRole,
       remove,
     };
   }
@@ -70,18 +78,18 @@ function UserTable() {
     );
   };
   // update state of userlist to change user role on the frontend representation
-  // const updateRole = (email: string, newRole: string) => {
-  //   setUserList(
-  //     userList.map((entry) => {
-  //       if (entry.email !== email) {
-  //         return entry;
-  //       }
-  //       const newEntry = entry;
-  //       newEntry.role = newRole;
-  //       return newEntry;
-  //     }),
-  //   );
-  // };
+  const updateRole = (email: string, newRole: string) => {
+    setUserList(
+      userList.map((entry) => {
+        if (entry.email !== email) {
+          return entry;
+        }
+        const newEntry = entry;
+        newEntry.role = newRole;
+        return newEntry;
+      }),
+    );
+  };
 
   // if the userlist is not yet populated, display a loading spinner
   if (!userList) {
