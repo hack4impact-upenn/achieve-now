@@ -201,4 +201,11 @@ const updateSchool = async (
   res.status(StatusCode.OK).send(school);
 };
 
-export { getAllResources, getSchool, getAllSchools, createSchool, deleteSchool, updateSchool };
+export {
+  getAllResources,
+  getSchool,
+  getAllSchools,
+  createSchool,
+  deleteSchool,
+  updateSchool,
+};
