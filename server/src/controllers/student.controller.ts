@@ -343,6 +343,7 @@ const getStudentsByTeacherID = async (
                   return studentIdSet.has(studentUser._id.toString());
                 },
               );
+              
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
