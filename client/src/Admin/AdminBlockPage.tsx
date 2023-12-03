@@ -16,6 +16,7 @@ import ScreenGrid from '../components/ScreenGrid';
 import LessonLevels from '../components/LessonLevels';
 import useAlert from '../util/hooks/useAlert';
 import AlertType from '../util/types/alert';
+import ILesson from '../util/types/lesson';
 
 interface AdminDashboardRow {
   key: string;
@@ -71,7 +72,9 @@ function AdminBlockPage() {
   // State for table data
   const [tableData, setTableData] = useState<BlockInfo>();
   const [studentData, setStudentData] = useState<StudentInfo[]>([]);
+  const [lessonList, setLessonData] = useState<number[]>([]);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const lessons = useData('lesson/all');
 
   const [openConfirmationModal, setOpenConfirmationModal] =
     React.useState(false);
@@ -139,6 +142,18 @@ function AdminBlockPage() {
         console.error('Error fetching block info:', error);
       });
   }, [blockID]);
+
+  useEffect(() => {
+    const lessonL: ILesson[] = lessons?.data;
+    const lessonData: number[] = [];
+    if (lessonL) {
+      lessonL.forEach((lesson: ILesson) => {
+        lessonData.push(lesson.number);
+      });
+    }
+    setLessonData(lessonData);
+    console.log(lessonData);
+  }, [lessons]);
 
   // for the button
   const handleEditBlock = () => {
@@ -318,9 +333,9 @@ function AdminBlockPage() {
                           updateLessonLevel(student.studentId, e.target.value)
                         }
                       >
-                        {[...Array(62)].map((__, i) => (
-                          <MenuItem value={`${i + 1}`} id={student.id}>
-                            {i + 1}
+                        {lessonList.map((lesson) => (
+                          <MenuItem value={lesson} id={student.id}>
+                            {lesson}
                           </MenuItem>
                         ))}
                       </Select>
