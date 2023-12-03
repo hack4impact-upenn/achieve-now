@@ -8,7 +8,9 @@ import {
   addBlock,
   editBlock,
   getBlockById,
+  deleteBlockById,
   getBlockByStudentId,
+  getAllBlocksfromDB,
 } from '../services/block.service';
 
 const getBlockInfoById = async (
@@ -57,6 +59,8 @@ const putAddBlock = async (
       req.body.endTime,
       req.body.block,
       req.body.zoom,
+      req.body.absenceNotification,
+      req.body.exitTicket,
       req.body.students,
     )
       .then((block) => {
@@ -84,6 +88,8 @@ const putEditBlock = async (
       req.body.endTime,
       req.body.block,
       req.body.zoom,
+      req.body.absenceNotification,
+      req.body.exitTicket,
       req.body.students,
     )
       .then((block) => {
@@ -94,6 +100,21 @@ const putEditBlock = async (
         next(ApiError.internal('Unable to edit block'));
       })
   );
+};
+
+const putDeleteBlock = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const block = deleteBlockById(id);
+  res.status(StatusCode.OK).send(block);
 };
 
 const getBlockInfoByStudentId = async (
@@ -110,10 +131,21 @@ const getBlockInfoByStudentId = async (
   res.status(StatusCode.OK).send(block);
 };
 
+const getBlocks = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const blocks = await getAllBlocksfromDB();
+  res.status(StatusCode.OK).send(blocks);
+};
+
 export {
   getBlockInfoById,
   getBlockInfo,
   putAddBlock,
   putEditBlock,
   getBlockInfoByStudentId,
+  putDeleteBlock,
+  getBlocks,
 };

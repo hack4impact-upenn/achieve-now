@@ -5,6 +5,7 @@ import {
   DialogTitle,
   Grid,
   TextField,
+  Typography,
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -12,6 +13,7 @@ import { Dayjs } from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import theme from '../assets/theme';
 
 interface IAdminNotesRow {
   key: string;
@@ -41,22 +43,24 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
   const [studentNextSteps, setStudentNextSteps] = useState('');
   const [coachObservations, setCoachObservations] = useState('');
   const [coachNextSteps, setCoachNextSteps] = useState('');
+  const [error, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
     if (date) {
       const numberDate = Number(date).toString();
       const row = table.find((r: IAdminNotesRow) => r.key === numberDate);
       if (row) {
-        setStudentObservations(row.studentObservations);
-        setStudentNextSteps(row.studentNextSteps);
-        setCoachObservations(row.coachObservations);
-        setCoachNextSteps(row.coachNextSteps);
+        setError(true);
+        setErrorMessage('Date already exists');
+      } else {
+        setError(false);
       }
     }
   }, [date, table]);
 
   const handleSubmit = () => {
-    if (!date) {
+    if (!date || error) {
       return;
     }
 
@@ -79,6 +83,14 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
     setOpen(false);
   };
 
+  let errorComponent = null;
+  if (error) {
+    errorComponent = (
+      <Grid item width="1">
+        <Typography color={theme.palette.error.main}>{errorMessage}</Typography>
+      </Grid>
+    );
+  }
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
       <DialogTitle sx={{ textAlign: 'center' }}>Add Entry</DialogTitle>
@@ -124,6 +136,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
               onChange={(event) => setCoachObservations(event.target.value)}
             />
           </Grid>
+
           <Grid item width="1">
             <TextField
               fullWidth
@@ -133,6 +146,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
               onChange={(event) => setCoachNextSteps(event.target.value)}
             />
           </Grid>
+          {errorComponent}
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>

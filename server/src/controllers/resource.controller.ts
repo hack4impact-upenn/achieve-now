@@ -3,13 +3,15 @@
  * student users.
  */
 // eslint-disable-next-line
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import {
   getAllResourcesFromDB,
   createResource,
   updateResource,
+  deleteResource,
+  getLessonResources,
 } from '../services/resource.service';
 
 /**
@@ -30,6 +32,16 @@ const getAllResources = async (
         next(ApiError.internal('Unable to retrieve all resources'));
       })
   );
+};
+
+const getLessonResourcesHandler: RequestHandler = async (req, res) => {
+  const { lessonId } = req.params;
+  const resources = await getLessonResources(lessonId);
+  if (!resources) {
+    res.sendStatus(StatusCode.NOT_FOUND);
+    return;
+  }
+  res.status(StatusCode.OK).send(resources);
 };
 
 const updateResourceHandler = async (
@@ -62,4 +74,16 @@ const createResourceHandler = async (
     });
 };
 
-export { updateResourceHandler, createResourceHandler, getAllResources };
+const deleteResourceHandler: RequestHandler = async (req, res) => {
+  const { resourceId } = req.params;
+  const deletedResource = await deleteResource(resourceId);
+  res.status(StatusCode.OK).send(deletedResource);
+};
+
+export {
+  getLessonResourcesHandler,
+  updateResourceHandler,
+  createResourceHandler,
+  getAllResources,
+  deleteResourceHandler,
+};
