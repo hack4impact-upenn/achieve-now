@@ -3,8 +3,6 @@ import { Coach, ICoach } from '../models/coach.model';
 import { IStudent, Student } from '../models/student.model';
 import { getAllBlocksfromDB } from './block.service';
 import { IBlock } from '../models/block.model';
-import mongoose from 'mongoose';
-import { User } from '../models/user.model';
 
 /**
  * @returns All the {@link Student}s in the database without their passwords.
@@ -29,6 +27,17 @@ const createCoachInDB = async (
     partner_site: partnerSite,
     mailing_address: mailingAddress,
     media_waiver: mediaWaiver,
+  });
+  const coach = await newCoach.save();
+  return coach;
+};
+
+const createCoachFromUser = async (userID: string) => {
+  const newCoach = new Coach({
+    user_id: userID,
+    partner_site: '',
+    mailing_address: '',
+    media_waiver: false,
   });
   const coach = await newCoach.save();
   return coach;
@@ -177,6 +186,7 @@ const deleteProgressDate = async (id: string, date: string) => {
 
 export {
   getAllCoachesFromDB,
+  createCoachFromUser,
   createCoachInDB,
   updateAttendance,
   createAttendanceOnDate,

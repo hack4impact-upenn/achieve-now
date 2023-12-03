@@ -18,8 +18,11 @@ import AlertType from '../util/types/alert';
 import Header from '../components/PageHeader';
 import ICoach from '../util/types/coach';
 import IUser from '../util/types/user';
+import AlertType from '../util/types/alert';
+import useAlert from '../util/hooks/useAlert';
 
 function CoachProfilePage() {
+  const { setAlert } = useAlert();
   const { id } = useParams();
   const { setAlert } = useAlert();
   // Default values for state
@@ -135,7 +138,7 @@ function CoachProfilePage() {
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const valueTypeString in values) {
       const valueType = valueTypeString as ValueType;
-      if (!values[valueType] && valueType !== 'phone') {
+      if (!values[valueType] && valueType !== 'updates') {
         setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
         setShowError(valueTypeString, true);
         isValid = false;
@@ -169,11 +172,22 @@ function CoachProfilePage() {
         ...coach,
         ...newCoachValues,
       };
-      putData(`coach/${id}`, newCoach);
-
-      console.log(newUser);
-      console.log(newCoach);
-      setAlert('Coach profile updated successfully!', AlertType.SUCCESS);
+      putData(`coach/${id}`, newCoach)
+        .then((res) => {
+          if (res.error) {
+            setShowError('alert', true);
+            setErrorMessage('alert', res.error.message);
+          } else {
+            setAlert(
+              'Student profile updated successfully!',
+              AlertType.SUCCESS,
+            );
+          }
+        })
+        .catch((e: any) => {
+          setShowError('alert', true);
+          setErrorMessage('alert', e.message);
+        });
     }
   }
 
@@ -212,6 +226,7 @@ function CoachProfilePage() {
             fullWidth
             error={showError.phone}
             helperText={errorMessage.phone}
+            required
             label="Phone Number"
             value={values.phone}
             type="phone"

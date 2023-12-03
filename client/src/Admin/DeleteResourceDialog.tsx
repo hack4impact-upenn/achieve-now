@@ -1,5 +1,4 @@
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -8,6 +7,7 @@ import {
   Stack,
 } from '@mui/material';
 import React, { useState } from 'react';
+import PrimaryButton from '../components/buttons/PrimaryButton';
 
 interface Resource {
   _id: string;
@@ -47,6 +47,7 @@ function DeleteResourceDialog({
       sx={{
         '.MuiPaper-root': {
           padding: '1rem 3rem',
+          minWidth: '50vw',
         },
       }}
     >
@@ -54,7 +55,7 @@ function DeleteResourceDialog({
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
+        <Stack spacing={2} sx={{ paddingBottom: '2rem', width: '100%' }}>
           <Select
             value={resource?.title || ''}
             sx={{
@@ -75,9 +76,7 @@ function DeleteResourceDialog({
             ))}
           </Select>
 
-          <Button variant="outlined" onClick={handleSubmit}>
-            Submit
-          </Button>
+          <PrimaryButton onClick={handleSubmit}>Delete</PrimaryButton>
         </Stack>
       </DialogActions>
     </Dialog>

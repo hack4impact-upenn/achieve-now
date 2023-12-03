@@ -13,6 +13,17 @@ import {
 import { Stack } from '@mui/system';
 import React, { useState } from 'react';
 import theme from '../assets/theme';
+import PrimaryButton from '../components/buttons/PrimaryButton';
+import AlertType from '../util/types/alert';
+import useAlert from '../util/hooks/useAlert';
+
+interface Resource {
+  _id: string;
+  title: string;
+  description: string;
+  link: string;
+  type: string;
+}
 
 interface AddResourceProps {
   open: boolean;
@@ -23,9 +34,16 @@ interface AddResourceProps {
     link: string,
     type: string,
   ) => void;
+  resources: Resource[];
 }
 
-function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
+function AddResourceDialog({
+  open,
+  setOpen,
+  addResource,
+  resources,
+}: AddResourceProps) {
+  const { setAlert } = useAlert();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [link, setLink] = useState<string>('');
@@ -33,9 +51,28 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
 
   const handleSubmit = () => {
     if (!title || !description || !link || !type) {
+      setAlert('Please fill out all fields', AlertType.ERROR);
       return;
     }
+    try {
+      const _ = new URL(link);
+    } catch (e) {
+      setAlert('Please enter a valid resource link', AlertType.ERROR);
+      return;
+    }
+    if (type !== 'Video' && type !== 'Slides' && type !== 'Article') {
+      setAlert('Please select a valid resource type', AlertType.ERROR);
+      return;
+    }
+    for (let i = 0; i < resources.length; i += 1) {
+      // eslint-disable-next-line no-underscore-dangle
+      if (resources[i].title === title) {
+        setAlert('A Resource with this title already exists', AlertType.ERROR);
+        return;
+      }
+    }
     addResource(title, description, link, type);
+    setAlert('Added resource successfully!', AlertType.SUCCESS);
     setOpen(false);
   };
 
@@ -46,6 +83,7 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
       sx={{
         '.MuiPaper-root': {
           padding: '1rem 3rem',
+          minWidth: '50vw',
         },
       }}
     >
@@ -57,7 +95,7 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
           justifyContent: 'center',
         }}
       >
-        <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
+        <Stack spacing={2} sx={{ paddingBottom: '2rem', width: '100%' }}>
           <FormControl
             variant="outlined"
             sx={{
@@ -116,16 +154,13 @@ function AddResourceDialog({ open, setOpen, addResource }: AddResourceProps) {
                 setType(event.target.value);
               }}
               input={<OutlinedInput label="Type" />}
-              sx={{ width: 200 }}
             >
               <MenuItem value="Video">Video</MenuItem>
               <MenuItem value="Slides">Slides</MenuItem>
               <MenuItem value="Article">Article</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="outlined" onClick={handleSubmit}>
-            Submit
-          </Button>
+          <PrimaryButton onClick={handleSubmit}>Submit</PrimaryButton>
         </Stack>
       </DialogActions>
     </Dialog>

@@ -27,6 +27,7 @@ import {
 } from '../services/invite.service';
 import { IInvite } from '../models/invite.model';
 import { createStudent } from '../services/student.service';
+import { createCoachFromUser } from '../services/coach.service';
 
 /**
  * A controller function to login a user and create a session with Passport.
@@ -367,7 +368,14 @@ const registerInvite = async (
       password,
       invite.role,
     );
-    user!.verified = true;
+    if (!user) {
+      next(ApiError.internal('Unable to register user.'));
+      return;
+    }
+    if (invite.role === 'coach') {
+      await createCoachFromUser(user._id);
+    }
+    user.verified = true;
     await user?.save();
     await removeInviteByToken(inviteToken);
     res.sendStatus(StatusCode.CREATED);
