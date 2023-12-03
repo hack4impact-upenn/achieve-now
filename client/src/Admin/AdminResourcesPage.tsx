@@ -96,7 +96,11 @@ function AdminResourcesPage() {
         type,
       };
       const promise = await postData('resources/', newResource);
-      setTableData([...tableData, promise.data]);
+      const preTableData = [...tableData, promise.data];
+      const sorted = preTableData.sort((a, b) =>
+        a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1,
+      );
+      setTableData(sorted);
     } catch (error) {
       console.error('Error deleting date:', error);
     }
