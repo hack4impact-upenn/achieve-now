@@ -333,14 +333,18 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School Start Time"
             openTo="hours"
-            onChange={(newValue) => handleChangeSchoolStartTime(newValue as Date | null)}
+            onChange={(newValue) =>
+              handleChangeSchoolStartTime(newValue as Date | null)
+            }
           />
           <br />
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
             // defaultValue={defaultDate}
-            onChange={(newValue) => handleChangeSchoolEndTime(newValue as Date | null)}
+            onChange={(newValue) =>
+              handleChangeSchoolEndTime(newValue as Date | null)
+            }
           />
           <br />
           <MobileTimePicker
