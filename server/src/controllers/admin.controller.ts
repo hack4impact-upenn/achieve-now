@@ -144,20 +144,24 @@ const inviteUser = async (
   next: express.NextFunction,
 ) => {
   const { email, role } = req.body;
+  if (!email) {
+    next(ApiError.missingFields(['email']));
+    return;
+  }
   let emailList = email.replaceAll(" ", "").split(",");
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
   
   function validateEmail(email: string) {
     if (!email.match(emailRegex)) {
-      next(ApiError.badRequest('Invalid email'));
+      throw new Error('Invalid email');
     }
     return;
   }
 
   function validateNewUser(user: IUser) {
     if (user) {
-      next(ApiError.badRequest(`An account with email ${user.email} already exists.`));
+      throw new Error(`An account with email ${user.email} already exists.`);
     }
     return;
   }
@@ -167,23 +171,32 @@ const inviteUser = async (
     return [email, invite, verificationToken];
   }
 
-  function sendInvite(combinedList: any[]) {
+  async function makeInvite(combinedList: any[]) {
     try {
-      // if (existingInvite) {
-      //   await updateInvite(existingInvite, verificationToken);
-      // } else {
-      //   await createInvite(lowercaseEmail, verificationToken, role);
-      // }
-
-      //how to invite by role???
       const email = combinedList[0];
       const existingInvite = combinedList[1];
+      const verificationToken = combinedList[2];
+      if (existingInvite) {
+        await updateInvite(existingInvite, verificationToken);
+      } else {
+        await createInvite(email, verificationToken, role);
+      }
+    }
+    catch (err : any) {
+      throw new Error('Error creating invite');
+    }
+  }
+
+  function sendInvite(combinedList: any[]) {
+    try {
+      const email = combinedList[0];
       const verificationToken = combinedList[2];
 
       emailInviteLink(email, verificationToken);
       return;
-    } catch (err) {
-      next(ApiError.internal('Unable to invite user.'));
+    }
+      catch (err : any) {
+        throw new Error('Error sending invite');
     }
   }
 
@@ -197,13 +210,14 @@ const inviteUser = async (
     await batchReturnVoid(validateNewUser, 10, existingUserList);
 
     const existingInviteList: any[] | null = await batchReturnList(getInviteByEmail, 10, existingUserList);
-    const emailInviteList: any[] = await batchReturnMultiList(combineEmailToken, 10, lowercaseEmailList, existingInviteList)
+    const emailInviteList: any[] = await batchReturnMultiList(combineEmailToken, 10, lowercaseEmailList, existingInviteList);
+
+    await batchReturnVoid(makeInvite, 10, emailInviteList);
     await batchReturnVoid(sendInvite, 10, emailInviteList);
 
     res.sendStatus(StatusCode.CREATED);
-  } catch (err) {
-    next(ApiError.internal('Unable to invite user.'));
-    //how to send the message in frontend???
+  } catch (err : any) {
+    next(ApiError.internal('Unable to invite user: ' + err.message));
   }
 };
 
