@@ -330,7 +330,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School Start Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSchoolStartTime(newValue as Date | null)
             }
@@ -339,7 +338,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSchoolEndTime(newValue as Date | null)
             }
@@ -348,7 +346,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch Start Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeFirstGradeStartTime(newValue as Date | null)
             }
@@ -357,7 +354,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch End Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeFirstGradeEndTime(newValue as Date | null)
             }
@@ -366,7 +362,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch Start Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSecondGradeStartTime(newValue as Date | null)
             }
@@ -375,7 +370,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch End Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSecondGradeEndTime(newValue as Date | null)
             }
