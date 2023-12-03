@@ -16,7 +16,7 @@ function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
   let label = 'Name';
   if (user) {
     const info = user.data;
-    const name = `${info.firstName} ${info.lastName}`;
+    const name = `${info?.firstName} ${info?.lastName}`;
     label = name;
   }
 

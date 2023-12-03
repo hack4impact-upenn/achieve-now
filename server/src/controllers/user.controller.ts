@@ -5,11 +5,7 @@
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import {
-  getUserById,
-  getAllTeachersFromDB,
-  updateUser,
-} from '../services/user.service';
+import { getUserById, getAllTeachersFromDB, updateUser, getUserByEmail } from '../services/user.service';
 
 // get a specific user by id
 const getUser = async (
@@ -74,4 +70,26 @@ const putUser = async (
   );
 };
 
-export { getUser, getAllTeachers, putUser };
+const getUserEmail = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email } = req.params;
+  if (!email) {
+    next(ApiError.internal('Request must include a valid email param'));
+  }
+
+  return (
+    getUserByEmail(email)
+      .then((user) => {
+        res.status(StatusCode.OK).send(user);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified user'));
+      })
+  );
+};
+
+export { getUser, getAllTeachers, putUser, getUserEmail };

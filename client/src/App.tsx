@@ -149,11 +149,6 @@ function App() {
                       path="/admin/student/profile/:id"
                       element={<StudentProfilePage />}
                     />
-                    <Route path="/admin/notes" element={<AdminNotesPage />} />
-                    <Route
-                      path="/admin/student/profile/:id"
-                      element={<StudentProfilePage />}
-                    />
                     <Route
                       path="/admin/notes/:studentId"
                       element={<AdminNotesPage />}
