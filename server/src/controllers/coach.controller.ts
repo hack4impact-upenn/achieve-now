@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-
 import express from 'express';
 import ApiError from '../util/apiError';
 import {

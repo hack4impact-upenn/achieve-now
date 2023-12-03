@@ -35,6 +35,7 @@ import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
 import AdminResourcesPage from './Admin/AdminResourcesPage';
 import CoachAttendancePage from './Admin/CoachAttendancePage';
+import SchoolProfilePage from './SchoolProfile/SchoolProfilePage';
 import StudentProfilePage from './Admin/StudentProfilePage';
 import AdminEditBlockPage from './Admin/AdminEditBlockPage';
 import AdminAddBlockPage from './Admin/AdminAddBlockPage';
@@ -123,6 +124,14 @@ function App() {
                       path="/admin/sessions"
                       element={<AdminSessionsPage />}
                     />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/school/profiles"
+                      element={<SchoolProfilePage />}
+                    />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
                     <Route path="/admin/profiles" element={<ProfilePage />} />
                     <Route
                       path="/admin/block/:id"
