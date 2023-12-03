@@ -119,6 +119,7 @@ function StudentAttendancePage() {
       blockName: student.blockName,
       attendance: student.progress_stats.attendance ?? {},
     }));
+    attendances.sort((a, b) => (a.name > b.name ? 1 : -1));
     const dates: number[] = [];
     attendances.forEach((student: any) => {
       Object.keys(student.attendance).forEach((date) => {
