@@ -11,14 +11,12 @@ import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import IUser from '../util/types/user';
-import RoleDropdown from '../components/buttons/RoleDropdown';
 
 interface AdminDashboardRow {
   key: string;
   first: string;
   last: string;
   email: string;
-  changeRole: React.ReactElement;
   remove: React.ReactElement;
 }
 
@@ -32,7 +30,6 @@ function UserTable() {
     { id: 'first', label: 'First Name' },
     { id: 'last', label: 'Last Name' },
     { id: 'email', label: 'Email' },
-    { id: 'changeRole', label: 'Change Role' },
     { id: 'remove', label: 'Remove User' },
   ];
 
@@ -40,7 +37,6 @@ function UserTable() {
   function createAdminDashboardRow(
     user: IUser,
     remove: React.ReactElement,
-    changeRole: React.ReactElement,
   ): AdminDashboardRow {
     const { _id, firstName, lastName, email } = user;
     return {
@@ -48,7 +44,6 @@ function UserTable() {
       first: firstName,
       last: lastName,
       email,
-      changeRole,
       remove,
     };
   }
@@ -75,18 +70,18 @@ function UserTable() {
     );
   };
   // update state of userlist to change user role on the frontend representation
-  const updateRole = (email: string, newRole: string) => {
-    setUserList(
-      userList.map((entry) => {
-        if (entry.email !== email) {
-          return entry;
-        }
-        const newEntry = entry;
-        newEntry.role = newRole;
-        return newEntry;
-      }),
-    );
-  };
+  // const updateRole = (email: string, newRole: string) => {
+  //   setUserList(
+  //     userList.map((entry) => {
+  //       if (entry.email !== email) {
+  //         return entry;
+  //       }
+  //       const newEntry = entry;
+  //       newEntry.role = newRole;
+  //       return newEntry;
+  //     }),
+  //   );
+  // };
 
   // if the userlist is not yet populated, display a loading spinner
   if (!userList) {
@@ -106,7 +101,6 @@ function UserTable() {
             email={user.email}
             removeRow={() => removeUser(user)}
           />,
-          <RoleDropdown currRole={user.role} email={user.email} />,
         ),
       )}
       columns={columns}
