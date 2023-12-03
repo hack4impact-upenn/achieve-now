@@ -58,7 +58,7 @@ interface AddSchoolProps {
   ) => void;
 }
 
-export function submitError({
+function submitError({
   name,
   info,
   admin_name,
@@ -297,7 +297,9 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
                       // eslint-disable-next-line no-underscore-dangle
                       (teacher) => teacher._id === teacherId,
                     );
-                    return selectedTeacher ? selectedTeacher.firstName : '';
+                    return selectedTeacher
+                      ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+                      : '';
                   })
                   .map((value) => (
                     <Chip key={value} label={value} />
@@ -308,7 +310,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
             {teacherList.map((teacher: IUser) => (
               // eslint-disable-next-line no-underscore-dangle
               <MenuItem key={teacher._id} value={teacher._id}>
-                {teacher.firstName}
+                {`${teacher.firstName} ${teacher.lastName}`}
               </MenuItem>
             ))}
           </Select>

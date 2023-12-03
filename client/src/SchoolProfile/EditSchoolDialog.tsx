@@ -282,8 +282,6 @@ function EditSchoolDialog({
   ) => {
     const selectedTeacherIds = event.target.value as string[];
 
-    console.log(selectedTeacherIds);
-
     setState((prevState) => ({
       ...prevState,
       teachers: selectedTeacherIds,
@@ -353,7 +351,9 @@ function EditSchoolDialog({
                         // eslint-disable-next-line no-underscore-dangle
                         (teacher) => teacher._id === teacherId,
                       );
-                      return selectedTeacher ? selectedTeacher.firstName : '';
+                      return selectedTeacher
+                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+                        : '';
                     })
                     .map((value) => (
                       <Chip key={value} label={value} />
@@ -364,7 +364,7 @@ function EditSchoolDialog({
               {teacherList.map((teacher: IUser) => (
                 // eslint-disable-next-line no-underscore-dangle
                 <MenuItem key={teacher._id} value={teacher._id}>
-                  {teacher.firstName}
+                  {`${teacher.firstName} ${teacher.lastName}`}
                 </MenuItem>
               ))}
             </Select>

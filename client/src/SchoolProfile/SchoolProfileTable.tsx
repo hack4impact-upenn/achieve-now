@@ -76,7 +76,7 @@ function SchoolProfileTable() {
   ];
 
   // Used to create the data type to create a row in the table
-  function createAdminDashboardRow(school: ISchool): SchoolDashboardRow {
+  async function createAdminDashboardRow(school: ISchool) {
     const {
       _id,
       name,
@@ -93,33 +93,20 @@ function SchoolProfileTable() {
       second_grade_lunch_end_time,
     } = school;
 
-    const teacherPromises = teachers.map((teacherId) => {
-      return axios
-        .get(`http://localhost:4000/api/user/${teacherId}`)
-        .then((res) => res.data.firstName)
-        .catch((error) => {
-          console.error(
-            `Error fetching teacher with ID ${teacherId}: ${error.message}`,
-          );
-          return ''; // or handle the error in a way that makes sense for your use case
-        });
-    });
+    // Fetch teacher details for all teacherIds
+    const teacherPromises = teachers.map((teacherId) =>
+      axios.get(`http://localhost:4000/api/user/${teacherId}`),
+    );
 
-    let joinedNames = '';
-    Promise.all(teacherPromises)
-      .then((teacherNames) => {
-        joinedNames = teacherNames.join(',');
-      })
-      .catch((error) => {
-        console.error(`Error fetching teacher names: ${error.message}`);
-      });
-    console.log(joinedNames);
-    // const names: string[] = [];
-    // teachers.forEach((teacherId) => {
-    //   axios.get(`http://localhost:4000/api/user/${teacherId}`).then((res) => {
-    //     names.push(res.data.firstName);
-    //   });
-    // });
+    // Use Promise.all to wait for all requests to complete
+    const teacherResponses = await Promise.all(teacherPromises);
+
+    // Extract firstName from each response
+    const teacherNames = teacherResponses.map(
+      (response) => `${response.data.firstName} ${response.data.lastName}`,
+    );
+
+    const joinedNames = teacherNames.join(', ');
 
     return {
       key: _id,
@@ -141,6 +128,21 @@ function SchoolProfileTable() {
   const [schoolList, setSchoolList] = useState<ISchool[]>([]);
   const schools = useData('school/all');
   const self = useAppSelector(selectUser);
+
+  const [schoolRows, setSchoolRows] = useState<SchoolDashboardRow[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const rows = await Promise.all(
+        schoolList.map(async (school: ISchool) =>
+          createAdminDashboardRow(school),
+        ),
+      );
+      setSchoolRows(rows);
+    };
+
+    fetchData();
+  });
 
   useEffect(() => {
     setSchoolList(schools?.data);
@@ -188,12 +190,7 @@ function SchoolProfileTable() {
         onChange={handleSearch}
         value={searchInput}
       />
-      <PaginationTable
-        rows={schoolList.map((school: ISchool) =>
-          createAdminDashboardRow(school),
-        )}
-        columns={columns}
-      />
+      <PaginationTable rows={schoolRows} columns={columns} />
     </Box>
   );
 }
