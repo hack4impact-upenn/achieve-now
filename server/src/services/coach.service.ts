@@ -127,7 +127,7 @@ const getCoach = async (coach_id: string) => {
 };
 
 const updateCoach = async (id: string, coach: ICoach) => {
-  return await Coach.findByIdAndUpdate(id, coach, { new: true }).exec();
+  return Coach.findByIdAndUpdate(id, coach, { new: true }).exec();
 };
 
 const getCoachByUser = async (user_id: string) => {

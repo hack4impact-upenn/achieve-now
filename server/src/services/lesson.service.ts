@@ -12,7 +12,7 @@ const getLessonById = async (id: string) => {
 };
 
 const getLessonByLevel = async (level: string) => {
-  const lesson = await Lesson.findOne({ level }).exec();
+  const lesson = await Lesson.findOne({ number: level }).exec();
   return lesson;
 };
 

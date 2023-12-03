@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 import ISchool from '../util/types/school';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
@@ -75,7 +76,7 @@ function SchoolProfileTable() {
   ];
 
   // Used to create the data type to create a row in the table
-  function createAdminDashboardRow(school: ISchool): SchoolDashboardRow {
+  async function createAdminDashboardRow(school: ISchool) {
     const {
       _id,
       name,
@@ -91,10 +92,26 @@ function SchoolProfileTable() {
       second_grade_lunch_start_time,
       second_grade_lunch_end_time,
     } = school;
+
+    // Fetch teacher details for all teacherIds
+    const teacherPromises = teachers.map((teacherId) =>
+      axios.get(`http://localhost:4000/api/user/${teacherId}`),
+    );
+
+    // Use Promise.all to wait for all requests to complete
+    const teacherResponses = await Promise.all(teacherPromises);
+
+    // Extract firstName from each response
+    const teacherNames = teacherResponses.map(
+      (response) => `${response.data.firstName} ${response.data.lastName}`,
+    );
+
+    const joinedNames = teacherNames.join(', ');
+
     return {
       key: _id,
       name,
-      teachers,
+      teachers: joinedNames,
       info,
       admin_name,
       admin_content,
@@ -111,6 +128,21 @@ function SchoolProfileTable() {
   const [schoolList, setSchoolList] = useState<ISchool[]>([]);
   const schools = useData('school/all');
   const self = useAppSelector(selectUser);
+
+  const [schoolRows, setSchoolRows] = useState<SchoolDashboardRow[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const rows = await Promise.all(
+        schoolList.map(async (school: ISchool) =>
+          createAdminDashboardRow(school),
+        ),
+      );
+      setSchoolRows(rows);
+    };
+
+    fetchData();
+  });
 
   useEffect(() => {
     setSchoolList(schools?.data);
@@ -158,12 +190,7 @@ function SchoolProfileTable() {
         onChange={handleSearch}
         value={searchInput}
       />
-      <PaginationTable
-        rows={schoolList.map((school: ISchool) =>
-          createAdminDashboardRow(school),
-        )}
-        columns={columns}
-      />
+      <PaginationTable rows={schoolRows} columns={columns} />
     </Box>
   );
 }

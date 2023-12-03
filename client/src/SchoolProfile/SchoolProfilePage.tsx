@@ -74,7 +74,7 @@ function SchoolProfilePage() {
     id: string,
     name: string,
     info: string,
-    teachers: string,
+    teachers: string[],
     admin_name: string,
     admin_content: string,
     calendar_link: string,

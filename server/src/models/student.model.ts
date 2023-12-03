@@ -39,13 +39,24 @@ const StudentSchema = new mongoose.Schema({
     default: [],
   },
   progress_stats: {
-    type: Map,
-    of: {
+    attendance: {
       type: Map,
       of: String,
+      required: false,
+      default: {},
     },
-    required: false,
-    default: {},
+    student_next_steps: {
+      type: Map,
+      of: String,
+      required: false,
+      default: {},
+    },
+    student_observations: {
+      type: Map,
+      of: String,
+      required: false,
+      default: {},
+    },
   },
   parent_name: {
     type: String,
@@ -113,6 +124,14 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  updates: {
+    type: String,
+    required: false,
+  },
+  levelsCompleted: {
+    type: [Boolean],
+    required: false,
+  },
   motivation: {
     type: String,
     required: false,
@@ -152,7 +171,11 @@ interface IStudent extends mongoose.Document {
   lesson_level: string;
   parent_additional_resources: string[];
   coach_additional_resources: string[];
-  progress_stats: Map<string, Map<string, string>>;
+  progress_stats: {
+    attendance: Map<number, string>;
+    student_next_steps: Map<number, string>;
+    student_observations: Map<number, string>;
+  };
   parent_name: string;
   parent_communication_days: string;
   parent_communication_times: string;
@@ -163,6 +186,8 @@ interface IStudent extends mongoose.Document {
   grade: number;
   progressFlag: boolean;
   academicFlag: boolean;
+  updates: string;
+  levelsCompleted: [boolean];
   admin_updates: string;
   family: string;
   fav_food: string;

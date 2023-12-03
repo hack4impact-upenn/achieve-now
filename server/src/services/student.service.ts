@@ -23,6 +23,11 @@ const getStudentByID = async (id: string) => {
   return student;
 };
 
+const getStudentByUserId = async (user_id: string) => {
+  const student = await Student.findOne({ user_id }).exec();
+  return student;
+};
+
 /**
  * Gets a resource from the database by its id.
  * @param id The id of the resource to get.
@@ -129,6 +134,24 @@ const updateAttendance = async (
     },
     {
       $set: { [`progress_stats.attendance.${date}`]: attendance },
+    },
+  ).exec();
+  return student;
+};
+
+/**
+ * A function that updates a student's attendance
+ * @param id: The id of the student to update
+ * @param lessonLevel: The new lesson level of the student
+ * @returns The updated {@link Student}
+ */
+const updateLessonLevel = async (id: string, lessonLevel: string) => {
+  const student = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: { lesson_level: lessonLevel },
     },
   ).exec();
   return student;
@@ -289,4 +312,6 @@ export {
   deleteResourceByID,
   addResourceByID,
   updateStudentInfo,
+  updateLessonLevel,
+  getStudentByUserId,
 };

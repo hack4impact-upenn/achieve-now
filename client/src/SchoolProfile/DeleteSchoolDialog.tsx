@@ -11,6 +11,8 @@ import {
 import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import ISchool from '../util/types/school';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 interface DeleteSchoolDialogProps {
   open: boolean;
@@ -27,12 +29,14 @@ function DeleteSchoolDialog({
   deleteSchool,
 }: DeleteSchoolDialogProps) {
   const [schoolId, setSchool] = useState<string | null>(null);
+  const { setAlert } = useAlert();
 
   const handleSubmit = () => {
     if (!schoolId) {
       return;
     }
     deleteSchool(schoolId);
+    setAlert('Deleted school successfully!', AlertType.SUCCESS);
     setOpen(false);
   };
 

@@ -28,7 +28,16 @@ async function selfChange(email: string, role: string) {
 }
 
 async function addBlock(values: any) {
-  const { day, name, startTime, endTime, zoom, pairs } = values;
+  const {
+    day,
+    name,
+    startTime,
+    endTime,
+    zoom,
+    absenceNotification,
+    exitTicket,
+    pairs,
+  } = values;
 
   const students = new Set();
   const coachPromises: Promise<ResolvedReq>[] = [];
@@ -53,6 +62,8 @@ async function addBlock(values: any) {
     startTime,
     endTime,
     zoom,
+    absenceNotification,
+    exitTicket,
     students: Array.from(students),
   });
   if (res.error) {
@@ -62,7 +73,17 @@ async function addBlock(values: any) {
 }
 
 async function editBlock(values: any) {
-  const { blockId, day, name, startTime, endTime, zoom, pairs } = values;
+  const {
+    blockId,
+    day,
+    name,
+    startTime,
+    endTime,
+    zoom,
+    absenceNotification,
+    exitTicket,
+    pairs,
+  } = values;
 
   const students = new Set();
   const coachPromises: Promise<ResolvedReq>[] = [];
@@ -87,6 +108,8 @@ async function editBlock(values: any) {
     startTime,
     endTime,
     zoom,
+    absenceNotification,
+    exitTicket,
     students: Array.from(students),
   });
   if (res.error) {

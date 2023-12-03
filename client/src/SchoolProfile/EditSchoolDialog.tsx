@@ -14,10 +14,78 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import { Stack } from '@mui/system';
+import Chip from '@mui/material/Chip';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import React, { useEffect, useState, useMemo } from 'react';
+import Box from '@mui/material/Box';
 import theme from '../assets/theme';
 import ISchool from '../util/types/school';
+import useAlert from '../util/hooks/useAlert';
+import { useData } from '../util/api';
+import IUser from '../util/types/user';
+import AlertType from '../util/types/alert';
+// import submitError from './AddSchoolDialog';
+
+function submitError({
+  name,
+  info,
+  admin_name,
+  teachers,
+  admin_content,
+  calendar_link,
+  school_start_time,
+  school_end_time,
+  first_grade_lunch_start_time,
+  first_grade_lunch_end_time,
+  second_grade_lunch_start_time,
+  second_grade_lunch_end_time,
+}: SubmitState): string {
+  if (
+    name === '' ||
+    info === '' ||
+    admin_name === '' ||
+    teachers.length === 0 ||
+    admin_content === '' ||
+    calendar_link === '' ||
+    school_start_time === null ||
+    school_end_time === null ||
+    first_grade_lunch_start_time === null ||
+    first_grade_lunch_end_time === null ||
+    second_grade_lunch_start_time === null ||
+    second_grade_lunch_end_time === null
+  ) {
+    return 'Please fill out all fields';
+  }
+  if (
+    school_end_time < school_start_time ||
+    first_grade_lunch_end_time < first_grade_lunch_start_time ||
+    second_grade_lunch_end_time < second_grade_lunch_start_time
+  ) {
+    return 'Invalid times';
+  }
+
+  try {
+    const _ = new URL(calendar_link);
+  } catch (e) {
+    return 'Invalid calendar link';
+  }
+  return '';
+}
+
+interface SubmitState {
+  name: string;
+  info: string;
+  admin_name: string;
+  teachers: string[];
+  admin_content: string;
+  calendar_link: string;
+  school_start_time: Date | null;
+  school_end_time: Date | null;
+  first_grade_lunch_start_time: Date | null;
+  first_grade_lunch_end_time: Date | null;
+  second_grade_lunch_start_time: Date | null;
+  second_grade_lunch_end_time: Date | null;
+}
 
 interface EditSchoolProps {
   open: boolean;
@@ -27,7 +95,7 @@ interface EditSchoolProps {
     id: string,
     name: string,
     info: string,
-    teachers: string,
+    teachers: string[],
     admin_name: string,
     admin_content: string,
     calendar_link: string,
@@ -46,61 +114,89 @@ function EditSchoolDialog({
   schools,
   editSchool,
 }: EditSchoolProps) {
+  const [state, setState] = useState<SubmitState>({
+    name: '',
+    info: '',
+    admin_name: '',
+    teachers: [],
+    admin_content: '',
+    calendar_link: '',
+    school_start_time: null,
+    school_end_time: null,
+    first_grade_lunch_start_time: null,
+    first_grade_lunch_end_time: null,
+    second_grade_lunch_start_time: null,
+    second_grade_lunch_end_time: null,
+  });
+
+  const [error, setError] = useState('');
+  const [userList, setUserList] = useState<IUser[]>([]);
+  const [teacherList, setTeacherList] = useState<IUser[]>([]);
+  const [teachers, setTeachers] = useState<IUser[]>([]);
+  // const [name, setName] = useState<string>('');
+  const users = useData('admin/all');
+  const { setAlert } = useAlert();
+  const [teacherName, setTeacherName] = React.useState<string[]>([]);
+
   const [id, setId] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [info, setInfo] = useState<string | ''>('');
-  const [teachers, setTeachers] = useState<string | ''>('');
-  const [admin_name, setAdminName] = useState<string | ''>('');
-  const [admin_content, setAdminContent] = useState<string | ''>('');
-  const [calendar_link, setCalendarLink] = useState<string | ''>('');
-  const [school_start_time, setSchoolStartTime] = useState<Date | null>(null);
-  const [school_end_time, setSchoolEndTime] = useState<Date | null>(null);
-  const [first_grade_lunch_start_time, setFirstGradeLunchStartTime] =
-    useState<Date | null>(null);
-  const [first_grade_lunch_end_time, setFirstGradeLunchEndTime] =
-    useState<Date | null>(null);
-  const [second_grade_lunch_start_time, setSecondGradeLunchStartTime] =
-    useState<Date | null>(null);
-  const [second_grade_lunch_end_time, setSecondGradeLunchEndTime] =
-    useState<Date | null>(null);
 
   useEffect(() => {
-    const school = schools.find((r) => r.name === name);
+    const school = schools.find((r) => r.name === state.name);
     if (school) {
-      setId(school._id); /* eslint no-underscore-dangle: 0 */
-      setTeachers(school.teachers);
-      setInfo(school.info);
-      setAdminName(school.admin_name);
-      setAdminContent(school.admin_content);
-      setCalendarLink(school.calendar_link);
-      setSchoolStartTime(school.school_start_time);
-      setSchoolEndTime(school.school_end_time);
-      setFirstGradeLunchStartTime(school.first_grade_lunch_start_time);
-      setFirstGradeLunchEndTime(school.first_grade_lunch_end_time);
-      setSecondGradeLunchStartTime(school.second_grade_lunch_start_time);
-      setSecondGradeLunchEndTime(school.second_grade_lunch_end_time);
+      // eslint-disable-next-line no-underscore-dangle
+      setId(school._id);
+      setState({
+        // eslint-disable-next-line no-underscore-dangle
+        name: state.name,
+        info: school.info,
+        admin_name: school.admin_name,
+        teachers: school.teachers,
+        admin_content: school.admin_content,
+        calendar_link: school.calendar_link,
+        school_start_time: school.school_start_time,
+        school_end_time: school.school_end_time,
+        first_grade_lunch_start_time: school.first_grade_lunch_start_time,
+        first_grade_lunch_end_time: school.first_grade_lunch_end_time,
+        second_grade_lunch_start_time: school.second_grade_lunch_start_time,
+        second_grade_lunch_end_time: school.second_grade_lunch_end_time,
+      });
     }
-  }, [name, schools]);
+  }, [state.name, schools]);
+
+  useEffect(() => {
+    const allUsers = users?.data || [];
+    let filteredUsers = allUsers;
+    filteredUsers = filteredUsers.filter((user: IUser) => {
+      return user.role === 'teacher';
+    });
+    setUserList(allUsers);
+    setTeacherList(filteredUsers);
+  }, [users]);
 
   const handleSubmit = () => {
-    if (!name || !info || !admin_name) {
+    console.log('submitted');
+    const desc = submitError(state);
+    if (desc) {
+      setError(desc);
+      console.log('error');
       return;
     }
     editSchool(
       id,
-      name,
-      info,
-      teachers,
-      admin_name,
-      admin_content,
-      calendar_link,
-      school_start_time,
-      school_end_time,
-      first_grade_lunch_start_time,
-      first_grade_lunch_end_time,
-      second_grade_lunch_start_time,
-      second_grade_lunch_end_time,
+      state.name,
+      state.info,
+      state.teachers,
+      state.admin_name,
+      state.admin_content,
+      state.calendar_link,
+      state.school_start_time,
+      state.school_end_time,
+      state.first_grade_lunch_start_time,
+      state.first_grade_lunch_end_time,
+      state.second_grade_lunch_start_time,
+      state.second_grade_lunch_end_time,
     );
+    setAlert('Edited school successfully!', AlertType.SUCCESS);
     setOpen(false);
   };
 
@@ -108,6 +204,89 @@ function EditSchoolDialog({
     () => schools.map((school) => school.name),
     [schools],
   );
+
+  const handleChangeInfo = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState((prevState) => ({
+      ...prevState,
+      info: event.target.value,
+    }));
+  };
+  const handleChangeName = (event: SelectChangeEvent<string>) => {
+    setState((prevState) => ({
+      ...prevState,
+      name: event.target.value,
+    }));
+  };
+  const handleChangeAdminName = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      admin_name: event.target.value,
+    }));
+  };
+  const handleChangeAdminContent = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      admin_content: event.target.value,
+    }));
+  };
+  const handleChangeCalendarLink = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      calendar_link: event.target.value,
+    }));
+  };
+  const handleChangeSchoolStartTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      school_start_time: date,
+    }));
+  };
+  const handleChangeSchoolEndTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      school_end_time: date,
+    }));
+  };
+  const handleChangeFirstGradeStartTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      first_grade_lunch_start_time: date,
+    }));
+  };
+  const handleChangeFirstGradeEndTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      first_grade_lunch_end_time: date,
+    }));
+  };
+  const handleChangeSecondGradeStartTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      second_grade_lunch_start_time: date,
+    }));
+  };
+  const handleChangeSecondGradeEndTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      second_grade_lunch_end_time: date,
+    }));
+  };
+  const handleChangeTeacher = (
+    event: SelectChangeEvent<typeof teacherName>,
+  ) => {
+    const selectedTeacherIds = event.target.value as string[];
+
+    setState((prevState) => ({
+      ...prevState,
+      teachers: selectedTeacherIds,
+    }));
+  };
 
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={() => setOpen(false)}>
@@ -126,11 +305,11 @@ function EditSchoolDialog({
             <Select
               id="name-field"
               label="School Name"
-              value={name}
+              value={state.name}
               sx={{
                 minWidth: 150,
               }}
-              onChange={(event) => setName(event.target.value)}
+              onChange={handleChangeName}
             >
               {options.map((option) => (
                 <MenuItem value={option}>{option}</MenuItem>
@@ -146,10 +325,8 @@ function EditSchoolDialog({
             <InputLabel htmlFor="description-field">Info</InputLabel>
             <OutlinedInput
               id="info-field"
-              value={info}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setInfo(event.target.value);
-              }}
+              value={state.info}
+              onChange={handleChangeInfo}
               label="Info"
             />
           </FormControl>
@@ -160,14 +337,37 @@ function EditSchoolDialog({
             }}
           >
             <InputLabel htmlFor="link-field">Teachers</InputLabel>
-            <OutlinedInput
-              id="teachers-field"
-              value={teachers}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setTeachers(event.target.value);
-              }}
+            <Select
+              multiple
+              value={state.teachers}
+              onChange={handleChangeTeacher}
               label="Teachers"
-            />
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected
+                    .map((teacherId) => {
+                      const selectedTeacher = teacherList.find(
+                        // eslint-disable-next-line no-underscore-dangle
+                        (teacher) => teacher._id === teacherId,
+                      );
+                      return selectedTeacher
+                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+                        : '';
+                    })
+                    .map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                </Box>
+              )}
+            >
+              {teacherList.map((teacher: IUser) => (
+                // eslint-disable-next-line no-underscore-dangle
+                <MenuItem key={teacher._id} value={teacher._id}>
+                  {`${teacher.firstName} ${teacher.lastName}`}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
           <FormControl
             variant="outlined"
@@ -178,10 +378,8 @@ function EditSchoolDialog({
             <InputLabel htmlFor="link-field">Admin Name</InputLabel>
             <OutlinedInput
               id="admin-field"
-              value={admin_name}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setAdminName(event.target.value);
-              }}
+              value={state.admin_name}
+              onChange={handleChangeAdminName}
               label="Admins"
             />
           </FormControl>
@@ -194,10 +392,8 @@ function EditSchoolDialog({
             <InputLabel htmlFor="link-field">Admin Content</InputLabel>
             <OutlinedInput
               id="admin-content-field"
-              value={admin_content}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setAdminContent(event.target.value);
-              }}
+              value={state.admin_content}
+              onChange={handleChangeAdminContent}
               label="Admin Content"
             />
           </FormControl>
@@ -210,10 +406,8 @@ function EditSchoolDialog({
             <InputLabel htmlFor="link-field">Calendar Link</InputLabel>
             <OutlinedInput
               id="calendarlink-field"
-              value={calendar_link}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setCalendarLink(event.target.value);
-              }}
+              value={state.calendar_link}
+              onChange={handleChangeCalendarLink}
               label="Calendar Link"
             />
           </FormControl>
@@ -225,10 +419,10 @@ function EditSchoolDialog({
           >
             <MobileTimePicker
               label="School Start Time"
-              value={dayjs(school_start_time)}
+              value={dayjs(state.school_start_time)}
               openTo="hours"
               onChange={(newValue) =>
-                setSchoolStartTime(newValue as Date | null)
+                handleChangeSchoolStartTime(newValue as Date | null)
               }
             />
           </FormControl>
@@ -240,9 +434,11 @@ function EditSchoolDialog({
           >
             <MobileTimePicker
               label="School End Time"
-              value={dayjs(school_end_time)}
+              value={dayjs(state.school_end_time)}
               openTo="hours"
-              onChange={(newValue) => setSchoolEndTime(newValue as Date | null)}
+              onChange={(newValue) =>
+                handleChangeSchoolEndTime(newValue as Date | null)
+              }
             />
           </FormControl>
           <FormControl
@@ -253,10 +449,10 @@ function EditSchoolDialog({
           >
             <MobileTimePicker
               label="First Grade Lunch Start Time"
-              value={dayjs(first_grade_lunch_start_time)}
+              value={dayjs(state.first_grade_lunch_start_time)}
               openTo="hours"
               onChange={(newValue) =>
-                setFirstGradeLunchStartTime(newValue as Date | null)
+                handleChangeFirstGradeStartTime(newValue as Date | null)
               }
             />
           </FormControl>
@@ -268,10 +464,10 @@ function EditSchoolDialog({
           >
             <MobileTimePicker
               label="First Grade Lunch End Time"
-              value={dayjs(first_grade_lunch_end_time)}
+              value={dayjs(state.first_grade_lunch_end_time)}
               openTo="hours"
               onChange={(newValue) =>
-                setFirstGradeLunchEndTime(newValue as Date | null)
+                handleChangeFirstGradeEndTime(newValue as Date | null)
               }
             />
           </FormControl>
@@ -283,10 +479,10 @@ function EditSchoolDialog({
           >
             <MobileTimePicker
               label="Second Grade Lunch Start Time"
-              value={dayjs(second_grade_lunch_start_time)}
+              value={dayjs(state.second_grade_lunch_start_time)}
               openTo="hours"
               onChange={(newValue) =>
-                setSecondGradeLunchStartTime(newValue as Date | null)
+                handleChangeSecondGradeStartTime(newValue as Date | null)
               }
             />
           </FormControl>
@@ -298,10 +494,10 @@ function EditSchoolDialog({
           >
             <MobileTimePicker
               label="Second Grade Lunch End Time"
-              value={dayjs(second_grade_lunch_end_time)}
+              value={dayjs(state.second_grade_lunch_end_time)}
               openTo="hours"
               onChange={(newValue) =>
-                setSecondGradeLunchEndTime(newValue as Date | null)
+                handleChangeSecondGradeEndTime(newValue as Date | null)
               }
             />
           </FormControl>
