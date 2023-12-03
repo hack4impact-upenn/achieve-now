@@ -27,7 +27,11 @@ Chart.register(
 
 function LessonLevels() {
   const self = useAppSelector(selectUser);
-  const id = useData(`user/${self.email}`);
+  const tempId = useData(`user/email/${self.email}`);
+  const id = tempId?.data ?? null;
+  
+  console.log("self.email", self.email);
+  console.log("id", id);
 
   const [labels, setLabels] = useState<number[]>([]);
   const [data, setData] = useState<number[]>([]);
@@ -37,6 +41,8 @@ function LessonLevels() {
       const res = await axios.get(
         `http://localhost:4000/api/teacher/lesson-levels/${id}`,
       );
+
+      console.log(res.data)
 
       let max = 0;
       Object.keys(res.data).forEach((level: string) => {

@@ -64,6 +64,20 @@ const getUserByEmail = async (email: string) => {
 };
 
 /**
+ * Get a user's ID from the database by their email
+ * @param email 
+ * @returns 
+ */
+const getUserIdByEmail = async (email: string) => {
+  const user = await User.findOne({ email })
+    .select(removeSensitiveDataQuery)
+    .exec();
+  if (user) {
+    return user._id;
+  }
+};
+
+/**
  * Gets a user from the database by their email and includes the password in
  * the returned user.
  * @param email The email of the user to get
@@ -195,4 +209,5 @@ export {
   updateUserInfo,
   updateUser,
   getAllTeachersFromDB,
+  getUserIdByEmail,
 };

@@ -127,24 +127,20 @@ function SplitGrid() {
             <Box display="flex" flexDirection="row" width="100%">
               <Box width="50%" paddingRight={2}>
                 <LessonLevels />
-                {academicFlags.length > 0 && (
-                  <Box marginTop={2}>
-                    <StudentConcernsCard
-                      students={academicFlags}
-                      title="Academic Concerns"
-                      description="Students with a poor academic progress pattern"
-                    />
-                  </Box>
-                )}
-                {attendanceFlags.length > 0 && (
-                  <Box marginTop={2}>
-                    <StudentConcernsCard
-                      students={attendanceFlags}
-                      title="Attendance Concerns"
-                      description="Students with a poor attendance pattern"
-                    />
-                  </Box>
-                )}
+                <Box marginTop={2}>
+                  <StudentConcernsCard
+                    students={academicFlags}
+                    title="Academic Concerns"
+                    description="Students with a poor academic progress pattern"
+                  />
+                </Box>
+                <Box marginTop={2}>
+                  <StudentConcernsCard
+                    students={attendanceFlags}
+                    title="Attendance Concerns"
+                    description="Students with a poor attendance pattern"
+                  />
+                </Box>
               </Box>
 
               <Box width="50%" paddingLeft={2}>
