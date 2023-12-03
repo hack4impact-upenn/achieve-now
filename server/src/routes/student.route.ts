@@ -3,6 +3,8 @@
  * relating to admin users.
  */
 import express from 'express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { addListener } from 'process';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getStudentInformation,
@@ -24,6 +26,7 @@ import {
   isTeacher,
   inviteStudent,
   updateStudentInformation,
+  updateStudentLessonLevel,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -117,6 +120,13 @@ router.get('/student/:id', isAuthenticated, getStudent);
 router.get('/all/info', isAuthenticated, isAdmin, getAllStudentsWithUserLesson);
 
 router.put('/attendance', isAuthenticated, isAdmin, updateStudentAttendance);
+
+router.put(
+  '/update-lesson-level',
+  isAuthenticated,
+  isAdmin,
+  updateStudentLessonLevel,
+);
 
 router.put(
   '/attendance/create',

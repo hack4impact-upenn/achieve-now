@@ -142,16 +142,16 @@ function OnboardingPage() {
       mx="auto"
       my={4}
     >
-      <Grid item container justifyContent="center">
-        <Typography variant="h2" mb={0}>
+      <Grid item container justifyContent="center" direction="column">
+        <Typography variant="h2" align="center" marginBottom={0}>
           Welcome!
         </Typography>
-        <Typography variant="subtitle1" mb="28px">
-          Please answer a few questions for your profile.
+        <Typography variant="subtitle1" align="center">
+          Please fill out the following information to complete your account.
         </Typography>
       </Grid>
-      <Grid container item width="1" spacing={1}>
-        <Grid item xs={6}>
+      <Grid container item width="1">
+        <Grid item xs={5.75}>
           <TextField
             fullWidth
             error={showError.studentFirst}
@@ -162,7 +162,8 @@ function OnboardingPage() {
             onChange={(e) => setValue('studentFirst', e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={0.5} />
+        <Grid item xs={5.75}>
           <TextField
             fullWidth
             error={showError.studentLast}
@@ -174,7 +175,7 @@ function OnboardingPage() {
           />
         </Grid>
       </Grid>
-      <Grid item width="1">
+      <Grid item width="1" spacing={1}>
         <TextField
           fullWidth
           error={showError.parentName}
@@ -185,7 +186,7 @@ function OnboardingPage() {
           onChange={(e) => setValue('parentName', e.target.value)}
         />
       </Grid>
-      <Grid item width="1">
+      <Grid item width="1" spacing={1}>
         <TextField
           fullWidth
           error={showError.parentPhone}
@@ -197,7 +198,7 @@ function OnboardingPage() {
           onChange={(e) => setValue('parentPhone', e.target.value)}
         />
       </Grid>
-      <Grid item width="1">
+      <Grid item width="1" spacing={1}>
         <FormControl fullWidth>
           <InputLabel>Preferred Contact Method</InputLabel>
           <Select
@@ -215,8 +216,8 @@ function OnboardingPage() {
           </Select>
         </FormControl>
       </Grid>
-      <Grid container item width="1" spacing={1}>
-        <Grid item xs={6}>
+      <Grid container item width="1">
+        <Grid item xs={5.75}>
           <FormControl fullWidth>
             <InputLabel>Best Days to Contact</InputLabel>
             <Select
@@ -233,7 +234,8 @@ function OnboardingPage() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={0.5} />
+        <Grid item xs={5.75}>
           <FormControl fullWidth>
             <InputLabel>Best Time to Contact</InputLabel>
             <Select
