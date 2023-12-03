@@ -8,6 +8,7 @@ export interface UserState {
   lastName: string | null;
   role: string | null;
   isOnboarded: boolean | null;
+  id: string | null;
 }
 
 interface Payload {
@@ -16,6 +17,7 @@ interface Payload {
   lastName: string;
   role: string;
   isOnboarded: boolean;
+  id: string;
 }
 
 const initialState = {
@@ -24,6 +26,7 @@ const initialState = {
   lastName: null,
   role: null,
   isOnboarded: null,
+  id: null,
 } as UserState;
 
 /**
@@ -39,6 +42,7 @@ const userSlice = createSlice({
       state.lastName = action.payload.lastName;
       state.role = action.payload.role;
       state.isOnboarded = action.payload.isOnboarded;
+      state.id = action.payload.id;
     },
     changeRole: (state, action: PayloadAction<{ role: string }>) => {
       state.role = action.payload.role;

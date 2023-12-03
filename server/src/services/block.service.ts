@@ -29,6 +29,11 @@ const getStudents = async (id: string) => {
   return response;
 };
 
+const deleteBlockById = async (id: string) => {
+  const block = await Block.findByIdAndDelete(id).exec();
+  return block;
+};
+
 const addBlock = async (
   day: string,
   name: string,
@@ -36,6 +41,8 @@ const addBlock = async (
   endTime: string,
   block: number | null,
   zoom: string,
+  absenceNotification: string,
+  exitTicket: string,
   students: string[],
 ) => {
   const response = await Block.create({
@@ -45,6 +52,8 @@ const addBlock = async (
     endTime,
     ...(block && { block }),
     zoom,
+    absenceNotification,
+    exitTicket,
     students,
   });
   return response;
@@ -58,6 +67,8 @@ const editBlock = async (
   endTime: string,
   block: number | null,
   zoom: string,
+  absenceNotification: string,
+  exitTicket: string,
   students: string[],
 ) => {
   const response = await Block.findByIdAndUpdate(blockId, {
@@ -67,6 +78,8 @@ const editBlock = async (
     endTime,
     ...(block && { block }),
     zoom,
+    absenceNotification,
+    exitTicket,
     students,
   });
   return response;
@@ -83,10 +96,10 @@ const getAllBlocksfromDB = async () => {
 const getBlockByStudentId = async (studentId: string) => {
   const blocks = await Block.find({});
   const filteredBlocks = blocks.filter(
-    (blocks: IBlock) =>
-      blocks.students &&
-      blocks.students.includes &&
-      blocks.students.includes(studentId),
+    (block: IBlock) =>
+      block.students &&
+      block.students.includes &&
+      block.students.includes(studentId),
   );
   return filteredBlocks[0];
 };
@@ -99,4 +112,5 @@ export {
   editBlock,
   getAllBlocksfromDB,
   getBlockByStudentId,
+  deleteBlockById,
 };

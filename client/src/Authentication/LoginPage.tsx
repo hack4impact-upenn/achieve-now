@@ -74,9 +74,17 @@ function LoginPage() {
     lastName: string,
     role: string,
     isOnboarded: boolean,
+    id: string,
   ) {
     dispatch(
-      loginRedux({ email: userEmail, firstName, lastName, role, isOnboarded }),
+      loginRedux({
+        email: userEmail,
+        firstName,
+        lastName,
+        role,
+        isOnboarded,
+        id,
+      }),
     );
   }
 
@@ -124,6 +132,8 @@ function LoginPage() {
             user.lastName || null,
             user.role || null,
             isOnboarded,
+            // eslint-disable-next-line no-underscore-dangle
+            user._id,
           );
           if (isOnboarded) {
             navigate('/home');

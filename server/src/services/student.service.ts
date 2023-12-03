@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
 /**
  * All the functions for interacting with student data in the MongoDB database
  */
-import { Student } from '../models/student.model';
+import { IStudent, Student } from '../models/student.model';
 import { Resource } from '../models/resource.model';
 
 /**
@@ -22,6 +23,11 @@ const getStudentByID = async (id: string) => {
   return student;
 };
 
+const getStudentByUserId = async (user_id: string) => {
+  const student = await Student.findOne({ user_id }).exec();
+  return student;
+};
+
 /**
  * Gets a resource from the database by its id.
  * @param id The id of the resource to get.
@@ -32,51 +38,62 @@ const getResourceByID = async (id: string) => {
   return resource;
 };
 
-/**
- * A function that updates a student's resources
- * @param id The id of the user to delete.
- * @returns The updated {@link Student}
- */
-const updateParentResourcesByID = async (id: string, resources: string[]) => {
-  const student = await Student.findOneAndUpdate({ id }, [
-    { $set: { parent_additional_resources: resources } },
-  ]).exec();
-  return student;
+const deleteResourceByID = async (
+  student: IStudent,
+  resourceId: string,
+  role: string,
+) => {
+  try {
+    if (role === 'parent') {
+      await Student.updateOne(
+        { _id: student._id },
+        { $pull: { parent_additional_resources: resourceId } },
+      ).exec();
+    } else if (role === 'coach') {
+      await Student.updateOne(
+        { _id: student._id },
+        { $pull: { coach_additional_resources: resourceId } },
+      ).exec();
+    } else {
+      throw new Error('Invalid role specified');
+    }
+
+    // Fetch and return the updated lesson object
+    const updatedStudent = await Student.findById(student._id).exec();
+    return updatedStudent;
+  } catch (error) {
+    console.log('Error updating resources in lesson:', error);
+    throw error; // Propagate the error
+  }
 };
 
-const updateCoachResourcesByID = async (id: string, resources: string[]) => {
-  const student = await Student.findOneAndUpdate({ id }, [
-    { $set: { coach_additional_resources: resources } },
-  ]).exec();
-  return student;
-};
+const addResourceByID = async (
+  student: IStudent,
+  resourceId: string,
+  role: string,
+) => {
+  try {
+    if (role === 'parent') {
+      await Student.updateOne(
+        { _id: student._id },
+        { $addToSet: { parent_additional_resources: resourceId } },
+      ).exec();
+    } else if (role === 'coach') {
+      await Student.updateOne(
+        { _id: student._id },
+        { $addToSet: { coach_additional_resources: resourceId } },
+      ).exec();
+    } else {
+      throw new Error('Invalid role specified');
+    }
 
-const removeParentResourcesByID = async (id: string, resource: string) => {
-  const student = await Student.findOneAndUpdate({ id }, [
-    { $pull: { parent_additional_resources: resource } },
-  ]).exec();
-  return student;
-};
-
-const removeCoachResourcesByID = async (id: string, resource: string) => {
-  const student = await Student.findOneAndUpdate({ id }, [
-    { $pull: { coach_additional_resources: resource } },
-  ]).exec();
-  return student;
-};
-
-const addParentResourcesByID = async (id: string, resource: string) => {
-  const student = await Student.findOneAndUpdate({ id }, [
-    { $addToSet: { parent_additional_resources: resource } },
-  ]).exec();
-  return student;
-};
-
-const addCoachResourcesByID = async (id: string, resource: string) => {
-  const student = await Student.findOneAndUpdate({ id }, [
-    { $addToSet: { coach_additional_resources: resource } },
-  ]).exec();
-  return student;
+    // Fetch and return the updated student object
+    const updatedStudent = await Student.findById(student._id).exec();
+    return updatedStudent;
+  } catch (error) {
+    console.log('Error updating resources in lesson:', error);
+    throw error; // Propagate the error
+  }
 };
 
 const createStudent = async (
@@ -123,6 +140,24 @@ const updateAttendance = async (
 };
 
 /**
+ * A function that updates a student's attendance
+ * @param id: The id of the student to update
+ * @param lessonLevel: The new lesson level of the student
+ * @returns The updated {@link Student}
+ */
+const updateLessonLevel = async (id: string, lessonLevel: string) => {
+  const student = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: { lesson_level: lessonLevel },
+    },
+  ).exec();
+  return student;
+};
+
+/**
  * A function that creates attendance for all students on a given date
  * @param date: The timestamp of the date to create attendance for
  */
@@ -150,6 +185,71 @@ const deleteAttendanceOnDate = async (date: number) => {
       },
     },
   );
+};
+
+/**
+ * A function that updates student info in the database.
+ * @param id The id of the user to update.
+ * @returns The updated {@link Student}
+ */
+const updateStudentInfo = async (
+  id: string,
+  school: string,
+  teacher: string,
+  lessonLevel: string,
+  grade: number,
+  parentName: string,
+  bestDay: string,
+  bestTime: string,
+  contactMethod: string,
+  mediaWaiver: boolean,
+  adminUpdates: string,
+  workHabits: string,
+  personality: string,
+  family: string,
+  favFood: string,
+  likes: string,
+  dislikes: string,
+  motivation: string,
+  goodStrategies: string,
+  badStrategies: string,
+  badges: string[],
+  risingReadersScore: any,
+  generalProgramScore: any,
+  progressFlag: boolean,
+  attendanceFlag: boolean,
+) => {
+  const student = await Student.findByIdAndUpdate(
+    id,
+    {
+      school_id: school,
+      teacher_id: teacher,
+      lesson_level: lessonLevel === '' ? undefined : lessonLevel,
+      grade,
+      parent_name: parentName,
+      parent_communication_days: bestDay,
+      parent_communication_times: bestTime,
+      best_communication_method: contactMethod,
+      media_waiver: mediaWaiver,
+      admin_updates: adminUpdates,
+      work_habits: workHabits,
+      personality,
+      family,
+      fav_food: favFood,
+      likes,
+      dislikes,
+      motivation,
+      good_strategies: goodStrategies,
+      bad_strategies: badStrategies,
+      badges,
+      risingReadersScore: [risingReadersScore.start, risingReadersScore.mid],
+      generalProgramScore: [generalProgramScore.start, generalProgramScore.mid],
+      progressFlag,
+      attendanceFlag,
+    },
+    { new: true },
+  ).exec();
+  return student;
 };
 
 const addCoachToStudent = async (student_id: string, coach_id: string) => {
@@ -201,12 +301,6 @@ const deleteProgressDate = async (id: string, date: string) => {
 export {
   getStudentByID,
   getResourceByID,
-  updateParentResourcesByID,
-  updateCoachResourcesByID,
-  removeParentResourcesByID,
-  removeCoachResourcesByID,
-  addParentResourcesByID,
-  addCoachResourcesByID,
   getAllStudentsFromDB,
   createStudent,
   updateAttendance,
@@ -215,4 +309,9 @@ export {
   addCoachToStudent,
   updateProgressDate,
   deleteProgressDate,
+  deleteResourceByID,
+  addResourceByID,
+  updateStudentInfo,
+  updateLessonLevel,
+  getStudentByUserId,
 };

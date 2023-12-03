@@ -57,7 +57,7 @@ function UserTable() {
   const users = useData('admin/all');
   const self = useAppSelector(selectUser);
 
-  const [role, setRole] = React.useState('');
+  const [role, setRole] = React.useState('all');
 
   const handleChange = (event: SelectChangeEvent) => {
     setUserList(users?.data.filter((entry: IUser) => entry.role === role));
@@ -116,7 +116,9 @@ function UserTable() {
       });
     }
 
-    if (role) {
+    if (role === 'all') {
+      const i = 1;
+    } else if (role) {
       filteredUsers = filteredUsers.filter((user: IUser) => user.role === role);
     }
     setUserList(filteredUsers);
@@ -147,7 +149,9 @@ function UserTable() {
             sx={{ m: 1, minWidth: 120 }}
             label="Role"
             onChange={handleChange}
+            defaultValue="all"
           >
+            <MenuItem value="all">All</MenuItem>
             <MenuItem value="student">Student</MenuItem>
             <MenuItem value="coach">Coach</MenuItem>
             <MenuItem value="teacher">Teacher</MenuItem>

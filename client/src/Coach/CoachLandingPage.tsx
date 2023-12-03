@@ -1,42 +1,43 @@
 import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/PageHeader';
+import { useAppSelector } from '../util/redux/hooks';
+import { selectUser } from '../util/redux/userSlice';
 
 const fieldsMapping = {
   teacher: 'Teacher',
   grade: 'Grade',
+  best_communication_method: 'Best Communication Method',
   work_habits: 'Work Habits',
   personality: 'Personality & Interests',
   family: 'Family',
-  favorite_food: 'Favorite Food',
+  fav_food: 'Favorite Food',
   likes: 'Likes',
   dislikes: 'Dislikes',
-  what_motivates_them: 'What Motivates Them',
-  what_reading_strategies_worked: 'What Reading Strategies Worked',
-  what_reading_strategies_didnt_work: "What Reading Strategies Didn't Work",
+  motivation: 'What Motivates Them',
+  good_strategies: 'What Reading Strategies Worked',
+  bad_strategies: "What Reading Strategies Didn't Work",
+};
 
+const schoolFieldsMapping = {
   school_name: 'School Name',
   school_info: 'School Info',
 };
 
 function CoachLandingPage() {
-  const params = useParams();
+  const { id } = useAppSelector(selectUser);
+  console.log(id);
   const [coach, setCoach] = useState<any>({});
   const [student, setStudent] = useState<any>({});
 
-  const zoomLink = () => {
-    window.open(student.zoom_link);
+  const openLink = (link: string) => {
+    window.open(link);
   };
 
   useEffect(() => {
-    if (!params.id) {
-      return;
-    }
-
     const fetchInfo = async () => {
-      let res = await axios.get(`http://localhost:4000/api/coach/${params.id}`);
+      let res = await axios.get(`http://localhost:4000/api/coach/user/${id}`);
 
       let res2 = await axios.get(
         `http://localhost:4000/api/user/${res.data.user_id}`,
@@ -47,7 +48,8 @@ function CoachLandingPage() {
       });
 
       res = await axios.get(
-        `http://localhost:4000/api/coach/student/${params.id}`,
+        // eslint-disable-next-line no-underscore-dangle
+        `http://localhost:4000/api/coach/student/${res.data._id}`,
       );
 
       res2 = await axios.get(
@@ -77,7 +79,7 @@ function CoachLandingPage() {
     };
 
     fetchInfo();
-  }, [params.id]);
+  }, [id]);
 
   return (
     <>
@@ -85,7 +87,7 @@ function CoachLandingPage() {
       <Stack
         direction="column"
         sx={{
-          padding: '1rem',
+          padding: '1rem 3rem 2rem 3rem',
         }}
         spacing={2}
       >
@@ -97,14 +99,35 @@ function CoachLandingPage() {
           }}
         >
           <Typography variant="h3">{student.firstName}</Typography>
-          <Button variant="outlined" onClick={zoomLink}>
-            Zoom
-          </Button>
+          <Box>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Absence Notification
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Exit Ticket
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => openLink(student.zoom_link)}
+              sx={{ marginRight: '1rem' }}
+            >
+              Zoom
+            </Button>
+          </Box>
         </Box>
         <Card
           variant="outlined"
           sx={{
             padding: '1rem',
+            border: '1px solid black',
           }}
         >
           <Stack direction="column">
@@ -120,18 +143,25 @@ function CoachLandingPage() {
           variant="outlined"
           sx={{
             padding: '1rem',
+            border: '1px solid black',
           }}
         >
           <Stack direction="column">
-            {Object.entries(fieldsMapping).map(
-              (entry) =>
-                student[entry[0]] && (
-                  <Typography variant="body1">
-                    <strong>{entry[1]}: </strong>
-                    {student[entry[0]]}
-                  </Typography>
-                ),
-            )}
+            {Object.entries(fieldsMapping).map((entry) => (
+              <Typography variant="body1">
+                <strong>{entry[1]}: </strong>
+                {student[entry[0]]}
+              </Typography>
+            ))}
+            <Typography variant="body1">
+              <br />
+            </Typography>
+            {Object.entries(schoolFieldsMapping).map((entry) => (
+              <Typography variant="body1">
+                <strong>{entry[1]}: </strong>
+                {student[entry[0]]}
+              </Typography>
+            ))}
           </Stack>
         </Card>
       </Stack>

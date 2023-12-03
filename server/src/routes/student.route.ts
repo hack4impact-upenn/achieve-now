@@ -3,8 +3,11 @@
  * relating to admin users.
  */
 import express from 'express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { addListener } from 'process';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
+  getStudentInformation,
   getAdditionalStudentResources,
   getAllStudentResources,
   getStudentsByTeacherID,
@@ -22,10 +25,11 @@ import {
   deleteProgress,
   isTeacher,
   inviteStudent,
+  updateStudentInformation,
+  updateStudentLessonLevel,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
-import { addListener } from 'process';
 
 const router = express.Router();
 
@@ -61,6 +65,22 @@ router.get(
   isTeacher,
   getStudentsByTeacherID,
 );
+
+/**
+ * A GET route to get (both the student obj and the user obj)
+ * of the student’s information by their student ID
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
+ */
+router.get('/allInfo/:id', isAuthenticated, getStudentInformation);
+
+/**
+ * A POST route to edit (both the student obj and the user obj)
+ * of the student’s information by their student ID
+ * Expects the following fields in the URL:
+ * id (string) - The student id of the particular student
+ */
+router.post('/allInfo/:id', isAuthenticated, updateStudentInformation);
 
 /**
  * A GET route to get all students.
@@ -100,6 +120,13 @@ router.get('/student/:id', isAuthenticated, getStudent);
 router.get('/all/info', isAuthenticated, isAdmin, getAllStudentsWithUserLesson);
 
 router.put('/attendance', isAuthenticated, isAdmin, updateStudentAttendance);
+
+router.put(
+  '/update-lesson-level',
+  isAuthenticated,
+  isAdmin,
+  updateStudentLessonLevel,
+);
 
 router.put(
   '/attendance/create',
