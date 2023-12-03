@@ -13,6 +13,8 @@ import { getData, postData, putData, useData } from '../util/api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { InputErrorMessage } from '../util/inputvalidation';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 import Header from '../components/PageHeader';
 import ICoach from '../util/types/coach';
 import IUser from '../util/types/user';
@@ -22,7 +24,7 @@ import useAlert from '../util/hooks/useAlert';
 function CoachProfilePage() {
   const { setAlert } = useAlert();
   const { id } = useParams();
-
+  const { setAlert } = useAlert();
   // Default values for state
   const defaultValues = {
     partnerSite: '',
@@ -101,19 +103,19 @@ function CoachProfilePage() {
 
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
-    setValueState((prevState) => ({
+    setValueState((prevState: any) => ({
       ...prevState,
       ...{ [field]: value },
     }));
   };
   const setShowError = (field: string, show: boolean) => {
-    setShowErrorState((prevState) => ({
+    setShowErrorState((prevState: any) => ({
       ...prevState,
       ...{ [field]: show },
     }));
   };
   const setErrorMessage = (field: string, msg: string) => {
-    setErrorMessageState((prevState) => ({
+    setErrorMessageState((prevState: any) => ({
       ...prevState,
       ...{ [field]: msg },
     }));

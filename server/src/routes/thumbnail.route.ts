@@ -69,15 +69,15 @@ const retrieveThumbnail: RequestHandler = async (req, res) => {
   }
 
   // // We try and scrape the thumbnail url from the page
-  // const thumbnailUrl = await getPageThumbnailUrl(url);
-  // if (thumbnailUrl) {
-  //   return res.status(200).json({ url: thumbnailUrl });
-  // }
+  const thumbnailUrl = await getPageThumbnailUrl(url);
+  if (thumbnailUrl) {
+    return res.status(200).json({ url: thumbnailUrl });
+  }
 
   // Fallthrough
   // In this case, we just return the Achieve Now logo
   return res.status(200).json({
-    url: 'https://images.squarespace-cdn.com/content/v1/611bfe8c78c5c96a4c0d6314/eca03de9-70b2-4577-8871-5dd3633ef125/achieve+now+logo+FINAL+RGB-no+tagline.png?format=1500w',
+    url: '',
   });
 };
 
