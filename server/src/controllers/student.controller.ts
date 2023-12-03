@@ -335,14 +335,27 @@ const getStudentsByTeacherID = async (
           });
           getAllUsersFromDB()
             .then((studentUserList) => {
-              const newStudentUserList: any = studentUserList.filter(
-                (studentUser) => {
+              const newStudentUserList: any = studentUserList
+                .filter((studentUser) => {
                   if (!studentUser._id) {
                     return false;
                   }
                   return studentIdSet.has(studentUser._id.toString());
-                },
-              );
+                })
+                .map((studentUser) => {
+                  const student = studentList.find(
+                    (other) =>
+                      other.user_id.toString() === studentUser._id.toString(),
+                  );
+                  const temp: any = {
+                    ...studentUser,
+                  };
+                  return {
+                    ...temp._doc,
+                    lesson_level: student?.lesson_level,
+                  };
+                });
+              console.log(newStudentUserList);
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
