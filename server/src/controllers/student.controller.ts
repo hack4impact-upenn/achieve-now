@@ -342,8 +342,7 @@ const getStudentsByTeacherID = async (
                   }
                   return studentIdSet.has(studentUser._id.toString());
                 },
-              );
-              
+              ).sort((a, b) => a.firstName.toLowerCase() > b.firstName.toLowerCase() ? 1 : -1);
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
