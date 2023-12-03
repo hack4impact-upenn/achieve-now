@@ -140,6 +140,24 @@ const updateAttendance = async (
 };
 
 /**
+ * A function that updates a student's attendance
+ * @param id: The id of the student to update
+ * @param lessonLevel: The new lesson level of the student
+ * @returns The updated {@link Student}
+ */
+const updateLessonLevel = async (id: string, lessonLevel: string) => {
+  const student = await Student.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $set: { lesson_level: lessonLevel },
+    },
+  ).exec();
+  return student;
+};
+
+/**
  * A function that creates attendance for all students on a given date
  * @param date: The timestamp of the date to create attendance for
  */
@@ -294,5 +312,6 @@ export {
   deleteResourceByID,
   addResourceByID,
   updateStudentInfo,
+  updateLessonLevel,
   getStudentByUserId,
 };

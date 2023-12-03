@@ -26,6 +26,7 @@ import {
   isTeacher,
   inviteStudent,
   updateStudentInformation,
+  updateStudentLessonLevel,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -119,6 +120,13 @@ router.get('/student/:id', isAuthenticated, getStudent);
 router.get('/all/info', isAuthenticated, isAdmin, getAllStudentsWithUserLesson);
 
 router.put('/attendance', isAuthenticated, isAdmin, updateStudentAttendance);
+
+router.put(
+  '/update-lesson-level',
+  isAuthenticated,
+  isAdmin,
+  updateStudentLessonLevel,
+);
 
 router.put(
   '/attendance/create',

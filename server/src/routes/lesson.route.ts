@@ -6,6 +6,7 @@ import {
   addResourceHandler,
   getAllLessonsHandler,
   getLesson,
+  getLessonFromLevel,
 } from '../controllers/lesson.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
@@ -27,5 +28,7 @@ lessonRouter.post(
 lessonRouter.post('/addResource', isAuthenticated, isAdmin, addResourceHandler);
 
 lessonRouter.get('/:id', getLesson);
+
+lessonRouter.get('/getLesson/:level', getLessonFromLevel);
 
 export default lessonRouter;

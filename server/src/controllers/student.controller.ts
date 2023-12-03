@@ -21,6 +21,7 @@ import {
   deleteResourceByID,
   addResourceByID,
   updateProgressDate,
+  updateLessonLevel,
   getStudentByUserId,
 } from '../services/student.service';
 import {
@@ -687,6 +688,24 @@ const updateStudentAttendance = async (
   res.status(StatusCode.OK).send(student);
 };
 
+const updateStudentLessonLevel = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id, lessonLevel } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+  if (!lessonLevel) {
+    next(ApiError.missingFields(['lessonLzevel']));
+    return;
+  }
+  const student = updateLessonLevel(id, lessonLevel);
+  res.status(StatusCode.OK).send(student);
+};
+
 const createStudentAttendanceByDate = async (
   req: express.Request,
   res: express.Response,
@@ -840,4 +859,5 @@ export {
   deleteProgress,
   inviteStudent,
   isTeacher,
+  updateStudentLessonLevel,
 };
