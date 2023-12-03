@@ -35,6 +35,9 @@ const createCoachInDB = async (
 const createCoachFromUser = async (userID: string) => {
   const newCoach = new Coach({
     user_id: userID,
+    partner_site: '',
+    mailing_address: '',
+    media_waiver: false,
   });
   const coach = await newCoach.save();
   return coach;
