@@ -8,15 +8,15 @@ const CoachSchema = new mongoose.Schema({
   },
   partner_site: {
     type: String,
-    required: true,
+    required: false,
   },
   mailing_address: {
     type: String,
-    required: true,
+    required: false,
   },
   media_waiver: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   progress_stats: {
     type: Map,
@@ -24,7 +24,7 @@ const CoachSchema = new mongoose.Schema({
       type: Map,
       of: String,
     },
-    required: true,
+    required: false,
   },
   updates: {
     type: String,
