@@ -258,7 +258,7 @@ const getAllBlocks = async (
           const d: { [key: string]: any } = {};
           sortedList
             .filter((block) => {
-              return block.day == day;
+              return block.day === day;
             })
             .forEach((block) => {
               const key = block.startTime.concat(block.endTime);

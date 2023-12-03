@@ -16,6 +16,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers';
 import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
@@ -57,12 +58,14 @@ function CoachAttendancePage() {
   const [blocks, setBlocks] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
   const [filterBlock, setFilterBlock] = useState<string>('All Blocks');
+  const [startDate, setStartDate] = useState<dayjs.Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<dayjs.Dayjs | null>(null);
 
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
 
-  const fetchData = async () => {
+  const fetchData = async (curSearch: string, curBlock: string) => {
     const result = await axios.get('http://localhost:4000/api/coach/all');
     const coaches = result.data as any[];
     const blockList: string[] = [];
@@ -76,10 +79,11 @@ function CoachAttendancePage() {
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
         res = await axios.get(
-          `http://localhost:4000/api/coach/blocks/${coach.user_id}`,
+          // eslint-disable-next-line no-underscore-dangle
+          `http://localhost:4000/api/coach/blocks/${coach._id}`,
         );
         coaches[index] = {
-          ...coach,
+          ...coaches[index],
           blocks: res.data,
         };
         res.data.forEach((block: string) => {
@@ -102,13 +106,23 @@ function CoachAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
+
+    dates.sort((a, b) => b - a);
+
     setRawData({ dates, attendance: attendances });
-    setData({ dates, attendance: attendances });
+    setData({
+      dates,
+      attendance: attendances.filter(
+        (coach) =>
+          coach.name.includes(curSearch) &&
+          (curBlock === 'All Blocks' || coach.blocks.includes(curBlock)),
+      ),
+    });
     setBlocks(blockList);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData('', 'All Blocks');
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,17 +148,21 @@ function CoachAttendancePage() {
   };
 
   const addDate = async (date: number) => {
+    if (data.dates.includes(date)) {
+      return;
+    }
+
     await axios.put('http://localhost:4000/api/coach/attendance/create', {
       date,
     });
-    fetchData();
+    fetchData(search, filterBlock);
   };
 
   const deleteDate = async (date: number) => {
     await axios.put('http://localhost:4000/api/coach/attendance/delete', {
       date,
     });
-    fetchData();
+    fetchData(search, filterBlock);
   };
 
   const handleChangeAttendance = async (
@@ -152,12 +170,16 @@ function CoachAttendancePage() {
     date: number,
     attendance: string,
   ) => {
+    if (!data.dates.includes(date)) {
+      return;
+    }
+
     await axios.put('http://localhost:4000/api/coach/attendance', {
       id,
       date,
       attendance,
     });
-    fetchData();
+    fetchData(search, filterBlock);
   };
 
   return (
@@ -183,7 +205,7 @@ function CoachAttendancePage() {
         <Typography variant="h3">Coach Attendance</Typography>
         <Stack direction="row" spacing={2}>
           <TextField
-            label="search"
+            label="Search"
             placeholder="Enter a Name..."
             variant="outlined"
             onChange={handleSearch}
@@ -196,6 +218,22 @@ function CoachAttendancePage() {
               ))}
             </Select>
           )}
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(date) => setStartDate(date)}
+            slotProps={{
+              field: { clearable: true, onClear: () => setStartDate(null) },
+            }}
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(date) => setEndDate(date)}
+            slotProps={{
+              field: { clearable: true, onClear: () => setEndDate(null) },
+            }}
+          />
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"
@@ -214,34 +252,45 @@ function CoachAttendancePage() {
           padding: '2rem',
           flexDirection: 'row',
           justifyContent: 'start',
+          overflowX: 'scroll',
         }}
       >
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Coach</TableCell>
-              {data.dates.map((date) => (
-                <TableCell>{dayjs.unix(date).format('MM/DD/YYYY')}</TableCell>
-              ))}
+              {data.dates.map(
+                (date) =>
+                  (!startDate || date >= startDate?.unix()) &&
+                  (!endDate || date <= endDate?.unix()) && (
+                    <TableCell>
+                      {dayjs.unix(date).format('MM/DD/YYYY')}
+                    </TableCell>
+                  ),
+              )}
             </TableRow>
           </TableHead>
           {data.attendance.map((coach) => (
             <TableRow>
               <TableCell>{coach.name}</TableCell>
-              {data.dates.map((date) => (
-                <TableCell>
-                  <Select
-                    value={coach.attendance[date]}
-                    onChange={(e) =>
-                      handleChangeAttendance(coach.id, date, e.target.value)
-                    }
-                  >
-                    {coachStatusOptions.map((option) => (
-                      <MenuItem value={option}>{option}</MenuItem>
-                    ))}
-                  </Select>
-                </TableCell>
-              ))}
+              {data.dates.map(
+                (date) =>
+                  (!startDate || date >= startDate?.unix()) &&
+                  (!endDate || date <= endDate?.unix()) && (
+                    <TableCell>
+                      <Select
+                        value={coach.attendance[date]}
+                        onChange={(e) =>
+                          handleChangeAttendance(coach.id, date, e.target.value)
+                        }
+                      >
+                        {coachStatusOptions.map((option) => (
+                          <MenuItem value={option}>{option}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                  ),
+              )}
             </TableRow>
           ))}
         </Table>

@@ -18,6 +18,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers';
 import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
@@ -74,12 +75,14 @@ function StudentAttendancePage() {
   const [blocks, setBlocks] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
   const [block, setBlock] = useState<string>('All Blocks');
+  const [startDate, setStartDate] = useState<dayjs.Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<dayjs.Dayjs | null>(null);
 
   const [dateDialogOpen, setDateDialogOpen] = useState<boolean>(false);
   const [deleteDateDialogOpen, setDeleteDateDialogOpen] =
     useState<boolean>(false);
 
-  const fetchData = async () => {
+  const fetchData = async (curSearch: string, curBlock: string) => {
     const result = await axios.get('http://localhost:4000/api/student/all');
     const students = result.data as any[];
     const studentBlocks: string[] = [];
@@ -92,18 +95,20 @@ function StudentAttendancePage() {
           ...student,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
-        if (res.data.block_id) {
-          res = await axios.get(
-            `http://localhost:4000/api/block/block-info-id/${res.data.block_id}`,
-          );
-          if (!studentBlocks.includes(res.data.name)) {
-            studentBlocks.push(res.data.name);
-          }
-          students[index] = {
-            ...students[index],
-            blockName: res.data.name,
-          };
+        res = await axios.get(
+          // eslint-disable-next-line no-underscore-dangle
+          `http://localhost:4000/api/block/student/${student._id}`,
+        );
+        if (!res.data) {
+          return;
         }
+        if (!studentBlocks.includes(res.data.name)) {
+          studentBlocks.push(res.data.name);
+        }
+        students[index] = {
+          ...students[index],
+          blockName: res.data.name,
+        };
       }),
     );
 
@@ -120,23 +125,29 @@ function StudentAttendancePage() {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
-
-    console.log(attendances);
+    dates.sort((a, b) => b - a);
 
     setRawData({ dates, attendance: attendances });
-    setData({ dates, attendance: attendances });
+    setData({
+      dates,
+      attendance: attendances.filter(
+        (student) =>
+          (student.blockName === curBlock || curBlock === 'All Blocks') &&
+          student.name.toLowerCase().includes(curSearch),
+      ),
+    });
     setBlocks(studentBlocks);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData('', 'All Blocks');
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchFilter = e.target.value.toLowerCase();
     const newData = rawData.attendance.filter(
       (student) =>
-        student.name.toLowerCase().includes(search) &&
+        student.name.toLowerCase().includes(searchFilter) &&
         (block === 'All Blocks' || student.blockName === block),
     );
     setSearch(searchFilter);
@@ -155,17 +166,21 @@ function StudentAttendancePage() {
   };
 
   const addDate = async (date: number) => {
+    if (data.dates.includes(date)) {
+      return;
+    }
+
     await axios.put('http://localhost:4000/api/student/attendance/create', {
       date,
     });
-    fetchData();
+    fetchData(search, block);
   };
 
   const deleteDate = async (date: number) => {
     await axios.put('http://localhost:4000/api/student/attendance/delete', {
       date,
     });
-    fetchData();
+    fetchData(search, block);
   };
 
   const handleChangeAttendance = async (
@@ -173,12 +188,16 @@ function StudentAttendancePage() {
     date: number,
     attendance: string,
   ) => {
+    if (!data.dates.includes(date)) {
+      return;
+    }
+
     await axios.put('http://localhost:4000/api/student/attendance', {
       id,
       date,
       attendance,
     });
-    fetchData();
+    fetchData(search, block);
   };
 
   return (
@@ -204,7 +223,7 @@ function StudentAttendancePage() {
         <Typography variant="h3">Student Attendance</Typography>
         <Stack direction="row" spacing={2}>
           <TextField
-            label="search"
+            label="Search"
             placeholder="Enter a Name..."
             variant="outlined"
             onChange={handleSearch}
@@ -217,6 +236,22 @@ function StudentAttendancePage() {
               ))}
             </Select>
           )}
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(date) => setStartDate(date)}
+            slotProps={{
+              field: { clearable: true, onClear: () => setStartDate(null) },
+            }}
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(date) => setEndDate(date)}
+            slotProps={{
+              field: { clearable: true, onClear: () => setEndDate(null) },
+            }}
+          />
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"
@@ -235,34 +270,49 @@ function StudentAttendancePage() {
           padding: '2rem',
           flexDirection: 'row',
           justifyContent: 'start',
+          overflowX: 'scroll',
         }}
       >
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Student</TableCell>
-              {data.dates.map((date) => (
-                <TableCell>{dayjs.unix(date).format('MM/DD/YYYY')}</TableCell>
-              ))}
+              {data.dates.map(
+                (date) =>
+                  (!startDate || date >= startDate?.unix()) &&
+                  (!endDate || date <= endDate?.unix()) && (
+                    <TableCell>
+                      {dayjs.unix(date).format('MM/DD/YYYY')}
+                    </TableCell>
+                  ),
+              )}
             </TableRow>
           </TableHead>
           {data.attendance.map((student) => (
             <TableRow>
               <TableCell>{student.name}</TableCell>
-              {data.dates.map((date) => (
-                <TableCell>
-                  <Select
-                    value={student.attendance[date]}
-                    onChange={(e) =>
-                      handleChangeAttendance(student.id, date, e.target.value)
-                    }
-                  >
-                    {studentStatusOptions.map((option) => (
-                      <MenuItem value={option}>{option}</MenuItem>
-                    ))}
-                  </Select>
-                </TableCell>
-              ))}
+              {data.dates.map(
+                (date) =>
+                  (!startDate || date >= startDate?.unix()) &&
+                  (!endDate || date <= endDate?.unix()) && (
+                    <TableCell>
+                      <Select
+                        value={student.attendance[date]}
+                        onChange={(e) =>
+                          handleChangeAttendance(
+                            student.id,
+                            date,
+                            e.target.value,
+                          )
+                        }
+                      >
+                        {studentStatusOptions.map((option) => (
+                          <MenuItem value={option}>{option}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                  ),
+              )}
             </TableRow>
           ))}
         </Table>

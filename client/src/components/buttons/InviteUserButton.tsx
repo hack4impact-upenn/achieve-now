@@ -86,7 +86,7 @@ function InviteUserButton() {
               label="Role"
               labelId="role"
             >
-              <MenuItem value="family">Family</MenuItem>
+              <MenuItem value="parent">Student</MenuItem>
               <MenuItem value="coach">Coach</MenuItem>
               <MenuItem value="teacher">Teacher</MenuItem>
               <MenuItem value="admin">Admin</MenuItem>

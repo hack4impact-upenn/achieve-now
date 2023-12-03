@@ -15,7 +15,10 @@ import blockRouter from './block.route';
 import studentRouter from './student.route';
 import userRouter from './user.route';
 import resourceRouter from './resource.route';
+import lessonRouter from './lesson.route';
 import coachRouter from './coach.route';
+import schoolRouter from './school.route';
+import teacherRouter from './teacher.route';
 
 const prefixToRouterMap: { prefix: string; router: Router }[] = [
   {
@@ -43,8 +46,28 @@ const prefixToRouterMap: { prefix: string; router: Router }[] = [
     router: resourceRouter,
   },
   {
+    prefix: '/api/thumbnail',
+    router: thumbnailRouter,
+  },
+  {
+    prefix: '/api/lesson',
+    router: lessonRouter,
+  },
+  {
     prefix: '/api/block',
     router: blockRouter,
+  },
+  {
+    prefix: '/api/thumbnail',
+    router: thumbnailRouter,
+  },
+  {
+    prefix: '/api/school',
+    router: schoolRouter,
+  },
+  {
+    prefix: '/api/teacher',
+    router: teacherRouter,
   },
 ];
 

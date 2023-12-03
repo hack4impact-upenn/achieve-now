@@ -8,6 +8,9 @@ import {
   addBlock,
   editBlock,
   getBlockById,
+  deleteBlockById,
+  getBlockByStudentId,
+  getAllBlocksfromDB,
 } from '../services/block.service';
 
 const getBlockInfoById = async (
@@ -51,10 +54,13 @@ const putAddBlock = async (
   return (
     addBlock(
       req.body.day,
+      req.body.name,
       req.body.startTime,
       req.body.endTime,
       req.body.block,
       req.body.zoom,
+      req.body.absenceNotification,
+      req.body.exitTicket,
       req.body.students,
     )
       .then((block) => {
@@ -62,6 +68,7 @@ const putAddBlock = async (
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
+        console.log(e);
         next(ApiError.internal('Unable to add block'));
       })
   );
@@ -74,11 +81,15 @@ const putEditBlock = async (
 ) => {
   return (
     editBlock(
+      req.body.blockId,
       req.body.day,
+      req.body.name,
       req.body.startTime,
       req.body.endTime,
       req.body.block,
       req.body.zoom,
+      req.body.absenceNotification,
+      req.body.exitTicket,
       req.body.students,
     )
       .then((block) => {
@@ -91,4 +102,50 @@ const putEditBlock = async (
   );
 };
 
-export { getBlockInfoById, getBlockInfo, putAddBlock, putEditBlock };
+const putDeleteBlock = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.body;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const block = deleteBlockById(id);
+  res.status(StatusCode.OK).send(block);
+};
+
+const getBlockInfoByStudentId = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+  const block = await getBlockByStudentId(id);
+  res.status(StatusCode.OK).send(block);
+};
+
+const getBlocks = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const blocks = await getAllBlocksfromDB();
+  res.status(StatusCode.OK).send(blocks);
+};
+
+export {
+  getBlockInfoById,
+  getBlockInfo,
+  putAddBlock,
+  putEditBlock,
+  getBlockInfoByStudentId,
+  putDeleteBlock,
+  getBlocks,
+};
