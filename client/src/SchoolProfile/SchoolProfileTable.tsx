@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 import ISchool from '../util/types/school';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
@@ -91,10 +92,39 @@ function SchoolProfileTable() {
       second_grade_lunch_start_time,
       second_grade_lunch_end_time,
     } = school;
+
+    const teacherPromises = teachers.map((teacherId) => {
+      return axios
+        .get(`http://localhost:4000/api/user/${teacherId}`)
+        .then((res) => res.data.firstName)
+        .catch((error) => {
+          console.error(
+            `Error fetching teacher with ID ${teacherId}: ${error.message}`,
+          );
+          return ''; // or handle the error in a way that makes sense for your use case
+        });
+    });
+
+    let joinedNames = '';
+    Promise.all(teacherPromises)
+      .then((teacherNames) => {
+        joinedNames = teacherNames.join(',');
+      })
+      .catch((error) => {
+        console.error(`Error fetching teacher names: ${error.message}`);
+      });
+    console.log(joinedNames);
+    // const names: string[] = [];
+    // teachers.forEach((teacherId) => {
+    //   axios.get(`http://localhost:4000/api/user/${teacherId}`).then((res) => {
+    //     names.push(res.data.firstName);
+    //   });
+    // });
+
     return {
       key: _id,
       name,
-      teachers,
+      teachers: joinedNames,
       info,
       admin_name,
       admin_content,

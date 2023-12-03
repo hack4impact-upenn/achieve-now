@@ -1,7 +1,7 @@
 interface ISchool {
   _id: string;
   name: string;
-  teachers: string;
+  teachers: string[];
   info: string;
   admin_name: string;
   admin_content: string;

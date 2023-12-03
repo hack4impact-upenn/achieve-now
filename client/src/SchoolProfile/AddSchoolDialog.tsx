@@ -1,5 +1,12 @@
 /* eslint-disable camelcase */
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Typography,
+  Grid,
+} from '@mui/material';
 import { Stack } from '@mui/system';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
@@ -14,6 +21,23 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import { useData } from '../util/api';
 import IUser from '../util/types/user';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
+
+interface SubmitState {
+  name: string;
+  info: string;
+  admin_name: string;
+  teachers: string[];
+  admin_content: string;
+  calendar_link: string;
+  school_start_time: Date | null;
+  school_end_time: Date | null;
+  first_grade_lunch_start_time: Date | null;
+  first_grade_lunch_end_time: Date | null;
+  second_grade_lunch_start_time: Date | null;
+  second_grade_lunch_end_time: Date | null;
+}
 
 interface AddSchoolProps {
   open: boolean;
@@ -34,28 +58,75 @@ interface AddSchoolProps {
   ) => void;
 }
 
+export function submitError({
+  name,
+  info,
+  admin_name,
+  teachers,
+  admin_content,
+  calendar_link,
+  school_start_time,
+  school_end_time,
+  first_grade_lunch_start_time,
+  first_grade_lunch_end_time,
+  second_grade_lunch_start_time,
+  second_grade_lunch_end_time,
+}: SubmitState): string {
+  if (
+    name === '' ||
+    info === '' ||
+    admin_name === '' ||
+    teachers.length === 0 ||
+    admin_content === '' ||
+    calendar_link === '' ||
+    school_start_time === null ||
+    school_end_time === null ||
+    first_grade_lunch_start_time === null ||
+    first_grade_lunch_end_time === null ||
+    second_grade_lunch_start_time === null ||
+    second_grade_lunch_end_time === null
+  ) {
+    return 'Please fill out all fields';
+  }
+  if (
+    school_end_time < school_start_time ||
+    first_grade_lunch_end_time < first_grade_lunch_start_time ||
+    second_grade_lunch_end_time < second_grade_lunch_start_time
+  ) {
+    return 'Invalid times';
+  }
+
+  try {
+    const _ = new URL(calendar_link);
+  } catch (e) {
+    return 'Invalid calendar link';
+  }
+  return '';
+}
+
 function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
-  const [name, setName] = useState<string>('');
-  const [info, setInfo] = useState<string | ''>('');
-  const [teachers, setTeachers] = useState<string[] | []>([]);
-  const [admin_name, setAdminName] = useState<string | ''>('');
-  const [admin_content, setAdminContent] = useState<string | ''>('');
-  const [calendar_link, setCalendarLink] = useState<string | ''>('');
-  const [school_start_time, setSchoolStartTime] = useState<Date | null>(null);
-  const [school_end_time, setSchoolEndTime] = useState<Date | null>(null);
-  const [first_grade_lunch_start_time, setFirstGradeLunchStartTime] =
-    useState<Date | null>(null);
-  const [first_grade_lunch_end_time, setFirstGradeLunchEndTime] =
-    useState<Date | null>(null);
-  const [second_grade_lunch_start_time, setSecondGradeLunchStartTime] =
-    useState<Date | null>(null);
-  const [second_grade_lunch_end_time, setSecondGradeLunchEndTime] =
-    useState<Date | null>(null);
+  const [state, setState] = useState<SubmitState>({
+    name: '',
+    info: '',
+    admin_name: '',
+    teachers: [],
+    admin_content: '',
+    calendar_link: '',
+    school_start_time: null,
+    school_end_time: null,
+    first_grade_lunch_start_time: null,
+    first_grade_lunch_end_time: null,
+    second_grade_lunch_start_time: null,
+    second_grade_lunch_end_time: null,
+  });
+
+  const [error, setError] = useState('');
 
   const [userList, setUserList] = useState<IUser[]>([]);
   const [teacherList, setTeacherList] = useState<IUser[]>([]);
-  const [teacherNames, setTeacherNames] = useState<string[]>([]);
+  const [teachers, setTeachers] = useState<IUser[]>([]);
   const users = useData('admin/all');
+  const { setAlert } = useAlert();
 
   useEffect(() => {
     const allUsers = users?.data || [];
@@ -65,50 +136,140 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
     });
     setUserList(allUsers);
     setTeacherList(filteredUsers);
-    const names: string[] = [];
-    filteredUsers.map((teacher: IUser) =>
-      names.push(`${teacher.firstName} ${teacher.lastName}`),
-    );
-    setTeacherNames(names);
   }, [users]);
 
+  const reset = () => {
+    setError('');
+    setState({
+      name: '',
+      info: '',
+      admin_name: '',
+      teachers: [],
+      admin_content: '',
+      calendar_link: '',
+      school_start_time: null,
+      school_end_time: null,
+      first_grade_lunch_start_time: null,
+      first_grade_lunch_end_time: null,
+      second_grade_lunch_start_time: null,
+      second_grade_lunch_end_time: null,
+    });
+  };
+
   const handleSubmit = () => {
-    if (!name || !info) {
+    console.log('submitted');
+    const desc = submitError(state);
+    if (desc) {
+      setError(desc);
+      console.log('error');
       return;
     }
+
     addSchool(
-      name,
-      info,
-      admin_name,
-      teachers,
-      admin_content,
-      calendar_link,
-      school_start_time,
-      school_end_time,
-      first_grade_lunch_start_time,
-      first_grade_lunch_end_time,
-      second_grade_lunch_start_time,
-      second_grade_lunch_end_time,
+      state.name,
+      state.info,
+      state.admin_name,
+      state.teachers,
+      state.admin_content,
+      state.calendar_link,
+      state.school_start_time,
+      state.school_end_time,
+      state.first_grade_lunch_start_time,
+      state.first_grade_lunch_end_time,
+      state.second_grade_lunch_start_time,
+      state.second_grade_lunch_end_time,
     );
-    console.log('added');
+    setAlert('Added school successfully!', AlertType.SUCCESS);
+    reset();
     setOpen(false);
   };
   const defaultDate = dayjs('2022-04-17T00:00');
 
   const [teacherName, setTeacherName] = React.useState<string[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<typeof teacherName>) => {
-    const {
-      target: { value },
-    } = event;
-    setTeacherName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-    setTeachers(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
+  const handleChangeInfo = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState((prevState) => ({
+      ...prevState,
+      info: event.target.value,
+    }));
+  };
+  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState((prevState) => ({
+      ...prevState,
+      name: event.target.value,
+    }));
+  };
+  const handleChangeAdminName = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      admin_name: event.target.value,
+    }));
+  };
+  const handleChangeAdminContent = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      admin_content: event.target.value,
+    }));
+  };
+  const handleChangeCalendarLink = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      calendar_link: event.target.value,
+    }));
+  };
+  const handleChangeSchoolStartTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      school_start_time: date,
+    }));
+  };
+  const handleChangeSchoolEndTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      school_end_time: date,
+    }));
+  };
+  const handleChangeFirstGradeStartTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      first_grade_lunch_start_time: date,
+    }));
+  };
+  const handleChangeFirstGradeEndTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      first_grade_lunch_end_time: date,
+    }));
+  };
+  const handleChangeSecondGradeStartTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      second_grade_lunch_start_time: date,
+    }));
+  };
+  const handleChangeSecondGradeEndTime = (date: Date | null) => {
+    setState((prevState) => ({
+      ...prevState,
+      second_grade_lunch_end_time: date,
+    }));
+  };
+  const handleChangeTeacher = (
+    event: SelectChangeEvent<typeof teacherName>,
+  ) => {
+    const selectedTeacherIds = event.target.value as string[];
+
+    console.log(selectedTeacherIds);
+
+    setState((prevState) => ({
+      ...prevState,
+      teachers: selectedTeacherIds,
+    }));
   };
 
   return (
@@ -118,64 +279,68 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
         <Stack direction="column" spacing={2}>
-          <TextField
-            label="School Name"
-            onChange={(event) => setName(event.target.value)}
-          />
+          <TextField label="School Name" onChange={handleChangeName} />
           <br />
-          <TextField
-            label="Info"
-            onChange={(event) => setInfo(event.target.value)}
-          />
+          <TextField label="Info" onChange={handleChangeInfo} />
           <br />
           <Select
             multiple
-            value={teacherName}
-            onChange={handleChange}
+            value={state.teachers}
+            onChange={handleChangeTeacher}
             label="Teachers"
             input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
+                {selected
+                  .map((teacherId) => {
+                    const selectedTeacher = teacherList.find(
+                      // eslint-disable-next-line no-underscore-dangle
+                      (teacher) => teacher._id === teacherId,
+                    );
+                    return selectedTeacher ? selectedTeacher.firstName : '';
+                  })
+                  .map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
               </Box>
             )}
           >
-            {teacherNames.map((nameValue) => (
-              <MenuItem key={nameValue} value={nameValue}>
-                {nameValue}
+            {teacherList.map((teacher: IUser) => (
+              // eslint-disable-next-line no-underscore-dangle
+              <MenuItem key={teacher._id} value={teacher._id}>
+                {teacher.firstName}
               </MenuItem>
             ))}
           </Select>
           <br />
-          <TextField
-            label="Admin Name"
-            onChange={(event) => setAdminName(event.target.value)}
-          />
+          <TextField label="Admin Name" onChange={handleChangeAdminName} />
           <br />
           <TextField
             label="Admin Content"
-            onChange={(event) => setAdminContent(event.target.value)}
+            onChange={handleChangeAdminContent}
           />
           <br />
           <TextField
             label="Calendar Link"
-            onChange={(event) => setCalendarLink(event.target.value)}
+            onChange={handleChangeCalendarLink}
           />
           <br />
           <MobileTimePicker
             label="School Start Time"
             openTo="hours"
             defaultValue={defaultDate}
-            onChange={(newValue) => setSchoolStartTime(newValue as Date | null)}
+            onChange={(newValue) =>
+              handleChangeSchoolStartTime(newValue as Date | null)
+            }
           />
           <br />
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
             defaultValue={defaultDate}
-            onChange={(newValue) => setSchoolEndTime(newValue as Date | null)}
+            onChange={(newValue) =>
+              handleChangeSchoolEndTime(newValue as Date | null)
+            }
           />
           <br />
           <MobileTimePicker
@@ -183,7 +348,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
             openTo="hours"
             defaultValue={defaultDate}
             onChange={(newValue) =>
-              setFirstGradeLunchStartTime(newValue as Date | null)
+              handleChangeFirstGradeStartTime(newValue as Date | null)
             }
           />
           <br />
@@ -192,7 +357,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
             openTo="hours"
             defaultValue={defaultDate}
             onChange={(newValue) =>
-              setFirstGradeLunchEndTime(newValue as Date | null)
+              handleChangeFirstGradeEndTime(newValue as Date | null)
             }
           />
           <br />
@@ -201,7 +366,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
             openTo="hours"
             defaultValue={defaultDate}
             onChange={(newValue) =>
-              setSecondGradeLunchStartTime(newValue as Date | null)
+              handleChangeSecondGradeStartTime(newValue as Date | null)
             }
           />
           <br />
@@ -210,13 +375,24 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
             openTo="hours"
             defaultValue={defaultDate}
             onChange={(newValue) =>
-              setSecondGradeLunchEndTime(newValue as Date | null)
+              handleChangeSecondGradeEndTime(newValue as Date | null)
             }
           />
           <br />
           <Button variant="outlined" onClick={handleSubmit}>
             Submit
           </Button>
+          {error && (
+            <Grid item container justifyContent="center">
+              <Typography
+                justifyContent="center"
+                color="red"
+                style={{ paddingBottom: '20px' }}
+              >
+                {error}
+              </Typography>
+            </Grid>
+          )}
         </Stack>
       </DialogActions>
     </Dialog>
