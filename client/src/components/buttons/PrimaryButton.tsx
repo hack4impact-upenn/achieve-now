@@ -17,6 +17,10 @@ const PrimaryButton = styled(Button)<ButtonProps>(({ theme }) => ({
   textAlign: 'center',
   fontWeight: 'bold',
   background: COLORS.primaryBlue,
+  '&:hover': {
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.25)',
+    background: COLORS.primaryDark,
+  },
 }));
 
 export default PrimaryButton;
