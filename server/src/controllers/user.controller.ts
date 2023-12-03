@@ -5,7 +5,11 @@
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import { getUserById, getAllTeachersFromDB, updateUser } from '../services/user.service';
+import {
+  getUserById,
+  getAllTeachersFromDB,
+  updateUser,
+} from '../services/user.service';
 
 // get a specific user by id
 const getUser = async (

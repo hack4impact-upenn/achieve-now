@@ -110,7 +110,7 @@ function EditSchoolDialog({
   );
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <Dialog fullWidth maxWidth="md" open={open} onClose={() => setOpen(false)}>
       <DialogTitle sx={{ textAlign: 'center' }}>Edit Entry</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}

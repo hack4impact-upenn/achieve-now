@@ -4,7 +4,11 @@
  */
 import express from 'express';
 import { isAdmin } from '../controllers/admin.middleware';
-import { getUser, getAllTeachers, putUser } from '../controllers/user.controller';
+import {
+  getUser,
+  getAllTeachers,
+  putUser,
+} from '../controllers/user.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 

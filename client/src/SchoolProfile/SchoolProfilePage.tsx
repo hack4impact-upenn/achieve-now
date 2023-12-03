@@ -66,7 +66,7 @@ function SchoolProfilePage() {
       const promise = await postData('school/create', newSchool);
       setTableData([...tableData, promise.data]);
     } catch (error) {
-      console.error('Error deleting date:', error);
+      console.error('Error adding school:', error);
     }
   };
 
