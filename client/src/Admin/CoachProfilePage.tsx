@@ -18,13 +18,10 @@ import AlertType from '../util/types/alert';
 import Header from '../components/PageHeader';
 import ICoach from '../util/types/coach';
 import IUser from '../util/types/user';
-import AlertType from '../util/types/alert';
-import useAlert from '../util/hooks/useAlert';
 
 function CoachProfilePage() {
   const { setAlert } = useAlert();
   const { id } = useParams();
-  const { setAlert } = useAlert();
   // Default values for state
   const defaultValues = {
     partnerSite: '',
