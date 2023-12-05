@@ -209,7 +209,7 @@ const inviteUser = async (
     const existingUserList: any[] | null = await batchReturnList(getUserByEmail, 10, lowercaseEmailList);
     await batchReturnVoid(validateNewUser, 10, existingUserList);
 
-    const existingInviteList: any[] | null = await batchReturnList(getInviteByEmail, 10, existingUserList);
+    const existingInviteList: any[] | null = await batchReturnList(getInviteByEmail, 10, lowercaseEmailList);
     const emailInviteList: any[] = await batchReturnMultiList(combineEmailToken, 10, lowercaseEmailList, existingInviteList);
 
     await batchReturnVoid(makeInvite, 10, emailInviteList);
