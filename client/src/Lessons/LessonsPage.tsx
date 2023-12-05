@@ -7,6 +7,7 @@ import LessonCard from './LessonCard';
 import { getData, postData, useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
+import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
 
 interface IResource {
   id: string;
@@ -109,7 +110,7 @@ function LessonsPage() {
             variant="h2"
             sx={{ fontWeight: theme.typography.fontWeightBold }}
           >
-            Lesson {lessonNumber}
+            Lesson {getLessonStringFromLessonLevel(Number(lessonNumber))}
           </Typography>
           <Box sx={{ marginTop: theme.spacing(-3) }}>
             <hr />

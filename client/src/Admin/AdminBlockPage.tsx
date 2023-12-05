@@ -16,6 +16,7 @@ import ScreenGrid from '../components/ScreenGrid';
 import LessonLevels from '../components/LessonLevels';
 import useAlert from '../util/hooks/useAlert';
 import AlertType from '../util/types/alert';
+import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
 
 interface AdminDashboardRow {
   key: string;
@@ -317,10 +318,18 @@ function AdminBlockPage() {
                         onChange={(e: SelectChangeEvent) =>
                           updateLessonLevel(student.studentId, e.target.value)
                         }
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 48 * 4.5 + 8,
+                              width: '20ch',
+                            },
+                          },
+                        }}
                       >
                         {[...Array(62)].map((__, i) => (
                           <MenuItem value={`${i + 1}`} id={student.id}>
-                            {i + 1}
+                            {getLessonStringFromLessonLevel(i + 1)}
                           </MenuItem>
                         ))}
                       </Select>

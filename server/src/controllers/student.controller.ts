@@ -346,7 +346,21 @@ const getStudentsByTeacherID = async (
                   a.firstName.toLowerCase() > b.firstName.toLowerCase()
                     ? 1
                     : -1,
-                );
+                )
+                .map((studentUser) => {
+                  const student = studentList.find(
+                    (other) =>
+                      other.user_id.toString() === studentUser._id.toString(),
+                  );
+                  const temp: any = {
+                    ...studentUser,
+                  };
+                  return {
+                    ...temp._doc,
+                    lesson_level: student?.lesson_level,
+                  };
+                });
+              console.log(newStudentUserList);
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
