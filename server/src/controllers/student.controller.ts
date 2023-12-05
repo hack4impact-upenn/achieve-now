@@ -342,6 +342,11 @@ const getStudentsByTeacherID = async (
                   }
                   return studentIdSet.has(studentUser._id.toString());
                 })
+                .sort((a, b) =>
+                  a.firstName.toLowerCase() > b.firstName.toLowerCase()
+                    ? 1
+                    : -1,
+                )
                 .map((studentUser) => {
                   const student = studentList.find(
                     (other) =>
@@ -446,16 +451,20 @@ const getAllStudentsWithUserLesson = async (
     .then((lessons) => {
       Promise.all(userPromises)
         .then((users) => {
-          const response = students.map((student, index) => {
-            const user = users[index];
-            const lesson = lessons[index];
-            return {
-              studentId: student._id,
-              firstName: user?.firstName,
-              lastName: user?.lastName,
-              lessonNumber: lesson?.number,
-            };
-          });
+          const response = students
+            .map((student, index) => {
+              const user = users[index];
+              const lesson = lessons[index];
+              return {
+                studentId: student._id,
+                firstName: user?.firstName || '',
+                lastName: user?.lastName || '',
+                lessonNumber: lesson?.number,
+              };
+            })
+            .sort((a, b) =>
+              a.firstName.toLowerCase() > b.firstName.toLowerCase() ? 1 : -1,
+            );
           res.status(StatusCode.OK).send(response);
         })
         .catch((err) => {

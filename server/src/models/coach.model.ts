@@ -17,6 +17,7 @@ const CoachSchema = new mongoose.Schema({
   media_waiver: {
     type: Boolean,
     required: true,
+    default: false,
   },
   progress_stats: {
     type: Map,
@@ -24,7 +25,7 @@ const CoachSchema = new mongoose.Schema({
       type: Map,
       of: String,
     },
-    required: true,
+    required: false,
   },
   updates: {
     type: String,

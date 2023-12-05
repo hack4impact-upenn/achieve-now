@@ -63,7 +63,10 @@ const getAllSchools = async (
 ) => {
   return getAllSchoolsInDB()
     .then((schoolList) => {
-      res.status(StatusCode.OK).send(schoolList);
+      const sorted = schoolList.sort((a, b) =>
+        a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
+      );
+      res.status(StatusCode.OK).send(sorted);
     })
     .catch((e) => {
       console.log(e);
@@ -201,4 +204,11 @@ const updateSchool = async (
   res.status(StatusCode.OK).send(school);
 };
 
-export { getAllResources, getSchool, getAllSchools, createSchool, deleteSchool, updateSchool };
+export {
+  getAllResources,
+  getSchool,
+  getAllSchools,
+  createSchool,
+  deleteSchool,
+  updateSchool,
+};

@@ -87,6 +87,7 @@ const emailInviteLink = async (email: string, token: string) => {
   };
   // Send the email and propogate the error up if one exists
   await SGmail.send(mailSettings);
+  return;
 };
 
 export { emailVerificationLink, emailResetPasswordLink, emailInviteLink };

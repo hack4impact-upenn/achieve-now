@@ -9,8 +9,8 @@ import { Lesson } from '../models/lesson.model';
  * @returns All the {@link Resource}s in the database without their passwords.
  */
 const getAllResourcesFromDB = async () => {
-  const userList = await Resource.find({}).exec();
-  return userList;
+  const resourceList = await Resource.find({}).exec();
+  return resourceList;
 };
 
 const getLessonResources = async (lessonId: string) => {

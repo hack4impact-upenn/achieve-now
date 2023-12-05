@@ -14,6 +14,9 @@ const createInvite = async (
   verificationToken: string,
   role: string,
 ) => {
+  if (role === 'family') {
+    role = 'parent';
+  }
   const newInvite = new Invite({
     email,
     role,

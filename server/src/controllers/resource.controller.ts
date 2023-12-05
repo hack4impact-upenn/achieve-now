@@ -24,8 +24,11 @@ const getAllResources = async (
 ) => {
   return (
     getAllResourcesFromDB()
-      .then((userList) => {
-        res.status(StatusCode.OK).send(userList);
+      .then((resourceList) => {
+        const sorted = resourceList.sort((a, b) =>
+          a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1,
+        );
+        res.status(StatusCode.OK).send(sorted);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
