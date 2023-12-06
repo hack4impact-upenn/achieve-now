@@ -174,7 +174,7 @@ function EditSchoolDialog({
   }, [users]);
 
   const handleSubmit = () => {
-    console.log('submitted');
+    console.log('submitted edit');
     const desc = submitError(state);
     if (desc) {
       setError(desc);

@@ -19,11 +19,13 @@ import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import { useData } from '../util/api';
 import IUser from '../util/types/user';
 import useAlert from '../util/hooks/useAlert';
 import AlertType from '../util/types/alert';
+import theme from '../assets/theme';
 
 interface SubmitState {
   name: string;
@@ -284,39 +286,45 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <br />
           <TextField label="Info" onChange={handleChangeInfo} />
           <br />
-          <InputLabel id="select-multiple-chip-label">Teachers</InputLabel>
-          <Select
-            multiple
-            value={state.teachers}
-            onChange={handleChangeTeacher}
-            labelId="select-multiple-chip-label"
-            label="Teachers"
-            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected
-                  .map((teacherId) => {
-                    const selectedTeacher = teacherList.find(
-                      // eslint-disable-next-line no-underscore-dangle
-                      (teacher) => teacher._id === teacherId,
-                    );
-                    return selectedTeacher
-                      ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
-                      : '';
-                  })
-                  .map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-              </Box>
-            )}
+          <FormControl
+            variant="outlined"
+            sx={{
+              marginRight: theme.spacing(2),
+            }}
           >
-            {teacherList.map((teacher: IUser) => (
-              // eslint-disable-next-line no-underscore-dangle
-              <MenuItem key={teacher._id} value={teacher._id}>
-                {`${teacher.firstName} ${teacher.lastName}`}
-              </MenuItem>
-            ))}
-          </Select>
+            <InputLabel htmlFor="link-field">Teachers</InputLabel>
+            <Select
+              multiple
+              value={state.teachers}
+              onChange={handleChangeTeacher}
+              label="Teachers"
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected
+                    .map((teacherId) => {
+                      const selectedTeacher = teacherList.find(
+                        // eslint-disable-next-line no-underscore-dangle
+                        (teacher) => teacher._id === teacherId,
+                      );
+                      return selectedTeacher
+                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+                        : '';
+                    })
+                    .map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                </Box>
+              )}
+            >
+              {teacherList.map((teacher: IUser) => (
+                // eslint-disable-next-line no-underscore-dangle
+                <MenuItem key={teacher._id} value={teacher._id}>
+                  {`${teacher.firstName} ${teacher.lastName}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <br />
           <TextField label="Admin Name" onChange={handleChangeAdminName} />
           <br />

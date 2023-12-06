@@ -198,6 +198,7 @@ const updateSchool = async (
     second_grade_lunch_start_time,
     second_grade_lunch_end_time,
   );
+  console.log(school);
   res.status(StatusCode.OK).send(school);
 };
 
