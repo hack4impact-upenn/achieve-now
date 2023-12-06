@@ -79,10 +79,49 @@ const addResource = async (
   }
 };
 
+const addLesson = async (title: string) => {
+  try{
+    const lessons = await getAllLessonsFromDB()
+    const number : Number = lessons[lessons.length - 1].number + 1;
+    const lesson = new Lesson({
+      number: number,
+      title: title,
+    });
+    await lesson.save();
+    return lesson;
+  } catch (error) {
+    console.log('Error adding lesson:', error);
+    throw new Error('Error adding lesson');
+  }
+};
+
+const editLessonByNumber = async (number: Number, title: string) => {
+  try {
+    const lesson = await Lesson.updateOne({ number: number }, { title: title }).exec();
+    return lesson;
+  } catch (error) {
+    console.log('Error updating lesson:', error);
+    throw new Error('Error updating lesson');
+  }
+};
+
+const deleteLessonById = async (id: string) => {
+  try {
+    const lesson = await Lesson.findByIdAndDelete(id).exec();
+    return lesson;
+  } catch (error) {
+    console.log('Error deleting lesson:', error);
+    throw new Error('Error deleting lesson');
+  }
+};
+
 export {
   getLessonById,
   getLessonByLevel,
   getAllLessonsFromDB,
   deleteResource,
   addResource,
+  addLesson,
+  editLessonByNumber,
+  deleteLessonById,
 };

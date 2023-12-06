@@ -360,7 +360,6 @@ const getStudentsByTeacherID = async (
                     lesson_level: student?.lesson_level,
                   };
                 });
-              console.log(newStudentUserList);
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
@@ -784,35 +783,6 @@ const getStudentInformation = async (
   res.status(StatusCode.OK).send(response);
 };
 
-const inviteStudent = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  const { email, role } = req.body;
-  const emailRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
-  if (!email.match(emailRegex)) {
-    next(ApiError.badRequest('Invalid email'));
-  }
-  const lowercaseEmail = email.toLowerCase();
-  const existingInvite: IInvite | null = await getInviteByEmail(lowercaseEmail);
-
-  try {
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    if (existingInvite) {
-      await updateInvite(existingInvite, verificationToken);
-    } else {
-      await createInvite(lowercaseEmail, verificationToken, role);
-    }
-
-    await emailInviteLink(lowercaseEmail, verificationToken);
-    res.sendStatus(StatusCode.CREATED);
-  } catch (err) {
-    next(ApiError.internal('Unable to invite user.'));
-  }
-};
-
 /**
  * Middleware to check if a user is an student using Passport Strategy
  * and creates an {@link ApiError} to pass on to error handlers if not
@@ -879,7 +849,6 @@ export {
   addCoach,
   updateProgress,
   deleteProgress,
-  inviteStudent,
   isTeacher,
   updateStudentLessonLevel,
 };

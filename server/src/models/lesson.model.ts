@@ -5,19 +5,24 @@ const LessonSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  title: {
+    type: String,
+    required: true,
+  },
   parent_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
-    required: true,
+    required: false,
   },
   coach_resources: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resource' }],
-    required: true,
+    required: false,
   },
 });
 
 interface ILesson extends mongoose.Document {
   _id: string;
   number: number;
+  title: string;
   parent_resources: string[];
   coach_resources: string[];
 }
