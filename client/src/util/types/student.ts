@@ -20,7 +20,7 @@ interface IStudent {
   media_waiver: boolean;
   work_habits: string;
   grade: string;
-  progressFlag: boolean;
+  attendanceFlag: boolean;
   academicFlag: boolean;
   admin_updates: string;
   family: string;

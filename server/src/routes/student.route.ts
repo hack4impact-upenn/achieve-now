@@ -13,6 +13,7 @@ import {
   getStudentsByTeacherID,
   deleteResource,
   addResource,
+  getStudentsAndLessonsByTeacherEmail,
   getAllStudents,
   getStudentsFromTeacherId,
   getStudent,
@@ -112,6 +113,16 @@ router.post('/assign-resource', isAuthenticated, isAdmin, addResource);
 router.get('/teacher/:id', isAuthenticated, getStudentsFromTeacherId);
 
 router.get('/student/:id', isAuthenticated, getStudent);
+
+/**
+ * A GET route to get all students by a teacher's email and all of their additional information (user and lesson)
+ * Checks first if the requestor is authenticated or an admin
+ */
+router.get(
+  '/students-lessons-by-teacher/:email',
+  isAuthenticated,
+  getStudentsAndLessonsByTeacherEmail,
+);
 
 /**
  * A GET route to get all students and all of their additional information (user and lesson)

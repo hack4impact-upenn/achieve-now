@@ -343,11 +343,83 @@ const getStudentsByTeacherID = async (
                   return studentIdSet.has(studentUser._id.toString());
                 },
               );
+              console.log('list', newStudentUserList);
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
               console.log(e);
               next(ApiError.internal('Unable to retrieve student in User'));
+            });
+        })
+        .catch((e) => {
+          console.log(e);
+          next(ApiError.internal('Unable to retrieve students'));
+        });
+    })
+    .catch((e) => {
+      console.log(e);
+      next(ApiError.internal('Unable to retrieve specified teacher'));
+    });
+};
+
+const getStudentsAndLessonsByTeacherEmail = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email } = req.params;
+  if (!email) {
+    next(ApiError.internal('Request must include a valid teacher email param'));
+  }
+  return getUserByEmail(email)
+    .then((user) => {
+      getAllStudentsFromDB()
+        .then((studentList) => {
+          if (!user) {
+            next(ApiError.internal('Unable to retrieve specified teacher'));
+            return;
+          }
+          const teacherStudentList = studentList.filter((student) => {
+            if (!student.teacher_id) {
+              return false;
+            }
+            return student.teacher_id.includes(user._id);
+          });
+
+          const lessonPromises = teacherStudentList.map((student) =>
+            getLessonById(student.lesson_level),
+          );
+          const userPromises: any = teacherStudentList.map((student) =>
+            getUserById(student.user_id),
+          );
+          Promise.all(lessonPromises)
+            .then((lessons) => {
+              Promise.all(userPromises)
+                .then((users) => {
+                  const response = teacherStudentList.map((student, index) => {
+                    const user = users[index];
+                    const lesson = lessons[index];
+                    console.log('student', student);
+                    return {
+                      studentId: student._id,
+                      firstName: user?.firstName,
+                      lastName: user?.lastName,
+                      academicFlag: student.progressFlag, // todo: change to academicFlag (IStudent) but current Mongo documents show progressFlag
+                      // attendanceFlag: student.attendanceFlag,
+                      lessonNumber: lesson?.number,
+                    };
+                  });
+                  console.log(response);
+                  res.status(StatusCode.OK).send(response);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  next(ApiError.internal('Unable to retrieve users'));
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              next(ApiError.internal('Unable to retrieve lessons'));
             });
         })
         .catch((e) => {
@@ -848,6 +920,7 @@ export {
   getAdditionalStudentResources,
   deleteResource,
   addResource,
+  getStudentsAndLessonsByTeacherEmail,
   getAllStudents,
   updateStudentAttendance,
   createStudentAttendanceByDate,

@@ -5,7 +5,13 @@
 import express from 'express';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
-import { getUserById, getAllTeachersFromDB, updateUser, getUserByEmail, getUserIdByEmail } from '../services/user.service';
+import {
+  getUserById,
+  getAllTeachersFromDB,
+  updateUser,
+  getUserByEmail,
+  getUserIdByEmail,
+} from '../services/user.service';
 
 // get a specific user by id
 const getUser = async (
@@ -82,11 +88,11 @@ const getUserEmail = async (
 
   return (
     getUserIdByEmail(email)
-      .then((id : any) => {
+      .then((id: any) => {
         res.status(StatusCode.OK).send(id);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .catch((e : any) => {
+      .catch((e: any) => {
         next(ApiError.internal('Unable to retrieve specified user'));
       })
   );

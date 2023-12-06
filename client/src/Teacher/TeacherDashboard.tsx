@@ -9,13 +9,13 @@ import { styled } from '@mui/system';
 import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
 import { Grid } from '@mui/material';
-import { useData } from './util/api';
-import { useAppSelector } from './util/redux/hooks';
-import { selectUser } from './util/redux/userSlice';
-import { StudentCardFromID } from './Admin/StudentCard';
-import PageHeader from './components/PageHeader';
-import PhoneticsTable from './components/buttons/PhoneticsTable';
-import LessonLevels from './components/LessonLevels';
+import { useData } from '../util/api';
+import { useAppSelector } from '../util/redux/hooks';
+import { selectUser } from '../util/redux/userSlice';
+import { StudentCardFromID } from '../Admin/StudentCard';
+import PageHeader from '../components/PageHeader';
+import LessonLevels from '../components/LessonLevels';
+import TeacherPhoneticsTable from './TeacherPhoneticsTable';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -79,6 +79,7 @@ function SplitGrid() {
   const self = useAppSelector(selectUser);
   const students = useData(`student/students-by-teacher/${self.email}`);
   const studentData = students?.data ?? [];
+  console.log('splitgrid', studentData);
 
   const academicFlags = studentData.filter(
     (student: any) => student.progressFlag,
@@ -144,7 +145,7 @@ function SplitGrid() {
               </Box>
 
               <Box width="50%" paddingLeft={2}>
-                <PhoneticsTable />
+                <TeacherPhoneticsTable />
               </Box>
             </Box>
           </Paper>

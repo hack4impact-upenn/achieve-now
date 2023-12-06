@@ -65,8 +65,8 @@ const getUserByEmail = async (email: string) => {
 
 /**
  * Get a user's ID from the database by their email
- * @param email 
- * @returns 
+ * @param email
+ * @returns
  */
 const getUserIdByEmail = async (email: string) => {
   const user = await User.findOne({ email })
