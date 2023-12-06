@@ -11,12 +11,11 @@ import HomePage from './Home/HomePage';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage';
 import StudentDashboardPage from './Teacher/StudentDashboard';
 import LessonsPage from './Lessons/LessonsPage';
+import AdminBlockPage from './Admin/AdminBlockPage';
 import AdminSessionsPage from './Admin/AdminSessionsPage';
 import FamilyProgressSnapshotPage from './Family/FamilyProgressSnapshotPage';
-import AdminLessonsPage from './Admin/AdminLessonsPage';
 import AdminNotesPage from './Admin/AdminNotesPage';
 import CoachProfilePage from './Admin/CoachProfilePage';
-import AdminAddBlockPage from './Admin/AdminAddBlockPage';
 import {
   UnauthenticatedRoutesWrapper,
   ProtectedRoutesWrapper,
@@ -39,6 +38,7 @@ import CoachAttendancePage from './Admin/CoachAttendancePage';
 import SchoolProfilePage from './SchoolProfile/SchoolProfilePage';
 import StudentProfilePage from './Admin/StudentProfilePage';
 import AdminEditBlockPage from './Admin/AdminEditBlockPage';
+import AdminAddBlockPage from './Admin/AdminAddBlockPage';
 import ProfilePage from './Profile/ProfilePage';
 import StudentAttendancePage from './Admin/StudentAttendancePage';
 import CoachLandingPage from './Coach/CoachLandingPage';
@@ -46,6 +46,7 @@ import AdminAttendance from './Admin/AdminAttendance';
 import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
 import AdminMenu from './Admin/AdminMenu';
+import StudentProgress from './StudentProgress/StudentProgress';
 
 function App() {
   return (
@@ -84,12 +85,9 @@ function App() {
                       path="/family-progress"
                       element={<FamilyProgressSnapshotPage />}
                     />
+                    <Route path="/lessons" element={<LessonsPage />} />
                     <Route
-                      path="/lessons/:studentID"
-                      element={<LessonsPage />}
-                    />
-                    <Route
-                      path="/coach-landing/:id"
+                      path="/coach-landing"
                       element={<CoachLandingPage />}
                     />
                     <Route
@@ -134,25 +132,25 @@ function App() {
                     />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
+                    <Route path="/admin/profiles" element={<ProfilePage />} />
                     <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
+                      path="/admin/block/:id"
+                      element={<AdminBlockPage />}
+                    />
+                    <Route
+                      path="/admin/add-block"
+                      element={<AdminAddBlockPage />}
+                    />
+                    <Route
+                      path="/admin/edit-block/:id"
+                      element={<AdminEditBlockPage />}
                     />
                     <Route
                       path="/admin/student/profile/:id"
                       element={<StudentProfilePage />}
                     />
                     <Route
-                      path="/admin/lessons"
-                      element={<AdminLessonsPage />}
-                    />
-                    <Route path="/admin-notes" element={<AdminNotesPage />} />
-                    <Route
-                      path="/admin/student/profile/:id"
-                      element={<StudentProfilePage />}
-                    />
-                    <Route
-                      path="/admin-notes/:studentId"
+                      path="/admin/notes/:studentId"
                       element={<AdminNotesPage />}
                     />
                     <Route
@@ -179,6 +177,10 @@ function App() {
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
+                    <Route
+                      path="/student-progress/:id"
+                      element={<StudentProgress />}
+                    />
                     <Route
                       path="/admin/coach/profile/:id"
                       element={<CoachProfilePage />}

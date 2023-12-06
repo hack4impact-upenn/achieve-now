@@ -341,7 +341,10 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
+<<<<<<< HEAD
+=======
             // defaultValue={defaultDate}
+>>>>>>> 50b6d4b25dd1284e7cb3110afff97d41d5cb92d0
             onChange={(newValue) =>
               handleChangeSchoolEndTime(newValue as Date | null)
             }
@@ -350,7 +353,10 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch Start Time"
             openTo="hours"
+<<<<<<< HEAD
+=======
             // defaultValue={defaultDate}
+>>>>>>> 50b6d4b25dd1284e7cb3110afff97d41d5cb92d0
             onChange={(newValue) =>
               handleChangeFirstGradeStartTime(newValue as Date | null)
             }
@@ -359,7 +365,10 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch End Time"
             openTo="hours"
+<<<<<<< HEAD
+=======
             // defaultValue={defaultDate}
+>>>>>>> 50b6d4b25dd1284e7cb3110afff97d41d5cb92d0
             onChange={(newValue) =>
               handleChangeFirstGradeEndTime(newValue as Date | null)
             }
@@ -368,7 +377,10 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch Start Time"
             openTo="hours"
+<<<<<<< HEAD
+=======
             // defaultValue={defaultDate}
+>>>>>>> 50b6d4b25dd1284e7cb3110afff97d41d5cb92d0
             onChange={(newValue) =>
               handleChangeSecondGradeStartTime(newValue as Date | null)
             }
@@ -377,7 +389,10 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch End Time"
             openTo="hours"
+<<<<<<< HEAD
+=======
             // defaultValue={defaultDate}
+>>>>>>> 50b6d4b25dd1284e7cb3110afff97d41d5cb92d0
             onChange={(newValue) =>
               handleChangeSecondGradeEndTime(newValue as Date | null)
             }

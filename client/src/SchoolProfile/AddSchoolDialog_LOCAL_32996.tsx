@@ -19,7 +19,6 @@ import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
 import { useData } from '../util/api';
 import IUser from '../util/types/user';
 import useAlert from '../util/hooks/useAlert';
@@ -274,7 +273,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
   };
 
   return (
-    <Dialog fullWidth maxWidth="md" open={open} onClose={() => setOpen(false)}>
+    <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle sx={{ textAlign: 'center' }}>Add School</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
@@ -284,12 +283,10 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <br />
           <TextField label="Info" onChange={handleChangeInfo} />
           <br />
-          <InputLabel id="select-multiple-chip-label">Teachers</InputLabel>
           <Select
             multiple
             value={state.teachers}
             onChange={handleChangeTeacher}
-            labelId="select-multiple-chip-label"
             label="Teachers"
             input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
             renderValue={(selected) => (
@@ -341,7 +338,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
-            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSchoolEndTime(newValue as Date | null)
             }
@@ -350,7 +346,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch Start Time"
             openTo="hours"
-            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeFirstGradeStartTime(newValue as Date | null)
             }
@@ -359,7 +354,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch End Time"
             openTo="hours"
-            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeFirstGradeEndTime(newValue as Date | null)
             }
@@ -368,7 +362,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch Start Time"
             openTo="hours"
-            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSecondGradeStartTime(newValue as Date | null)
             }
@@ -377,7 +370,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch End Time"
             openTo="hours"
-            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSecondGradeEndTime(newValue as Date | null)
             }

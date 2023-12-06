@@ -35,7 +35,7 @@ function LessonResourceDashboard() {
     });
     setAllLessons(sortedLessonData);
     setCurrLessons(sortedLessonData);
-  }, [lessonsRes]);
+  }, [lessonId, lessonsRes]);
 
   const resourcesRes = useData(`resources/all`);
   const [parentResources, setParentResources] = React.useState<IRow[]>([]);

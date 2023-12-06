@@ -10,5 +10,5 @@ yarn.lock
 .env.test.local
 .env.production.local
 
-.tool-versions
 .vscode
+.tool-versions
