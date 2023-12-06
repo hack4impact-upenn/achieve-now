@@ -20,8 +20,12 @@ function DeleteLessonButton() {
 
   return (
     <div style={{ marginBottom: '10px' }}>
-      <Button variant="outlined" onClick={handleDeleteLesson}>
-        Delete Last Lesson
+      <Button
+        style={{ width: '100px' }}
+        variant="outlined"
+        onClick={handleDeleteLesson}
+      >
+        Delete
       </Button>
     </div>
   );

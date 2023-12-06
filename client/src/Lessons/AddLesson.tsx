@@ -47,7 +47,11 @@ function AddLessonButton() {
 
   return (
     <div style={{ marginBottom: '10px' }}>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button
+        style={{ width: '100px' }}
+        variant="outlined"
+        onClick={handleClickOpen}
+      >
         Add
       </Button>
       <Dialog open={open} onClose={handleClose}>
