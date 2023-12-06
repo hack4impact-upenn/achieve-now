@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
@@ -8,7 +9,7 @@ import { Box } from '@mui/system';
 import { ArrowBack } from '@mui/icons-material';
 import COLORS from '../assets/colors';
 import Logo from '../assets/achieve-now-logo.png';
-
+import { getData } from '../util/api';
 import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
 import { selectUser, logout as logoutAction } from '../util/redux/userSlice';
 import { logout, logout as logoutApi } from '../Home/api';
@@ -17,6 +18,7 @@ export default function Header() {
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const [studentId, setStudentId] = useState('');
   const handleLogout = async () => {
     if (await logoutApi()) {
       logout();
@@ -24,7 +26,33 @@ export default function Header() {
     }
   };
   const user = useAppSelector(selectUser);
+  const { role } = user;
   const path = location.pathname;
+  useEffect(() => {
+    const getStudentFromCoach = async () => {
+      console.log(user.id);
+      const res1 = await axios.get(
+        `http://localhost:4000/api/coach/user/${user.id}`,
+      );
+      const res2 = await axios.get(
+        // eslint-disable-next-line no-underscore-dangle
+        `http://localhost:4000/api/coach/student/${res1.data._id}`,
+      );
+      // eslint-disable-next-line no-underscore-dangle
+      setStudentId(res2?.data._id);
+    };
+    const getStudentFromParent = async () => {
+      console.log(user);
+      const res1 = await getData(`student/student/${user.id}`);
+      console.log(res1.data);
+    };
+    if (user.role === 'parent') {
+      getStudentFromParent();
+    }
+    if (user.role === 'coach') {
+      getStudentFromCoach();
+    }
+  });
   // Admin Onclick Functions
   const handleAdminHome = () => {
     navigator('/admin-menu');
@@ -41,35 +69,20 @@ export default function Header() {
   const handleAdminCurriculum = () => {
     navigator('/admin-curriculum');
   };
-  const handleBackButton = () => {
-    navigator(-1);
-  };
 
   // Family Onclick Functions
   const handleFamilyProgress = () => {
-    navigator('/lessons');
+    navigator(`/student-progress/${user.id}`);
   };
   const handleFamilyLesson = () => {
-    navigator('/progress');
+    navigator('/lessons');
   };
-  const noBackButton = [
-    '/admin/sessions',
-    '/admin-attendance',
-    '/admin-profiles',
-    '/admin-curriculum',
-    '/admin-menu',
-    '/progress',
-    '/lessons',
-    '/coach-landing',
-  ];
-  const checkIfBackButton = (paths: string) => {
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < noBackButton.length; i++) {
-      if (paths.includes(noBackButton[i])) {
-        return false;
-      }
-    }
-    return true;
+  // Coach Onclick Functions
+  const handleCoachProgress = () => {
+    navigator(`/student-progress/${studentId}`);
+  };
+  const handleCoachLesson = () => {
+    navigator(`/lessons`);
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -108,18 +121,6 @@ export default function Header() {
                 marginRight: '10px',
               }}
             />
-          )}
-          {checkIfBackButton(path) ? (
-            <Button
-              sx={{ color: 'white', borderColor: 'white', marginRight: '10px' }}
-              variant="outlined"
-              color="primary"
-              onClick={handleBackButton}
-            >
-              <ArrowBack />
-            </Button>
-          ) : (
-            <div />
           )}
         </div>
         <div
@@ -200,7 +201,7 @@ export default function Header() {
           ) : (
             false
           )}
-          {user && user.role === 'family' ? (
+          {user && user.role === 'parent' ? (
             <div>
               {!location.pathname.includes('/progress') ? (
                 <Button
@@ -249,6 +250,7 @@ export default function Header() {
                   }}
                   variant="outlined"
                   color="primary"
+                  onClick={handleCoachProgress}
                 >
                   Progress
                 </Button>
@@ -264,6 +266,7 @@ export default function Header() {
                   }}
                   variant="outlined"
                   color="primary"
+                  onClick={handleCoachLesson}
                 >
                   Lessons
                 </Button>

@@ -1,11 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import PrimaryButton from '../components/buttons/PrimaryButton';
+import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
+import { selectUser, logout as logoutAction } from '../util/redux/userSlice';
 
 function AdminCurriculum() {
+  const [firstStudent, setStudent] = useState('');
+  const [firstLesson, setLesson] = useState('');
+  const user = useAppSelector(selectUser);
+  useEffect(() => {
+    const assignLesson = async () => {
+      const res = await axios.get('http://localhost:4000/api/lesson/all');
+      console.log(res.data);
+      // eslint-disable-next-line no-underscore-dangle
+      setLesson(res.data[0]._id);
+    };
+    const assignStudent = async () => {
+      const res = await axios.get('http://localhost:4000/api/admin/all');
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < res.data.length; i++) {
+        if (res.data[i].role === 'student') {
+          // eslint-disable-next-line no-underscore-dangle
+          setStudent(res.data[i]._id);
+          break;
+        }
+      }
+    };
+    assignStudent();
+    assignLesson();
+  });
   return (
     <>
       <Header />
@@ -39,7 +66,7 @@ function AdminCurriculum() {
             variant="contained"
             sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
             size="large"
-            href="/"
+            href={`/resources/lesson/${firstLesson}`}
             fullWidth
           >
             Assign Lessons
@@ -49,7 +76,7 @@ function AdminCurriculum() {
             variant="contained"
             sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
             size="large"
-            href="/"
+            href={`/resources/student/${firstStudent}`}
           >
             Assign Additional Resources
           </PrimaryButton>
