@@ -42,9 +42,10 @@ export default function Header() {
       setStudentId(res2?.data._id);
     };
     const getStudentFromParent = async () => {
-      console.log(user);
-      const res1 = await getData(`student/student/${user.id}`);
-      console.log(res1.data);
+      await getData(`student/student-info/${user.id}`).then((res) => {
+        // eslint-disable-next-line no-underscore-dangle
+        setStudentId(res.data._id);
+      });
     };
     if (user.role === 'parent') {
       getStudentFromParent();
@@ -72,7 +73,7 @@ export default function Header() {
 
   // Family Onclick Functions
   const handleFamilyProgress = () => {
-    navigator(`/student-progress/${user.id}`);
+    navigator(`/student-progress/${studentId}`);
   };
   const handleFamilyLesson = () => {
     navigator('/lessons');
@@ -203,7 +204,7 @@ export default function Header() {
           )}
           {user && user.role === 'parent' ? (
             <div>
-              {!location.pathname.includes('/progress') ? (
+              {!location.pathname.includes('/student-progress') ? (
                 <Button
                   sx={{
                     color: 'white',

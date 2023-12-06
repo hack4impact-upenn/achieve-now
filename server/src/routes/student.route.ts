@@ -27,6 +27,7 @@ import {
   inviteStudent,
   updateStudentInformation,
   updateStudentLessonLevel,
+  getStudentFromUserId,
 } from '../controllers/student.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -112,6 +113,8 @@ router.post('/assign-resource', isAuthenticated, isAdmin, addResource);
 router.get('/teacher/:id', isAuthenticated, getStudentsFromTeacherId);
 
 router.get('/student/:id', isAuthenticated, getStudent);
+
+router.get('/student-info/:id', getStudentFromUserId);
 
 /**
  * A GET route to get all students and all of their additional information (user and lesson)
