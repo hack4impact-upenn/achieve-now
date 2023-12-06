@@ -185,7 +185,7 @@ interface IStudent extends mongoose.Document {
   work_habits: string;
   grade: number;
   progressFlag: boolean;
-  academicFlag: boolean;
+  attendanceFlag: boolean;
   updates: string;
   levelsCompleted: [boolean];
   admin_updates: string;

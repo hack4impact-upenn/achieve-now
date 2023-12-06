@@ -26,7 +26,7 @@ const ScrollableBox = styled(Box)({
 function createData(data: any) {
   return data.map((student: any) => {
     /* eslint no-underscore-dangle: 0 */
-    return <StudentCardFromID studentID={student._id} lesson="Lesson 1" />;
+    return <StudentCardFromID studentID={student.userId} lesson="Lesson 1" />;
   });
 }
 function StudentName(props: any) {
@@ -34,7 +34,7 @@ function StudentName(props: any) {
   const user = useData(`user/${id}`);
   return (
     <Typography color="text-primary" sx={{ fontSize: 20, color: 'black' }}>
-      {user?.data.firstName} {user?.data.lastName}
+      {user?.data?.firstName} {user?.data?.lastName}
     </Typography>
   );
 }
@@ -57,7 +57,7 @@ function StudentConcernsCard(props: any) {
           {students
             .slice(0, showMore ? students.length : 3)
             .map((student: any) => {
-              return <StudentName id={student.user_id} />;
+              return <StudentName id={student.userId} />;
             })}
         </div>
         {students.length > 3 && (
@@ -77,7 +77,7 @@ function StudentConcernsCard(props: any) {
 
 function SplitGrid() {
   const self = useAppSelector(selectUser);
-  const students = useData(`student/students-by-teacher/${self.email}`);
+  const students = useData(`student/students-lessons-by-teacher/${self.email}`);
   const studentData = students?.data ?? [];
   console.log('splitgrid', studentData);
 

@@ -402,10 +402,11 @@ const getStudentsAndLessonsByTeacherEmail = async (
                     console.log('student', student);
                     return {
                       studentId: student._id,
+                      userId: student.user_id,
                       firstName: user?.firstName,
                       lastName: user?.lastName,
-                      academicFlag: student.progressFlag, // todo: change to academicFlag (IStudent) but current Mongo documents show progressFlag
-                      // attendanceFlag: student.attendanceFlag,
+                      progressFlag: student.progressFlag, 
+                      attendanceFlag: student.attendanceFlag,
                       lessonNumber: lesson?.number,
                     };
                   });

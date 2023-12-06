@@ -21,7 +21,7 @@ interface IStudent {
   work_habits: string;
   grade: string;
   attendanceFlag: boolean;
-  academicFlag: boolean;
+  progressFlag: boolean;
   admin_updates: string;
   family: string;
   fav_food: string;

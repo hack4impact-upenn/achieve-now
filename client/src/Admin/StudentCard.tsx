@@ -11,10 +11,9 @@ type StudentCardProps = {
 
 function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
   const navigate = useNavigate();
-  console.log('inside student card studentID', studentID);
 
   const user = useData(`user/${studentID}`);
-  console.log('inside student card user', user);
+  
   let label = 'Name';
   if (user) {
     const info = user.data;
