@@ -1,7 +1,14 @@
 import React from 'react';
 import { Box, Container, Grid, Typography } from '@mui/material';
+import { useData } from '../util/api';
 
-export default function Badges() {
+export default function Badges({ studentId }: { studentId: string }) {
+  const studentResponse = useData(`student/student/${studentId}`);
+  const badges: string[] = studentResponse?.data.badges || [];
+  const generateBadgePath = (badgeName: string) => {
+    return `/badges/${badgeName}.jpg`;
+  };
+
   return (
     <Box
       sx={{
@@ -16,34 +23,26 @@ export default function Badges() {
         Badges
       </Typography>
       <Grid container spacing={2} mt={1}>
-        <Grid item container xs={6} justifyContent="space-evenly">
-          <img src="/first_session.svg" alt="" />
-          <Typography
-            sx={{ fontWeight: 600, textAlign: 'center', lineHeight: 1 }}
-          >
-            Attended Your First Session
-          </Typography>
-        </Grid>
-        <Grid item container xs={6} justifyContent="space-evenly">
-          <img src="/vowels.svg" alt="" />
-          <Container>
-            <Typography
-              sx={{ fontWeight: 600, textAlign: 'center', lineHeight: 1 }}
+        {badges.map((badgeName) => {
+          return (
+            <Grid
+              item
+              container
+              xs={6}
+              justifyContent="space-evenly"
+              key={badgeName}
+              style={{
+                display: badgeName ? 'flex' : 'none',
+              }}
             >
-              Mastered Vowels
-            </Typography>
-          </Container>
-        </Grid>
-        <Grid item container xs={6} justifyContent="space-evenly">
-          <img src="/ten_sessions.svg" alt="" />
-          <Container>
-            <Typography
-              sx={{ fontWeight: 600, textAlign: 'center', lineHeight: 1 }}
-            >
-              Attended 10 Sessions
-            </Typography>
-          </Container>
-        </Grid>
+              <img
+                style={{ width: '150px', height: '150px' }}
+                src={generateBadgePath(badgeName)}
+                alt={`Badge ${badgeName}`}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

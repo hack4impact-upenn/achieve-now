@@ -33,7 +33,7 @@ export default function StudentProgress() {
           <Grid item xs={12} md={3}>
             <Grid container direction="column" spacing={3} ref={firstColumnRef}>
               <Grid item xs={12}>
-                <Badges />
+                <Badges studentId={validId} />
               </Grid>
               <Grid item xs={12}>
                 <Attendance studentId={validId} />
