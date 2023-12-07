@@ -4,48 +4,6 @@ import { useData } from '../util/api';
 
 type Section = [string, [boolean[], string, number]];
 
-/* <Grid
-      container
-      sx={{
-        fontSize: {
-          xs: '10px',
-          sm: '12px',
-          md: '14px',
-          lg: '16px',
-          xl: '18px',
-        },
-      }}
-    >
-      {sections.map(([title, [levelsComplete, color, startingNumber]]) => (
-        <Grid item container direction="column" xs>
-          <Grid
-            item
-            sx={{
-              fontWeight: 'bold',
-              textAlign: 'center',
-              backgroundColor: '#E7E6E6',
-            }}
-          >
-            {title}
-          </Grid>
-          <Grid item container>
-            {levelsComplete.map((isLevelComplete, index) => (
-              <Grid
-                item
-                sx={{
-                  fontWeight: 'bold',
-                  padding: '4px 24px',
-                  backgroundColor: isLevelComplete ? color : 'white',
-                }}
-              >
-                {startingNumber + index}
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-      ))}
-    </Grid> */
-
 interface SectionProps {
   sections: Section[];
 }
@@ -148,6 +106,7 @@ export default function RisingReadersComponent({
         border: '1px solid black',
         borderRadius: '10px',
         padding: 3,
+        overflow: 'auto',
       }}
     >
       <Stack spacing={3}>
