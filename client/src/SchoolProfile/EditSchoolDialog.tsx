@@ -11,6 +11,8 @@ import {
   FormControl,
   OutlinedInput,
   InputLabel,
+  Typography,
+  Grid,
 } from '@mui/material';
 import dayjs from 'dayjs';
 import { Stack } from '@mui/system';
@@ -140,6 +142,8 @@ function EditSchoolDialog({
 
   const [id, setId] = useState<string>('');
 
+  const defaultTime = dayjs('2022-04-17T00:00');
+
   useEffect(() => {
     const school = schools.find((r) => r.name === state.name);
     if (school) {
@@ -174,7 +178,7 @@ function EditSchoolDialog({
   }, [users]);
 
   const handleSubmit = () => {
-    console.log('submitted');
+    console.log('submitted edit');
     const desc = submitError(state);
     if (desc) {
       setError(desc);
@@ -504,6 +508,17 @@ function EditSchoolDialog({
           <Button variant="outlined" onClick={handleSubmit}>
             Submit
           </Button>
+          {error && (
+            <Grid item container justifyContent="center">
+              <Typography
+                justifyContent="center"
+                color="red"
+                style={{ paddingBottom: '20px' }}
+              >
+                {error}
+              </Typography>
+            </Grid>
+          )}
         </Stack>
       </DialogActions>
     </Dialog>
