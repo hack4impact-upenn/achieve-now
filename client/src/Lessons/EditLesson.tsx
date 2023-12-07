@@ -12,7 +12,7 @@ import { postData, useData } from '../util/api';
 function EditLessonButton() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
-  const [number, setNumber] = useState(1);
+  const [number, setNumber] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -48,10 +48,7 @@ function EditLessonButton() {
 
   const updateNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError('');
-    const returnNumber = parseInt(
-      event.target.value.substring(event.target.value.length - 1),
-      10,
-    );
+    const returnNumber = parseInt(event.target.value, 10);
     setNumber(returnNumber);
   };
 
@@ -72,7 +69,6 @@ function EditLessonButton() {
           <TextField
             autoFocus
             sx={{ mt: 1 }}
-            defaultValue={1}
             id="name"
             label="Lesson Number"
             type="number"

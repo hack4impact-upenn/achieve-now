@@ -216,11 +216,15 @@ const editLessonHandler = async (
   const { title, number } = req.body;
 
   if (!title) {
-    next(ApiError.missingFields(['title']));
+    next(ApiError.badRequest('Lesson Title cannot be empty'));
     return;
   }
   if (!number) {
-    next(ApiError.missingFields(['number']));
+    next(ApiError.badRequest('Lesson Number cannot be 0 or empty'));
+    return;
+  }
+  if (typeof(number) !== 'number') {
+    next(ApiError.badRequest('Lesson Number has to be a number'));
     return;
   }
 
@@ -230,13 +234,8 @@ const editLessonHandler = async (
     return;
   }
 
-  if (number < 1) {
-    next(ApiError.badRequest('Lesson number smaller than 1'));
-    return;
-  }
-
-  if (number > lessons.length - 1) {
-    next(ApiError.badRequest('Lesson number is greater than last lesson number'));
+  if (number < 1 || number > lessons.length) {
+    next(ApiError.badRequest(`Input Number must be within existing Lesson Number range (1 - ${lessons.length})`));
     return;
   }
 

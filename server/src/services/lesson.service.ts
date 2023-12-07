@@ -97,6 +97,8 @@ const addLesson = async (title: string) => {
 
 const editLessonByNumber = async (number: Number, title: string) => {
   try {
+    console.log(number)
+    console.log(typeof(number))
     const lesson = await Lesson.updateOne({ number: number }, { title: title }).exec();
     return lesson;
   } catch (error) {
