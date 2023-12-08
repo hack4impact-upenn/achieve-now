@@ -1,11 +1,11 @@
 const getLessonStringFromLessonLevel = (num: number): string => {
   if (num <= 20) {
-    return `Rising Readers ${num}`;
+    return `Rising Readers Lesson ${num}`;
   }
   if (num <= 24) {
-    return `Word Families WF${num - 20}`;
+    return `Word Families Lesson WF${num - 20}`;
   }
-  return `General Curriculum ${num - 24}`;
+  return `General Curriculum Lesson ${num - 24}`;
 };
 
 // eslint-disable-next-line import/prefer-default-export
