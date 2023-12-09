@@ -283,6 +283,27 @@ const getStudentsFromTeacherId = async (
   );
 };
 
+const getStudentFromUserId = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.internal('Request must include a valid user id param'));
+  }
+  return getStudentByUserId(id)
+    .then((user) => {
+      if (!user) {
+        next(ApiError.internal('Unable to retrieve specified student - 1'));
+        return;
+      }
+      res.status(StatusCode.OK).send(user);
+    })
+    .catch((e) => {
+      next(ApiError.internal('Unable to retrieve specified student - 3'));
+    });
+};
 // get a specific student
 const getStudent = async (
   req: express.Request,
@@ -832,6 +853,7 @@ const addCoach = async (
 
 export {
   getStudentsFromTeacherId,
+  getStudentFromUserId,
   getStudent,
   getStudentResources,
   getStudentsByTeacherID,
