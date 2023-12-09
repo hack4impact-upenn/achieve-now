@@ -7,6 +7,9 @@ import {
   getAllLessonsHandler,
   getLesson,
   getLessonFromLevel,
+  addLessonHandler,
+  editLessonHandler,
+  deleteLastLessonHandler,
 } from '../controllers/lesson.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
@@ -30,5 +33,11 @@ lessonRouter.post('/addResource', isAuthenticated, isAdmin, addResourceHandler);
 lessonRouter.get('/:id', getLesson);
 
 lessonRouter.get('/getLesson/:level', getLessonFromLevel);
+
+lessonRouter.post('/addLesson', addLessonHandler);
+
+lessonRouter.post('/editLesson', editLessonHandler);
+
+lessonRouter.post('/deleteLesson', deleteLastLessonHandler);
 
 export default lessonRouter;

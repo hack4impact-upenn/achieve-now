@@ -24,10 +24,10 @@ import {
   updateProgress,
   deleteProgress,
   isTeacher,
-  inviteStudent,
   updateStudentInformation,
   updateStudentLessonLevel,
 } from '../controllers/student.controller';
+import { inviteUser } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
@@ -153,6 +153,6 @@ router.delete('/progress/:id/:date', deleteProgress);
  * - userType (string) - The type of student to invite
  * - active (boolean) - Whether the student is active or not
  */
-router.post('/invite', isAuthenticated, isTeacher, inviteStudent);
+router.post('/invite', isAuthenticated, isTeacher, inviteUser);
 
 export default router;
