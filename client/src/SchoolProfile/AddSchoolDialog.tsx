@@ -276,12 +276,25 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
   };
 
   return (
-    <Dialog fullWidth maxWidth="md" open={open} onClose={() => setOpen(false)}>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+          minWidth: '50vw',
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center' }}>Add School</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack direction="column" spacing={2}>
+        <Stack
+          direction="column"
+          spacing={2}
+          sx={{ paddingBottom: '2rem', width: '100%' }}
+        >
           <TextField label="School Name" onChange={handleChangeName} />
           <br />
           <TextField label="Info" onChange={handleChangeInfo} />

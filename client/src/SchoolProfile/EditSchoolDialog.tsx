@@ -293,12 +293,23 @@ function EditSchoolDialog({
   };
 
   return (
-    <Dialog fullWidth maxWidth="md" open={open} onClose={() => setOpen(false)}>
-      <DialogTitle sx={{ textAlign: 'center' }}>Edit Entry</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+          minWidth: '50vw',
+        },
+      }}
+    >
+      <DialogTitle sx={{ textAlign: 'center', fontSize: '18px' }}>
+        Edit Entry
+      </DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ paddingBottom: '2rem', width: '100%' }}>
           <FormControl
             variant="outlined"
             sx={{

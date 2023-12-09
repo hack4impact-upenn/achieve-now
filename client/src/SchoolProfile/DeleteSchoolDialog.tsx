@@ -41,16 +41,21 @@ function DeleteSchoolDialog({
   };
 
   return (
-    <Dialog fullWidth maxWidth="md" open={open} onClose={() => setOpen(false)}>
-      <DialogTitle sx={{ textAlign: 'center' }}>Delete School</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+          minWidth: '50vw',
+        },
+      }}
+    >
+      <DialogTitle sx={{ textAlign: 'center' }}>Delete Entry</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack
-          direction="column"
-          spacing={2}
-          sx={{ width: '50%', justifyContent: 'space-between' }}
-        >
+        <Stack spacing={2} sx={{ paddingBottom: '2rem', width: '100%' }}>
           <Select
             value={schoolId}
             onChange={(event) => setSchool(event.target.value as string)}
