@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
@@ -36,6 +36,7 @@ function LessonsPage() {
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
   const [addCardsWithImages, setAddCardsWithImages] = useState<ICard[]>([]);
   const [lessonNumber, setLessonNumber] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -88,9 +89,26 @@ function LessonsPage() {
       );
       setAddCardsWithImages(updatedAddCards);
       setCardsWithImages(updatedCards);
+      setLoading(false);
     };
     fetchResources();
   }, [role, id]);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div>
@@ -110,7 +128,7 @@ function LessonsPage() {
             variant="h2"
             sx={{ fontWeight: theme.typography.fontWeightBold }}
           >
-            Lesson {getLessonStringFromLessonLevel(Number(lessonNumber))}
+            {getLessonStringFromLessonLevel(Number(lessonNumber))}
           </Typography>
           <Box sx={{ marginTop: theme.spacing(-3) }}>
             <hr />

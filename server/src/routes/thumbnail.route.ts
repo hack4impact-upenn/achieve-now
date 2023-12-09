@@ -17,20 +17,24 @@ const getYoutubeThumbnailUrl = (id: string) => {
  * @returns the thumbnail url of the page, or an empty string if none is found
  */
 const getPageThumbnailUrl = async (url: string) => {
-  const response = await axios.get(url);
-  const html = response.data;
-  const parser = new DomParser();
-  const doc = parser.parseFromString(html);
-  const metaElements = doc.getElementsByTagName('meta');
-  let thumbnailUrl = null;
-  metaElements?.forEach((e) => {
-    const property = e.getAttribute('property');
-    if (property === 'og:image') {
-      const content = e.getAttribute('content');
-      thumbnailUrl = content || null;
-    }
-  });
-  return thumbnailUrl;
+  try {
+    const response = await axios.get(url);
+    const html = response.data;
+    const parser = new DomParser();
+    const doc = parser.parseFromString(html);
+    const metaElements = doc.getElementsByTagName('meta');
+    let thumbnailUrl = null;
+    metaElements?.forEach((e) => {
+      const property = e.getAttribute('property');
+      if (property === 'og:image') {
+        const content = e.getAttribute('content');
+        thumbnailUrl = content || null;
+      }
+    });
+    return thumbnailUrl;
+  } catch (e: any) {
+    return '';
+  }
 };
 
 /**
