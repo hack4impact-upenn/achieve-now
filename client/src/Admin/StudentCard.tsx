@@ -13,7 +13,6 @@ function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
   const navigate = useNavigate();
 
   const user = useData(`user/${studentID}`);
-  
   let label = 'Name';
   if (user) {
     const info = user.data;

@@ -98,8 +98,12 @@ function CoachAttendancePage() {
       id: coach._id,
       name: coach.name,
       blocks: coach.blocks,
-      attendance: coach.progress_stats.attendance ?? {},
+      attendance:
+        coach.progress_stats && coach.progress_stats.attendance
+          ? coach.progress_stats.attendance
+          : {},
     }));
+    attendances.sort((a, b) => (a.name > b.name ? 1 : -1));
     const dates: number[] = [];
     attendances.forEach((coach: any) => {
       Object.keys(coach.attendance).forEach((date) => {
@@ -107,7 +111,7 @@ function CoachAttendancePage() {
       });
     });
 
-    dates.sort();
+    dates.sort((a, b) => b - a);
 
     setRawData({ dates, attendance: attendances });
     setData({

@@ -47,6 +47,7 @@ import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
 import AdminMenu from './Admin/AdminMenu';
 import StudentProgress from './StudentProgress/StudentProgress';
+import LessonDashboardPage from './Lessons/LessonsDashboard';
 
 function App() {
   return (
@@ -174,6 +175,10 @@ function App() {
                     <Route
                       path="/admin-curriculum"
                       element={<AdminCurriculum />}
+                    />
+                    <Route
+                      path="/lesson-dashboard"
+                      element={<LessonDashboardPage />}
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>

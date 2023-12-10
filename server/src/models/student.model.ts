@@ -60,26 +60,26 @@ const StudentSchema = new mongoose.Schema({
   },
   parent_name: {
     type: String,
-    required: true,
+    required: false,
   },
   parent_communication_days: {
     type: String,
     enum: ['weekends', 'weekdays', 'any'],
-    required: true,
+    required: false,
   },
   parent_communication_times: {
     type: String,
     enum: ['morning', 'afternoon', 'evening'],
-    required: true,
+    required: false,
   },
   best_communication_method: {
     type: String,
     enum: ['email', 'phone', 'text'],
-    required: true,
+    required: false,
   },
   personality: {
     type: String,
-    required: true,
+    required: false,
   },
   media_waiver: {
     type: Boolean,

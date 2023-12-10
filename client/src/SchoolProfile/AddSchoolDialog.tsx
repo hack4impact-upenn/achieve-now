@@ -19,10 +19,13 @@ import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import { useData } from '../util/api';
 import IUser from '../util/types/user';
 import useAlert from '../util/hooks/useAlert';
 import AlertType from '../util/types/alert';
+import theme from '../assets/theme';
 
 interface SubmitState {
   name: string;
@@ -273,47 +276,68 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+          minWidth: '50vw',
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center' }}>Add School</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack direction="column" spacing={2}>
+        <Stack
+          direction="column"
+          spacing={2}
+          sx={{ paddingBottom: '2rem', width: '100%' }}
+        >
           <TextField label="School Name" onChange={handleChangeName} />
           <br />
           <TextField label="Info" onChange={handleChangeInfo} />
           <br />
-          <Select
-            multiple
-            value={state.teachers}
-            onChange={handleChangeTeacher}
-            label="Teachers"
-            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected
-                  .map((teacherId) => {
-                    const selectedTeacher = teacherList.find(
-                      // eslint-disable-next-line no-underscore-dangle
-                      (teacher) => teacher._id === teacherId,
-                    );
-                    return selectedTeacher
-                      ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
-                      : '';
-                  })
-                  .map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-              </Box>
-            )}
+          <FormControl
+            variant="outlined"
+            sx={{
+              marginRight: theme.spacing(2),
+            }}
           >
-            {teacherList.map((teacher: IUser) => (
-              // eslint-disable-next-line no-underscore-dangle
-              <MenuItem key={teacher._id} value={teacher._id}>
-                {`${teacher.firstName} ${teacher.lastName}`}
-              </MenuItem>
-            ))}
-          </Select>
+            <InputLabel htmlFor="link-field">Teachers</InputLabel>
+            <Select
+              multiple
+              value={state.teachers}
+              onChange={handleChangeTeacher}
+              label="Teachers"
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected
+                    .map((teacherId) => {
+                      const selectedTeacher = teacherList.find(
+                        // eslint-disable-next-line no-underscore-dangle
+                        (teacher) => teacher._id === teacherId,
+                      );
+                      return selectedTeacher
+                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+                        : '';
+                    })
+                    .map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                </Box>
+              )}
+            >
+              {teacherList.map((teacher: IUser) => (
+                // eslint-disable-next-line no-underscore-dangle
+                <MenuItem key={teacher._id} value={teacher._id}>
+                  {`${teacher.firstName} ${teacher.lastName}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <br />
           <TextField label="Admin Name" onChange={handleChangeAdminName} />
           <br />
@@ -330,7 +354,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School Start Time"
             openTo="hours"
-            defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSchoolStartTime(newValue as Date | null)
             }
@@ -339,7 +362,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="School End Time"
             openTo="hours"
-            defaultValue={defaultDate}
+            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSchoolEndTime(newValue as Date | null)
             }
@@ -348,7 +371,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch Start Time"
             openTo="hours"
-            defaultValue={defaultDate}
+            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeFirstGradeStartTime(newValue as Date | null)
             }
@@ -357,7 +380,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="First Grade Lunch End Time"
             openTo="hours"
-            defaultValue={defaultDate}
+            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeFirstGradeEndTime(newValue as Date | null)
             }
@@ -366,7 +389,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch Start Time"
             openTo="hours"
-            defaultValue={defaultDate}
+            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSecondGradeStartTime(newValue as Date | null)
             }
@@ -375,7 +398,7 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
           <MobileTimePicker
             label="Second Grade Lunch End Time"
             openTo="hours"
-            defaultValue={defaultDate}
+            // defaultValue={defaultDate}
             onChange={(newValue) =>
               handleChangeSecondGradeEndTime(newValue as Date | null)
             }

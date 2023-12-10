@@ -13,13 +13,15 @@ import { getData, postData, putData, useData } from '../util/api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { InputErrorMessage } from '../util/inputvalidation';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 import Header from '../components/PageHeader';
 import ICoach from '../util/types/coach';
 import IUser from '../util/types/user';
 
 function CoachProfilePage() {
+  const { setAlert } = useAlert();
   const { id } = useParams();
-
   // Default values for state
   const defaultValues = {
     partnerSite: '',
@@ -98,19 +100,19 @@ function CoachProfilePage() {
 
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
-    setValueState((prevState) => ({
+    setValueState((prevState: any) => ({
       ...prevState,
       ...{ [field]: value },
     }));
   };
   const setShowError = (field: string, show: boolean) => {
-    setShowErrorState((prevState) => ({
+    setShowErrorState((prevState: any) => ({
       ...prevState,
       ...{ [field]: show },
     }));
   };
   const setErrorMessage = (field: string, msg: string) => {
-    setErrorMessageState((prevState) => ({
+    setErrorMessageState((prevState: any) => ({
       ...prevState,
       ...{ [field]: msg },
     }));
@@ -133,7 +135,7 @@ function CoachProfilePage() {
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const valueTypeString in values) {
       const valueType = valueTypeString as ValueType;
-      if (!values[valueType] && valueType !== 'phone') {
+      if (!values[valueType] && valueType !== 'updates') {
         setErrorMessage(valueTypeString, InputErrorMessage.MISSING_INPUT);
         setShowError(valueTypeString, true);
         isValid = false;
@@ -167,10 +169,22 @@ function CoachProfilePage() {
         ...coach,
         ...newCoachValues,
       };
-      putData(`coach/${id}`, newCoach);
-
-      console.log(newUser);
-      console.log(newCoach);
+      putData(`coach/${id}`, newCoach)
+        .then((res) => {
+          if (res.error) {
+            setShowError('alert', true);
+            setErrorMessage('alert', res.error.message);
+          } else {
+            setAlert(
+              'Student profile updated successfully!',
+              AlertType.SUCCESS,
+            );
+          }
+        })
+        .catch((e: any) => {
+          setShowError('alert', true);
+          setErrorMessage('alert', e.message);
+        });
     }
   }
 
@@ -209,6 +223,7 @@ function CoachProfilePage() {
             fullWidth
             error={showError.phone}
             helperText={errorMessage.phone}
+            required
             label="Phone Number"
             value={values.phone}
             type="phone"

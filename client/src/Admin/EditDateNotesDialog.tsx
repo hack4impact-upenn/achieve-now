@@ -11,6 +11,8 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 interface IAdminNotesRow {
   key: string;
@@ -47,6 +49,7 @@ function EditDateDialog({
   const [studentNextSteps, setStudentNextSteps] = useState('');
   const [coachObservations, setCoachObservations] = useState('');
   const [coachNextSteps, setCoachNextSteps] = useState('');
+  const { setAlert } = useAlert();
 
   useEffect(() => {
     if (date) {
@@ -78,6 +81,7 @@ function EditDateDialog({
     setCoachObservations('');
     setCoachNextSteps('');
     setOpen(false);
+    setAlert('Note edited successfully!', AlertType.SUCCESS);
   };
 
   return (

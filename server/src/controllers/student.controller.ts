@@ -283,6 +283,27 @@ const getStudentsFromTeacherId = async (
   );
 };
 
+const getStudentFromUserId = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.internal('Request must include a valid user id param'));
+  }
+  return getStudentByUserId(id)
+    .then((user) => {
+      if (!user) {
+        next(ApiError.internal('Unable to retrieve specified student - 1'));
+        return;
+      }
+      res.status(StatusCode.OK).send(user);
+    })
+    .catch((e) => {
+      next(ApiError.internal('Unable to retrieve specified student - 3'));
+    });
+};
 // get a specific student
 const getStudent = async (
   req: express.Request,
@@ -335,15 +356,31 @@ const getStudentsByTeacherID = async (
           });
           getAllUsersFromDB()
             .then((studentUserList) => {
-              const newStudentUserList: any = studentUserList.filter(
-                (studentUser) => {
+              const newStudentUserList: any = studentUserList
+                .filter((studentUser) => {
                   if (!studentUser._id) {
                     return false;
                   }
                   return studentIdSet.has(studentUser._id.toString());
-                },
-              );
-              console.log('list', newStudentUserList);
+                })
+                .sort((a, b) =>
+                  a.firstName.toLowerCase() > b.firstName.toLowerCase()
+                    ? 1
+                    : -1,
+                )
+                .map((studentUser) => {
+                  const student = studentList.find(
+                    (other) =>
+                      other.user_id.toString() === studentUser._id.toString(),
+                  );
+                  const temp: any = {
+                    ...studentUser,
+                  };
+                  return {
+                    ...temp._doc,
+                    lesson_level: student?.lesson_level,
+                  };
+                });
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
@@ -506,16 +543,20 @@ const getAllStudentsWithUserLesson = async (
     .then((lessons) => {
       Promise.all(userPromises)
         .then((users) => {
-          const response = students.map((student, index) => {
-            const user = users[index];
-            const lesson = lessons[index];
-            return {
-              studentId: student._id,
-              firstName: user?.firstName,
-              lastName: user?.lastName,
-              lessonNumber: lesson?.number,
-            };
-          });
+          const response = students
+            .map((student, index) => {
+              const user = users[index];
+              const lesson = lessons[index];
+              return {
+                studentId: student._id,
+                firstName: user?.firstName || '',
+                lastName: user?.lastName || '',
+                lessonNumber: lesson?.number,
+              };
+            })
+            .sort((a, b) =>
+              a.firstName.toLowerCase() > b.firstName.toLowerCase() ? 1 : -1,
+            );
           res.status(StatusCode.OK).send(response);
         })
         .catch((err) => {
@@ -835,35 +876,6 @@ const getStudentInformation = async (
   res.status(StatusCode.OK).send(response);
 };
 
-const inviteStudent = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  const { email, role } = req.body;
-  const emailRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
-  if (!email.match(emailRegex)) {
-    next(ApiError.badRequest('Invalid email'));
-  }
-  const lowercaseEmail = email.toLowerCase();
-  const existingInvite: IInvite | null = await getInviteByEmail(lowercaseEmail);
-
-  try {
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    if (existingInvite) {
-      await updateInvite(existingInvite, verificationToken);
-    } else {
-      await createInvite(lowercaseEmail, verificationToken, role);
-    }
-
-    await emailInviteLink(lowercaseEmail, verificationToken);
-    res.sendStatus(StatusCode.CREATED);
-  } catch (err) {
-    next(ApiError.internal('Unable to invite user.'));
-  }
-};
-
 /**
  * Middleware to check if a user is an student using Passport Strategy
  * and creates an {@link ApiError} to pass on to error handlers if not
@@ -913,6 +925,7 @@ const addCoach = async (
 
 export {
   getStudentsFromTeacherId,
+  getStudentFromUserId,
   getStudent,
   getStudentResources,
   getStudentsByTeacherID,
@@ -931,7 +944,6 @@ export {
   addCoach,
   updateProgress,
   deleteProgress,
-  inviteStudent,
   isTeacher,
   updateStudentLessonLevel,
 };

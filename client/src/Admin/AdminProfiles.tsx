@@ -40,7 +40,7 @@ function AdminProfiles() {
             fullWidth
             sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
             size="large"
-            href="/profiles"
+            href="/admin/profiles"
           >
             Users
           </PrimaryButton>
@@ -48,7 +48,7 @@ function AdminProfiles() {
             variant="contained"
             sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
             size="large"
-            href=""
+            href="/school/profiles"
           >
             Schools
           </PrimaryButton>

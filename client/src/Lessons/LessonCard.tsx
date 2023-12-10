@@ -4,12 +4,14 @@ import {
   Box,
   Card,
   CardActions,
-  CardContent,
   CardMedia,
   Typography,
+  CardActionArea,
 } from '@mui/material';
 import { PlayCircleOutline } from '@mui/icons-material';
 import theme from '../assets/theme';
+
+const colors = ['#ff6d23', '#00aaa8', '#a3c800'];
 
 interface IResource {
   id: string;
@@ -36,16 +38,29 @@ function LessonCard({ card }: LessonCardProps) {
         border: '1px solid black',
       }}
     >
-      {card.image ? (
-        <CardMedia
-          component="img"
-          sx={{ height: 140 }}
-          image={card.image}
-          title={card.title}
-        />
-      ) : null}
+      <CardActionArea onClick={() => window.open(card.link)}>
+        {card.image ? (
+          <CardMedia
+            component="img"
+            sx={{ height: 140 }}
+            image={card.image}
+            title={card.title}
+          />
+        ) : (
+          <Box
+            sx={{
+              height: 140,
+              backgroundColor:
+                colors[Math.floor(Math.random() * colors.length)],
+            }}
+          />
+        )}
+      </CardActionArea>
       <Box sx={{ borderBottom: '1px solid black' }} />
-      <CardContent>
+      <CardActionArea
+        onClick={() => window.open(card.link)}
+        sx={{ padding: '1rem' }}
+      >
         <Box display="flex" flexDirection="column" alignItems="start">
           <Box display="flex" flexDirection="row" alignItems="center">
             <PlayCircleOutline />
@@ -65,23 +80,7 @@ function LessonCard({ card }: LessonCardProps) {
             {card.description}
           </Typography>
         </Box>
-        {card.link && (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ marginTop: theme.spacing(1) }}
-          >
-            <a href={card.link} target="_blank" rel="noopener noreferrer">
-              {card.link}
-            </a>
-          </Typography>
-        )}
-      </CardContent>
-      <CardActions>
-        {card.actions?.map((action) => (
-          <Button size="small">{action}</Button>
-        ))}
-      </CardActions>
+      </CardActionArea>
     </Card>
   );
 }

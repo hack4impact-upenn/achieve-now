@@ -6,55 +6,48 @@ import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import { useData } from '../util/api';
-import { useAppSelector } from '../util/redux/hooks';
-import { selectUser } from '../util/redux/userSlice';
-import IUser from '../util/types/user';
+import ILesson from '../util/types/lesson';
 
-interface StudentDashboardRow {
+interface LessonDashboardRow {
   key: string;
-  first: string;
-  last: string;
-  email: string;
+  number: number;
+  title: string;
 }
 
 /**
  * The standalone table component for holding information about the users in
  * the database and allowing admins to remove users and promote users to admins.
  */
-function StudentTable() {
+function LessonTable() {
   // define columns for the table
   const columns: TColumn[] = [
-    { id: 'first', label: 'First Name' },
-    { id: 'last', label: 'Last Name' },
-    { id: 'email', label: 'Email' },
+    { id: 'number', label: 'Lesson Number' },
+    { id: 'title', label: 'Lesson Name' },
   ];
 
   // Used to create the data type to create a row in the table
-  function createStudentDashboardRow(user: IUser): StudentDashboardRow {
-    const { _id, firstName, lastName, email } = user;
+  function createLessonDashboardRow(lesson: ILesson): LessonDashboardRow {
+    const { _id, number, title } = lesson;
+    const key = _id;
     return {
-      key: _id,
-      first: firstName,
-      last: lastName,
-      email,
+      key,
+      number,
+      title,
     };
   }
 
-  const [userList, setUserList] = useState<IUser[]>([]);
-  const self = useAppSelector(selectUser);
-  const users = useData(`student/students-by-teacher/${self.email}`);
+  const [lessonList, setLessonList] = useState<ILesson[]>([]);
+  const lessons = useData(`lesson/all`);
 
   // Upon getting the list of users for the database, set the state of the userList to contain all users except for logged in user
   useEffect(() => {
-    setUserList(
-      users?.data.filter(
-        (entry: IUser) => entry && entry.email && entry.email !== self.email,
-      ),
+    setLessonList(
+      lessons?.data.filter((entry: ILesson) => entry && entry.number),
     );
-  }, [users, self]);
+  }, [lessons]);
 
   // if the userlist is not yet populated, display a loading spinner
-  if (!userList) {
+  if (!lessonList) {
     return (
       <div style={{ width: '0', margin: 'auto' }}>
         <CircularProgress size={80} />
@@ -63,10 +56,12 @@ function StudentTable() {
   }
   return (
     <PaginationTable
-      rows={userList.map((user: IUser) => createStudentDashboardRow(user))}
+      rows={lessonList.map((lesson: ILesson) =>
+        createLessonDashboardRow(lesson),
+      )}
       columns={columns}
     />
   );
 }
 
-export default StudentTable;
+export default LessonTable;

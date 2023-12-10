@@ -10,6 +10,7 @@ import {
   InputLabel,
   FormControl,
 } from '@mui/material';
+import { CallMade } from '@mui/icons-material';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
 import { deleteData, postData, putData, useData } from '../util/api';
@@ -22,12 +23,12 @@ interface IAdminResourcesTable {
   titles: string[];
 }
 
-interface AdminResourcesRow {
+interface AdminResourceRow {
   key: string;
   title: string;
   description: string;
-  link: string;
   type: string;
+  link: React.ReactElement;
 }
 
 interface Resource {
@@ -36,6 +37,23 @@ interface Resource {
   description: string;
   link: string;
   type: string;
+}
+
+function ResourceButton({ link }: { link: string }) {
+  return (
+    <Button
+      variant="contained"
+      endIcon={<CallMade />}
+      onClick={() => {
+        const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+        if (newWindow) {
+          newWindow.opener = null;
+        }
+      }}
+    >
+      View Resource
+    </Button>
+  );
 }
 
 function AdminResourcesPage() {
@@ -63,8 +81,8 @@ function AdminResourcesPage() {
   const columns: TColumn[] = [
     { id: 'title', label: 'Title' },
     { id: 'description', label: 'Description' },
-    { id: 'link', label: 'Link' },
     { id: 'type', label: 'Type' },
+    { id: 'link', label: 'Link' },
   ];
 
   // for the buttons
@@ -96,7 +114,11 @@ function AdminResourcesPage() {
         type,
       };
       const promise = await postData('resources/', newResource);
-      setTableData([...tableData, promise.data]);
+      const preTableData = [...tableData, promise.data];
+      const sorted = preTableData.sort((a, b) =>
+        a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1,
+      );
+      setTableData(sorted);
     } catch (error) {
       console.error('Error deleting date:', error);
     }
@@ -128,20 +150,19 @@ function AdminResourcesPage() {
     setSearchTerm(event.target.value);
   };
 
-  // Used to create the data type to create a row in the table
-  function createAdminResourcesRow(
+  function createAdminResourceRow(
     key: string,
     title: string,
     description: string,
-    link: string,
     type: string,
-  ): AdminResourcesRow {
+    linkButton: React.ReactElement,
+  ): AdminResourceRow {
     return {
       key,
       title,
       description,
-      link,
       type,
+      link: linkButton,
     };
   }
 
@@ -187,6 +208,7 @@ function AdminResourcesPage() {
         open={addResourceDialogOpen}
         setOpen={() => setAddResourceDialogOpen(false)}
         addResource={addResource}
+        resources={tableData}
       />
       <EditResourceDialog
         open={editResourceDialogOpen}
@@ -328,15 +350,15 @@ function AdminResourcesPage() {
           </Box>
           {filteredTableData && (
             <PaginationTable
-              rows={filteredTableData.map((resourceData) =>
-                createAdminResourcesRow(
-                  resourceData._id,
-                  resourceData.title,
-                  resourceData.description,
-                  resourceData.link,
-                  resourceData.type,
-                ),
-              )}
+              rows={filteredTableData.map((resource) => {
+                return createAdminResourceRow(
+                  resource._id /* eslint no-underscore-dangle: 0 */,
+                  resource.title,
+                  resource.description,
+                  resource.type,
+                  <ResourceButton link={resource.link} />,
+                );
+              })}
               columns={columns}
             />
           )}

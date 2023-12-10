@@ -17,20 +17,24 @@ const getYoutubeThumbnailUrl = (id: string) => {
  * @returns the thumbnail url of the page, or an empty string if none is found
  */
 const getPageThumbnailUrl = async (url: string) => {
-  const response = await axios.get(url);
-  const html = response.data;
-  const parser = new DomParser();
-  const doc = parser.parseFromString(html);
-  const metaElements = doc.getElementsByTagName('meta');
-  let thumbnailUrl = null;
-  metaElements?.forEach((e) => {
-    const property = e.getAttribute('property');
-    if (property === 'og:image') {
-      const content = e.getAttribute('content');
-      thumbnailUrl = content || null;
-    }
-  });
-  return thumbnailUrl;
+  try {
+    const response = await axios.get(url);
+    const html = response.data;
+    const parser = new DomParser();
+    const doc = parser.parseFromString(html);
+    const metaElements = doc.getElementsByTagName('meta');
+    let thumbnailUrl = null;
+    metaElements?.forEach((e) => {
+      const property = e.getAttribute('property');
+      if (property === 'og:image') {
+        const content = e.getAttribute('content');
+        thumbnailUrl = content || null;
+      }
+    });
+    return thumbnailUrl;
+  } catch (e: any) {
+    return '';
+  }
 };
 
 /**
@@ -69,15 +73,15 @@ const retrieveThumbnail: RequestHandler = async (req, res) => {
   }
 
   // // We try and scrape the thumbnail url from the page
-  // const thumbnailUrl = await getPageThumbnailUrl(url);
-  // if (thumbnailUrl) {
-  //   return res.status(200).json({ url: thumbnailUrl });
-  // }
+  const thumbnailUrl = await getPageThumbnailUrl(url);
+  if (thumbnailUrl) {
+    return res.status(200).json({ url: thumbnailUrl });
+  }
 
   // Fallthrough
   // In this case, we just return the Achieve Now logo
   return res.status(200).json({
-    url: 'https://images.squarespace-cdn.com/content/v1/611bfe8c78c5c96a4c0d6314/eca03de9-70b2-4577-8871-5dd3633ef125/achieve+now+logo+FINAL+RGB-no+tagline.png?format=1500w',
+    url: '',
   });
 };
 

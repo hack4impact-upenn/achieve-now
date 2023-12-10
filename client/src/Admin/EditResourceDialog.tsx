@@ -13,6 +13,9 @@ import {
 import { Stack } from '@mui/system';
 import React, { useEffect, useState, useMemo } from 'react';
 import theme from '../assets/theme';
+import PrimaryButton from '../components/buttons/PrimaryButton';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 interface Resource {
   _id: string;
@@ -41,6 +44,7 @@ function EditResourceDialog({
   resources,
   editResource,
 }: EditResourceProps) {
+  const { setAlert } = useAlert();
   const [id, setId] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -59,9 +63,27 @@ function EditResourceDialog({
 
   const handleSubmit = () => {
     if (!title || !description || !link || !type) {
+      setAlert('Please fill out all fields', AlertType.ERROR);
       return;
     }
+    try {
+      const _ = new URL(link);
+    } catch (e) {
+      setAlert('Please enter a valid resource link', AlertType.ERROR);
+      return;
+    }
+    if (type !== 'Video' && type !== 'Slides' && type !== 'Article') {
+      setAlert('Please select a valid resource type', AlertType.ERROR);
+      return;
+    }
+    for (let i = 0; i < resources.length; i += 1) {
+      if (resources[i].title === title && resources[i]._id !== id) {
+        setAlert('A Resource with this title already exists', AlertType.ERROR);
+        return;
+      }
+    }
     editResource(id, title, description, link, type);
+    setAlert('Added resource successfully!', AlertType.SUCCESS);
     setOpen(false);
   };
 
@@ -81,18 +103,21 @@ function EditResourceDialog({
       sx={{
         '.MuiPaper-root': {
           padding: '1rem 3rem',
+          minWidth: '50vw',
         },
       }}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Edit Entry</DialogTitle>
+      <DialogTitle sx={{ textAlign: 'center', fontSize: '18px' }}>
+        Edit Entry
+      </DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
+        <Stack spacing={2} sx={{ paddingBottom: '2rem', width: '100%' }}>
           <FormControl
             variant="outlined"
             sx={{
-              marginRight: theme.spacing(2),
+              marginRight: theme.spacing(1),
             }}
           >
             <InputLabel htmlFor="title-field">Title</InputLabel>
@@ -141,25 +166,23 @@ function EditResourceDialog({
               label="Link"
             />
           </FormControl>
-          <FormControl>
+          <FormControl fullWidth>
             <InputLabel id="resource-type-label">Type</InputLabel>
             <Select
+              fullWidth
               labelId="resource-type-label"
               value={type}
               onChange={(event: SelectChangeEvent<string>) => {
                 setType(event.target.value);
               }}
               input={<OutlinedInput label="Type" />}
-              sx={{ width: 200 }}
             >
               <MenuItem value="Video">Video</MenuItem>
               <MenuItem value="Slides">Slides</MenuItem>
               <MenuItem value="Article">Article</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="outlined" onClick={handleSubmit}>
-            Submit
-          </Button>
+          <PrimaryButton onClick={handleSubmit}>Submit</PrimaryButton>
         </Stack>
       </DialogActions>
     </Dialog>
