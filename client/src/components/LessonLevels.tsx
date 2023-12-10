@@ -27,7 +27,8 @@ Chart.register(
 
 function LessonLevels() {
   const self = useAppSelector(selectUser);
-  const id = useData(`user/${self.email}`);
+  const tempId = useData(`user/email/${self.email}`);
+  const id = tempId?.data ?? null;
 
   const [labels, setLabels] = useState<number[]>([]);
   const [data, setData] = useState<number[]>([]);

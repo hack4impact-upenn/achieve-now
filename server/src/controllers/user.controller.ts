@@ -10,6 +10,7 @@ import {
   getAllTeachersFromDB,
   updateUser,
   getUserByEmail,
+  getUserIdByEmail,
 } from '../services/user.service';
 
 // get a specific user by id
@@ -86,12 +87,12 @@ const getUserEmail = async (
   }
 
   return (
-    getUserByEmail(email)
-      .then((user) => {
-        res.status(StatusCode.OK).send(user);
+    getUserIdByEmail(email)
+      .then((id: any) => {
+        res.status(StatusCode.OK).send(id);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .catch((e) => {
+      .catch((e: any) => {
         next(ApiError.internal('Unable to retrieve specified user'));
       })
   );

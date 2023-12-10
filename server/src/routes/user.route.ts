@@ -28,7 +28,7 @@ userRouter.get('/:id', getUser);
 /**
  * A GET route to get a user by their email
  */
-userRouter.get('/:email', getUserEmail);
+userRouter.get('/email/:email', getUserEmail);
 
 /**
  * A PUT route to put a user by their ID

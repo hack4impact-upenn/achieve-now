@@ -11,14 +11,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
 import { Grid } from '@mui/material';
 import axios from 'axios';
-import { useData } from './util/api';
-import { useAppSelector } from './util/redux/hooks';
-import { selectUser } from './util/redux/userSlice';
-import { StudentCardFromID } from './Admin/StudentCard';
-import PageHeader from './components/PageHeader';
-import PhoneticsTable from './components/buttons/PhoneticsTable';
-import LessonLevels from './components/LessonLevels';
-import { getLessonStringFromLessonLevel } from './util/lessonLevels';
+import { useData } from '../util/api';
+import { useAppSelector } from '../util/redux/hooks';
+import { selectUser } from '../util/redux/userSlice';
+import { StudentCardFromID } from '../Admin/StudentCard';
+import PageHeader from '../components/PageHeader';
+import TeacherPhoneticsTable from './TeacherPhoneticsTable';
+import LessonLevels from '../components/LessonLevels';
+import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
 
 const ScrollableBox = styled(Box)({
   overflowY: 'auto',
@@ -39,7 +39,7 @@ function StudentName(props: any) {
   const user = useData(`user/${id}`);
   return (
     <Typography color="text-primary" sx={{ fontSize: 20, color: 'black' }}>
-      {user?.data.firstName} {user?.data.lastName}
+      {user?.data?.firstName} {user?.data?.lastName}
     </Typography>
   );
 }
@@ -62,7 +62,7 @@ function StudentConcernsCard(props: any) {
           {students
             .slice(0, showMore ? students.length : 3)
             .map((student: any) => {
-              return <StudentName id={student.user_id} />;
+              return <StudentName id={student.userId} />;
             })}
         </div>
         {students.length > 3 && (
@@ -154,28 +154,24 @@ function SplitGrid() {
             <Box display="flex" flexDirection="row" width="100%">
               <Box width="50%" paddingRight={2}>
                 <LessonLevels />
-                {academicFlags.length > 0 && (
-                  <Box marginTop={2}>
-                    <StudentConcernsCard
-                      students={academicFlags}
-                      title="Academic Concerns"
-                      description="Students with a poor academic progress pattern"
-                    />
-                  </Box>
-                )}
-                {attendanceFlags.length > 0 && (
-                  <Box marginTop={2}>
-                    <StudentConcernsCard
-                      students={attendanceFlags}
-                      title="Attendance Concerns"
-                      description="Students with a poor attendance pattern"
-                    />
-                  </Box>
-                )}
+                <Box marginTop={2}>
+                  <StudentConcernsCard
+                    students={academicFlags}
+                    title="Academic Concerns"
+                    description="Students with a poor academic progress pattern"
+                  />
+                </Box>
+                <Box marginTop={2}>
+                  <StudentConcernsCard
+                    students={attendanceFlags}
+                    title="Attendance Concerns"
+                    description="Students with a poor attendance pattern"
+                  />
+                </Box>
               </Box>
 
               <Box width="50%" paddingLeft={2}>
-                <PhoneticsTable />
+                <TeacherPhoneticsTable />
               </Box>
             </Box>
           </Paper>
