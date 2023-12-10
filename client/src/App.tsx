@@ -129,12 +129,12 @@ function App() {
                         path="student/profile/:id"
                         element={<StudentProfilePage />}
                       />
-                      <Route path="profiles" element={<AdminProfiles />} />
                       <Route
                         path="coach/profile/:id"
                         element={<CoachProfilePage />}
                       />
                     </Route>
+                    <Route path="/admin-profiles" element={<AdminProfiles />} />
                     <Route
                       path="/school/profiles"
                       element={<SchoolProfilePage />}
