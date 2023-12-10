@@ -117,24 +117,21 @@ function App() {
                       </Route>
                     </Route>
                     <Route path="/admin">
-                      <Route path="/sessions" element={<AdminSessionsPage />} />
+                      <Route path="sessions" element={<AdminSessionsPage />} />
+                      <Route path="add-block" element={<AdminAddBlockPage />} />
+                      <Route path="profiles" element={<ProfilePage />} />
+                      <Route path="block/:id" element={<AdminBlockPage />} />
                       <Route
-                        path="/add-block"
-                        element={<AdminAddBlockPage />}
-                      />
-                      <Route path="/profiles" element={<ProfilePage />} />
-                      <Route path="/block/:id" element={<AdminBlockPage />} />
-                      <Route
-                        path="/edit-block/:id"
+                        path="edit-block/:id"
                         element={<AdminEditBlockPage />}
                       />
                       <Route
-                        path="/student/profile/:id"
+                        path="student/profile/:id"
                         element={<StudentProfilePage />}
                       />
-                      <Route path="/profiles" element={<AdminProfiles />} />
+                      <Route path="profiles" element={<AdminProfiles />} />
                       <Route
-                        path="/coach/profile/:id"
+                        path="coach/profile/:id"
                         element={<CoachProfilePage />}
                       />
                     </Route>
