@@ -17,6 +17,9 @@ const theme = createTheme({
     secondary: {
       main: COLORS.secondarySeafoam,
     },
+    text: {
+      primary: COLORS.text,
+    },
     // Used by `getContrastText()` to maximize the contrast between
     // the background and the text.
     contrastThreshold: 3,
@@ -26,20 +29,15 @@ const theme = createTheme({
     tonalOffset: 0.2,
   },
   typography: {
-    fontFamily: [
-      'HK Grotesk',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      'Segoe UI',
-      'Roboto',
-      'Oxygen',
-      'Ubuntu',
-      'Cantarell',
-      'Fira Sans',
-      'Droid Sans',
-      'Helvetica Neue',
-      'sans-serif',
-    ].join(','),
+    fontFamily: ['Poppins', 'sans-serif'].join(','),
+    h1: {
+      fontWeight: 500,
+      color: 'black',
+    },
+    h2: {
+      fontWeight: 500,
+      color: 'black',
+    },
   },
   components: {
     MuiCssBaseline: {
