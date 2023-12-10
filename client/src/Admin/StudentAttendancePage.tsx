@@ -268,7 +268,7 @@ function StudentAttendancePage() {
       </Stack>
       <Box
         sx={{
-          padding: '2rem',
+          padding: '4rem',
           flexDirection: 'row',
           justifyContent: 'start',
           overflowX: 'scroll',
@@ -298,6 +298,7 @@ function StudentAttendancePage() {
                   (!endDate || date <= endDate?.unix()) && (
                     <TableCell>
                       <Select
+                        sx={{ width: '100%' }}
                         value={student.attendance[date]}
                         onChange={(e) =>
                           handleChangeAttendance(
