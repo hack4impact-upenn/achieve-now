@@ -141,6 +141,20 @@ function AdminBlockPage() {
       });
   }, [blockID]);
 
+  // get lessons from DB
+  const [lessonList, setLessonData] = useState<number[]>([]);
+  const lessons = useData(`lesson/all`);
+  useEffect(() => {
+    const lessonL = lessons?.data;
+    const lessonData: number[] = [];
+    if (lessonL) {
+      lessonL.forEach((lesson: any) => {
+        lessonData.push(lesson.number);
+      });
+    }
+    setLessonData(lessonData);
+  }, [lessons]);
+
   // for the button
   const handleEditBlock = () => {
     // todo add functionality
@@ -178,19 +192,23 @@ function AdminBlockPage() {
             setStudentData(studentDataCopy);
             forceUpdate();
             setAlert(
-              `Updated Lesson Number for ${name} to ${lessonLevel}`,
+              `Updated Lesson for ${name} to ${getLessonStringFromLessonLevel(
+                Number(lessonLevel),
+              )}`,
               AlertType.SUCCESS,
             );
           });
         } catch (error) {
           setAlert(
-            `Lesson Number ${lessonLevel} does not exist.`,
+            `Lesson ${getLessonStringFromLessonLevel(
+              Number(lessonLevel),
+            )} does not exist.`,
             AlertType.ERROR,
           );
         }
       });
     } catch (error) {
-      console.log('Could Not find Lesson with that level number');
+      console.log('Could Not find Lesson');
     }
   };
   // Used to create the data type to create a row in the table
@@ -327,9 +345,9 @@ function AdminBlockPage() {
                           },
                         }}
                       >
-                        {[...Array(62)].map((__, i) => (
-                          <MenuItem value={`${i + 1}`} id={student.id}>
-                            {getLessonStringFromLessonLevel(i + 1)}
+                        {lessonList.map((i, __) => (
+                          <MenuItem value={i} id={student.id}>
+                            {getLessonStringFromLessonLevel(i)}
                           </MenuItem>
                         ))}
                       </Select>
