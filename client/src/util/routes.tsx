@@ -80,4 +80,7 @@ export {
   ProtectedRoutesWrapper,
   AdminRoutesWrapper,
   DynamicRedirect,
+  CoachRoutesWrapper,
+  StudentRoutesWrapper,
+  TeacherRoutesWrapper,
 };

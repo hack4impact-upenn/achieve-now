@@ -40,7 +40,7 @@ function CoachLandingPage() {
       let res = await axios.get(`http://localhost:4000/api/coach/user/${id}`);
 
       let res2 = await axios.get(
-        `http://localhost:4000/api/user/${res.data.user_id}`,
+        `http://localhost:4000/api/user/id/${res.data.user_id}`,
       );
       setCoach({
         ...res.data,
@@ -53,11 +53,11 @@ function CoachLandingPage() {
       );
 
       res2 = await axios.get(
-        `http://localhost:4000/api/user/${res.data.user_id}`,
+        `http://localhost:4000/api/user/id/${res.data.user_id}`,
       );
 
       const teacherRes = await axios.get(
-        `http://localhost:4000/api/user/${res.data.teacher_id}`,
+        `http://localhost:4000/api/user/id/${res.data.teacher_id}`,
       );
 
       const schoolRes = await axios.get(

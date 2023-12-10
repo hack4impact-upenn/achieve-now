@@ -21,6 +21,9 @@ import {
   ProtectedRoutesWrapper,
   DynamicRedirect,
   AdminRoutesWrapper,
+  CoachRoutesWrapper,
+  StudentRoutesWrapper,
+  TeacherRoutesWrapper,
 } from './util/routes';
 import VerifyAccountPage from './Authentication/VerifyAccountPage';
 import RegisterPage from './Authentication/RegisterPage';
@@ -86,25 +89,17 @@ function App() {
                       path="/family-progress"
                       element={<FamilyProgressSnapshotPage />}
                     />
-                    <Route path="/lessons" element={<LessonsPage />} />
-                    <Route
-                      path="/coach-landing"
-                      element={<CoachLandingPage />}
-                    />
+
                     <Route
                       path="/student-dashboard"
                       element={<StudentDashboardPage />}
                     />
                     <Route path="/home" element={<HomePage />} />
-                    <Route
-                      path="/onboarding/student"
-                      element={<OnboardingPage />}
-                    />
-                    <Route path="/teacher" element={<TeacherDashboard />} />
                   </Route>
                   {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                    <Route path="/admin-menu" element={<AdminMenu />} />
                     <Route path="/resources">
                       <Route path="student">
                         <Route
@@ -121,42 +116,39 @@ function App() {
                         <Route path="" element={<LessonResourceDashboard />} />
                       </Route>
                     </Route>
-                    <Route
-                      path="/admin/sessions"
-                      element={<AdminSessionsPage />}
-                    />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
+                    <Route path="/admin">
+                      <Route path="/sessions" element={<AdminSessionsPage />} />
+                      <Route
+                        path="/add-block"
+                        element={<AdminAddBlockPage />}
+                      />
+                      <Route path="/profiles" element={<ProfilePage />} />
+                      <Route path="/block/:id" element={<AdminBlockPage />} />
+                      <Route
+                        path="/edit-block/:id"
+                        element={<AdminEditBlockPage />}
+                      />
+                      <Route
+                        path="/student/profile/:id"
+                        element={<StudentProfilePage />}
+                      />
+                      <Route path="/profiles" element={<AdminProfiles />} />
+                      <Route
+                        path="/coach/profile/:id"
+                        element={<CoachProfilePage />}
+                      />
+                    </Route>
                     <Route
                       path="/school/profiles"
                       element={<SchoolProfilePage />}
                     />
-                  </Route>
-                  <Route element={<AdminRoutesWrapper />}>
-                    <Route path="/admin/profiles" element={<ProfilePage />} />
                     <Route
-                      path="/admin/block/:id"
-                      element={<AdminBlockPage />}
-                    />
-                    <Route
-                      path="/admin/add-block"
-                      element={<AdminAddBlockPage />}
-                    />
-                    <Route
-                      path="/admin/edit-block/:id"
-                      element={<AdminEditBlockPage />}
-                    />
-                    <Route
-                      path="/admin/student/profile/:id"
-                      element={<StudentProfilePage />}
-                    />
-                    <Route
-                      path="/admin/notes/:studentId"
+                      path="/admin-notes/:studentId"
                       element={<AdminNotesPage />}
                     />
                     <Route
-                      element={<AdminResourcesPage />}
-                      path="/admin-resources"
+                      path="/admin-attendance"
+                      element={<AdminAttendance />}
                     />
                     <Route
                       path="/admin-student-attendance"
@@ -167,28 +159,45 @@ function App() {
                       element={<CoachAttendancePage />}
                     />
                     <Route
-                      path="/admin-attendance"
-                      element={<AdminAttendance />}
-                    />
-                    <Route path="/admin-profiles" element={<AdminProfiles />} />
-                    <Route path="/admin-menu" element={<AdminMenu />} />
-                    <Route
                       path="/admin-curriculum"
                       element={<AdminCurriculum />}
+                    />
+                    <Route
+                      element={<AdminResourcesPage />}
+                      path="/admin-resources"
                     />
                     <Route
                       path="/lesson-dashboard"
                       element={<LessonDashboardPage />}
                     />
                   </Route>
-                  <Route element={<ProtectedRoutesWrapper />}>
+                  <Route element={<StudentRoutesWrapper />}>
                     <Route
                       path="/student-progress/:id"
                       element={<StudentProgress />}
                     />
+                    <Route path="/lessons" element={<LessonsPage />} />
                     <Route
-                      path="/admin/coach/profile/:id"
-                      element={<CoachProfilePage />}
+                      path="/onboarding/student"
+                      element={<OnboardingPage />}
+                    />
+                  </Route>
+                  <Route element={<TeacherRoutesWrapper />}>
+                    <Route path="/teacher" element={<TeacherDashboard />} />
+                    <Route
+                      path="/student-progress/:id"
+                      element={<StudentProgress />}
+                    />
+                  </Route>
+                  <Route element={<CoachRoutesWrapper />}>
+                    <Route path="/lessons" element={<LessonsPage />} />
+                    <Route
+                      path="/coach-landing"
+                      element={<CoachLandingPage />}
+                    />
+                    <Route
+                      path="/student-progress/:id"
+                      element={<StudentProgress />}
                     />
                   </Route>
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}

@@ -72,7 +72,7 @@ function CoachAttendancePage() {
     await Promise.all(
       coaches.map(async (coach: any, index: number) => {
         let res = await axios.get(
-          `http://localhost:4000/api/user/${coach.user_id}`,
+          `http://localhost:4000/api/user/id/${coach.user_id}`,
         );
         coaches[index] = {
           ...coach,

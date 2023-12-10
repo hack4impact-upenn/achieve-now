@@ -20,7 +20,7 @@ schoolRouter.get('/all', isAuthenticated, isAdmin, getAllSchools);
  * A GET route with specific school id
  * id (string) - The school id of the particular school
  */
-schoolRouter.get('/:id', getSchool);
+schoolRouter.get('/:id', isAuthenticated, getSchool);
 
 /**
  * A POST route to create a school.

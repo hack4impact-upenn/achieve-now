@@ -3,8 +3,6 @@
  * relating to admin users.
  */
 import express from 'express';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { addListener } from 'process';
 import { isAdmin } from '../controllers/admin.middleware';
 import {
   getStudentInformation,
@@ -30,9 +28,16 @@ import {
 } from '../controllers/student.controller';
 import { inviteUser } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
-import 'dotenv/config';
+import { isStudent } from '../controllers/student.middleware';
+import { approve } from '../controllers/auth.controller';
 
 const router = express.Router();
+
+/**
+ * A GET route to check if the requestor is an admin. Checks first if the
+ * requestor is a authenticated. Throws an error if the requestor is not an admin.
+ */
+router.get('/studentstatus', isAuthenticated, isStudent, approve);
 
 /**
  * A POST route to get role-based additional resources for a given student.
@@ -63,7 +68,6 @@ router.post('/resource/all/:id', getAllStudentResources);
 router.get(
   '/students-by-teacher/:email',
   isAuthenticated,
-  isTeacher,
   getStudentsByTeacherID,
 );
 
@@ -81,7 +85,7 @@ router.get('/allInfo/:id', isAuthenticated, getStudentInformation);
  * Expects the following fields in the URL:
  * id (string) - The student id of the particular student
  */
-router.post('/allInfo/:id', isAuthenticated, updateStudentInformation);
+router.post('/allInfo/:id', isAuthenticated, isAdmin, updateStudentInformation);
 
 /**
  * A GET route to get all students.
@@ -106,15 +110,11 @@ router.post('/delete-resource', isAuthenticated, isAdmin, deleteResource);
  */
 router.post('/assign-resource', isAuthenticated, isAdmin, addResource);
 
-/**
- * A GET route to get all users. Checks first if the requestor is a
- * authenticated and is an admin.
- */
 router.get('/teacher/:id', isAuthenticated, getStudentsFromTeacherId);
 
-router.get('/student/:id', isAuthenticated, getStudent);
+router.get('/student-info/:id', isAuthenticated, getStudentFromUserId);
 
-router.get('/student-info/:id', getStudentFromUserId);
+router.get('/student/:id', isAuthenticated, getStudent);
 
 /**
  * A GET route to get all students and all of their additional information (user and lesson)
@@ -145,9 +145,9 @@ router.put(
   deleteStudentAttendanceByDate,
 );
 
-router.put('/add-coach', addCoach);
-router.put('/progress/:id', updateProgress);
-router.delete('/progress/:id/:date', deleteProgress);
+router.put('/add-coach', isAuthenticated, isAdmin, addCoach);
+router.put('/progress/:id', isAuthenticated, isAdmin, updateProgress);
+router.delete('/progress/:id/:date', isAuthenticated, isAdmin, deleteProgress);
 
 /**
  * A POST route to invite a new student
