@@ -130,11 +130,16 @@ function AdminSessionsPage() {
                     </Typography>
                     {blockDict[day][slot].map((block: IBlock) => (
                       /* eslint no-underscore-dangle: 0 */
-                      <Link href={`/admin/block/${block._id}`}>
-                        <Typography variant="subtitle1">
-                          {block.name}
-                        </Typography>
-                      </Link>
+                      <Button
+                        sx={{
+                          textTransform: 'none',
+                          color: theme.palette.text.primary,
+                        }}
+                        LinkComponent={Link}
+                        href={`/admin/block/${block._id}`}
+                      >
+                        {block.name}
+                      </Button>
                     ))}
                   </Box>
                 ))}
