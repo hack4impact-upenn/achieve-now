@@ -89,7 +89,7 @@ function StudentAttendancePage() {
     await Promise.all(
       students.map(async (student: any, index: number) => {
         let res = await axios.get(
-          `http://localhost:4000/api/user/${student.user_id}`,
+          `http://localhost:4000/id/${student.user_id}`,
         );
         students[index] = {
           ...student,

@@ -26,6 +26,11 @@ resourceRouter.put(
 
 resourceRouter.post('/', isAuthenticated, isAdmin, createResourceHandler);
 
-resourceRouter.delete('/:resourceId', deleteResourceHandler);
+resourceRouter.delete(
+  '/:resourceId',
+  isAuthenticated,
+  isAdmin,
+  deleteResourceHandler,
+);
 
 export default resourceRouter;
