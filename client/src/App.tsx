@@ -173,7 +173,7 @@ function App() {
                       path="/student-progress/:id"
                       element={<StudentProgress />}
                     />
-                    <Route path="/lessons" element={<LessonsPage />} />
+                    <Route path="/student/lessons" element={<LessonsPage />} />
                     <Route
                       path="/onboarding/student"
                       element={<OnboardingPage />}
@@ -187,7 +187,7 @@ function App() {
                     />
                   </Route>
                   <Route element={<CoachRoutesWrapper />}>
-                    <Route path="/lessons" element={<LessonsPage />} />
+                    <Route path="/coach/lessons" element={<LessonsPage />} />
                     <Route
                       path="/coach-landing"
                       element={<CoachLandingPage />}
