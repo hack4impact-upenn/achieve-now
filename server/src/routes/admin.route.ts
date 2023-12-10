@@ -43,7 +43,7 @@ router.put('/change-role', isAuthenticated, isAdmin, changeRole);
  * Expects a JSON body with the following fields:
  * - email (string) - The email of the user to be promoted
  */
-// delete during deployment
+// TODO: delete during deployment
 router.put('/auto-change-role', changeRole);
 
 /**
@@ -68,6 +68,6 @@ router.post('/invite', isAuthenticated, isAdmin, inviteUser);
  */
 router.get('/invite/:token', verifyToken);
 
-router.get('/blocks', getAllBlocks);
+router.get('/blocks', isAuthenticated, isAdmin, getAllBlocks);
 
 export default router;
