@@ -8,7 +8,7 @@ const COLORS = {
   primaryDark: '#4A4848', // Dark Blue
   primaryDark2: '#2e5987', // Dark Blue level 2
   background: '#d7fdff', // Light Light Blue
-  accentOrange: '#f2594b',
+  accentOrange: '#F5773C',
   black: '#171717', // Black
   white: '#ffffff', // White
   neutral: '#8c8c8c', // Gray
@@ -16,5 +16,6 @@ const COLORS = {
   actionBlue: '#155da1', // Action button
 
   // Other colors:
+  text: '#454545',
 };
 export default COLORS;
