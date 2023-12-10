@@ -17,29 +17,23 @@ const batchReturnList = async (
   limit: number,
   items: Array<any>,
 ) => {
-
   try {
-
-    let results : any[] = [];
+    let results: any[] = [];
     for (let start = 0; start < items.length; start += limit) {
       const end = start + limit > items.length ? items.length : start + limit;
 
       const slicedResults = await Promise.all(items.slice(start, end).map(fn));
 
-      results = [
-        ...results,
-        ...slicedResults,
-      ]
+      results = [...results, ...slicedResults];
     }
 
     return results;
-    
   } catch (error) {
-    console.error("An error occurred in one of the promises:", error);
+    console.error('An error occurred in one of the promises:', error);
 
     throw error;
   }
-}
+};
 
 /**
  * A function that takes in a list of items and
@@ -51,27 +45,23 @@ const batchReturnList = async (
  */
 const batchReturnVoid = async (
   fn: (item: any) => void,
-    limit: number,
-    items: Array<any>,
+  limit: number,
+  items: Array<any>,
 ) => {
-    
   try {
-
     for (let start = 0; start < items.length; start += limit) {
       const end = start + limit > items.length ? items.length : start + limit;
-  
+
       await Promise.all(items.slice(start, end).map(fn));
     }
 
-  return;
-
+    return;
   } catch (error) {
-    console.error("An error occurred in one of the promises:", error);
-    
+    console.error('An error occurred in one of the promises:', error);
+
     throw error;
   }
-    
-}
+};
 
 /**
  * A function that takes in a variable amount of lists in parameters and
@@ -86,38 +76,34 @@ const batchReturnMultiList = async <T extends Array<unknown>>(
   limit: number,
   ...lists: T[]
 ) => {
-  
-  try{
+  try {
+    let results: any[] = [];
 
-    let results : any[] = [];
-
-    const minLength = Math.min(...lists.map(list => list.length));
+    const minLength = Math.min(...lists.map((list) => list.length));
 
     for (let start = 0; start < minLength; start += limit) {
       const end = start + limit > minLength ? minLength : start + limit;
-      const slicedLists = await Promise.all(lists.map(list => list.slice(start, end)));
-      
+      const slicedLists = await Promise.all(
+        lists.map((list) => list.slice(start, end)),
+      );
+
       const promises = Array.from({ length: end - start }, async (_, i) => {
-        const elements = slicedLists.map(arr => arr[i]);
+        const elements = slicedLists.map((arr) => arr[i]);
         return fn(...elements);
       });
 
       const slicedResults = await Promise.all(promises);
 
-      results = [
-        ...results,
-        ...slicedResults,
-      ]
+      results = [...results, ...slicedResults];
     }
 
     return results;
-
   } catch (error) {
-    console.error("An error occurred in one of the promises:", error);
+    console.error('An error occurred in one of the promises:', error);
 
     throw error;
   }
-}
+};
 
 /**
  * A function that takes in a variable amount of lists in parameters and
@@ -132,34 +118,32 @@ const batchReturnMultiListVoid = async <T extends Array<unknown>>(
   limit: number,
   ...lists: T[]
 ) => {
-
   try {
-
-    const minLength = Math.min(...lists.map(list => list.length));
+    const minLength = Math.min(...lists.map((list) => list.length));
 
     for (let start = 0; start < minLength; start += limit) {
       const end = start + limit > minLength ? minLength : start + limit;
-      const slicedLists = await Promise.all(lists.map(list => list.slice(start, end)));
-      
+      const slicedLists = await Promise.all(
+        lists.map((list) => list.slice(start, end)),
+      );
+
       const promises = Array.from({ length: end - start }, async (_, i) => {
         // Collect elements from each array at index `i`
-        const elements = slicedLists.map(arr => arr[i]);
+        const elements = slicedLists.map((arr) => arr[i]);
         // Apply the function `fn` to these elements
         return fn(...elements);
       });
-      
+
       await Promise.all(promises);
     }
 
     return;
-
   } catch (error) {
-    console.error("An error occurred in one of the promises:", error);
-    
+    console.error('An error occurred in one of the promises:', error);
+
     throw error;
   }
-}
-
+};
 
 export {
   batchReturnList,
