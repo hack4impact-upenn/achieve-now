@@ -17,6 +17,8 @@ export default function Badges({ studentId }: { studentId: string }) {
         border: '1px solid black',
         borderRadius: '10px',
         padding: '16px',
+        maxHeight: '400px',
+        overflowY: 'auto',
       }}
     >
       <Typography variant="h5" fontWeight={700}>

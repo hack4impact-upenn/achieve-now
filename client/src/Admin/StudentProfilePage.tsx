@@ -57,7 +57,7 @@ function StudentProfilePage() {
     },
     progressFlag: false,
     attendanceFlag: false,
-    lessonsCompleted: Array(62).fill(false),
+    lessonsCompleted: [''],
   };
 
   const defaultShowErrors = {
@@ -88,7 +88,7 @@ function StudentProfilePage() {
     progressFlag: false,
     attendanceFlag: false,
     alert: false,
-    lessonCompleted: false,
+    lessonsCompleted: false,
   };
 
   const defaultErrorMessages = {
@@ -114,6 +114,7 @@ function StudentProfilePage() {
     goodStrategies: '',
     badStrategies: '',
     badges: '',
+    lessonsCompleted: '',
     risingReaderScore: '',
     generalProgramScore: '',
     progressFlag: '',

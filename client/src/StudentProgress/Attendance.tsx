@@ -35,6 +35,7 @@ function Attendance({ studentId }: { studentId: string }) {
         border: 1,
         borderRadius: 3,
         padding: 3,
+        maxHeight: '400px',
       }}
     >
       <Typography variant="h5" sx={{ fontWeight: 'bold' }}>

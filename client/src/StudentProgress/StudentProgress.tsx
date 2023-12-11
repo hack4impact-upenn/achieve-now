@@ -13,25 +13,13 @@ export default function StudentProgress() {
   const { id } = useParams<{ id?: string }>();
   const validId = id ?? '';
 
-  const firstColumnRef = useRef<HTMLDivElement>(null);
-  const rowRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] = useState(0);
-
-  useEffect(() => {
-    if (firstColumnRef.current && rowRef.current) {
-      setMaxHeight(
-        firstColumnRef.current.clientHeight - rowRef.current.clientHeight,
-      );
-    }
-  }, []);
-
   return (
     <>
       <Header />
       <Grid container spacing={3} p={5}>
         <Grid item container xs={12} spacing={3}>
           <Grid item xs={12} md={3}>
-            <Grid container direction="column" spacing={3} ref={firstColumnRef}>
+            <Grid container direction="column" spacing={3}>
               <Grid item xs={12}>
                 <Badges studentId={validId} />
               </Grid>
@@ -41,8 +29,8 @@ export default function StudentProgress() {
             </Grid>
           </Grid>
           <Grid item xs={12} md={9}>
-            <Grid container direction="column" spacing={3} sx={{}}>
-              <Grid item container spacing={3} ref={rowRef}>
+            <Grid container direction="column" spacing={3}>
+              <Grid item container spacing={3} xs={3}>
                 <Grid item xs={12} md={9}>
                   <Updates studentId={validId} />
                 </Grid>
@@ -50,18 +38,8 @@ export default function StudentProgress() {
                   <Phonetics />
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    maxHeight: `${maxHeight}px`,
-                    overflowY: 'auto',
-                    width: '100%',
-                    border: 1,
-                    borderRadius: 3,
-                  }}
-                >
-                  <ProgressSnapshot studentId={validId} />
-                </Box>
+              <Grid item xs={9} sx={{ overflowY: 'auto' }}>
+                <ProgressSnapshot studentId={validId} />
               </Grid>
             </Grid>
           </Grid>
