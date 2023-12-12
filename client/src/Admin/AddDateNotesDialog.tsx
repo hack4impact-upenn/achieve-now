@@ -14,6 +14,8 @@ import React, { useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import theme from '../assets/theme';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 interface IAdminNotesRow {
   key: string;
@@ -45,6 +47,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
   const [coachNextSteps, setCoachNextSteps] = useState('');
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const { setAlert } = useAlert();
 
   useEffect(() => {
     if (date) {
@@ -60,6 +63,10 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
   }, [date, table]);
 
   const handleSubmit = () => {
+    if (!date) {
+      setErrorMessage('Please provide a date');
+      setError(true);
+    }
     if (!date || error) {
       return;
     }
@@ -77,6 +84,7 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
     setCoachObservations('');
     setCoachNextSteps('');
     setOpen(false);
+    setAlert('Note added successfully!', AlertType.SUCCESS);
   };
 
   const handleClose = () => {

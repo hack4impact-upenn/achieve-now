@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
@@ -7,6 +7,7 @@ import LessonCard from './LessonCard';
 import { getData, postData, useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
+import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
 
 interface IResource {
   id: string;
@@ -35,6 +36,8 @@ function LessonsPage() {
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
   const [addCardsWithImages, setAddCardsWithImages] = useState<ICard[]>([]);
   const [lessonNumber, setLessonNumber] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -45,6 +48,17 @@ function LessonsPage() {
         });
       } else {
         resources = await getData(`coach/resources/${id}`);
+      }
+
+      if (resources.error) {
+        if (
+          resources.error.data.message.includes('connected to any students')
+        ) {
+          setErrorMessage('Coach is not connected to any students.');
+          return;
+        }
+        setErrorMessage(resources.error.data.message);
+        return;
       }
 
       const lessonResources = resources?.data.resources || [];
@@ -87,9 +101,49 @@ function LessonsPage() {
       );
       setAddCardsWithImages(updatedAddCards);
       setCardsWithImages(updatedCards);
+      setLoading(false);
     };
     fetchResources();
   }, [role, id]);
+
+  if (errorMessage) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <Typography
+          variant="h2"
+          sx={{
+            textAlign: 'center',
+          }}
+        >
+          {errorMessage}
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div>
@@ -109,7 +163,7 @@ function LessonsPage() {
             variant="h2"
             sx={{ fontWeight: theme.typography.fontWeightBold }}
           >
-            Lesson {lessonNumber}
+            {getLessonStringFromLessonLevel(Number(lessonNumber))}
           </Typography>
           <Box sx={{ marginTop: theme.spacing(-3) }}>
             <hr />

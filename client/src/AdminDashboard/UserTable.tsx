@@ -12,14 +12,13 @@ import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import IUser from '../util/types/user';
-import RoleDropdown from '../components/buttons/RoleDropdown';
 
 interface AdminDashboardRow {
   key: string;
   first: string;
   last: string;
   email: string;
-  changeRole: React.ReactElement;
+  userRole: string;
   remove: React.ReactElement;
 }
 
@@ -33,7 +32,7 @@ function UserTable() {
     { id: 'first', label: 'First Name' },
     { id: 'last', label: 'Last Name' },
     { id: 'email', label: 'Email' },
-    { id: 'changeRole', label: 'Change Role' },
+    { id: 'userRole', label: 'Role' },
     { id: 'remove', label: 'Remove User' },
   ];
 
@@ -41,15 +40,19 @@ function UserTable() {
   function createAdminDashboardRow(
     user: IUser,
     remove: React.ReactElement,
-    changeRole: React.ReactElement,
   ): AdminDashboardRow {
-    const { _id, firstName, lastName, email } = user;
+    const { _id, firstName, lastName, email, role } = user;
+    let userRole = role;
+    if (userRole === 'parent') {
+      userRole = 'family';
+    }
+    userRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
     return {
       key: _id,
       first: firstName,
       last: lastName,
       email,
-      changeRole,
+      userRole,
       remove,
     };
   }
@@ -107,7 +110,6 @@ function UserTable() {
             email={user.email}
             removeRow={() => removeUser(user)}
           />,
-          <RoleDropdown currRole={user.role} email={user.email} />,
         ),
       )}
       columns={columns}

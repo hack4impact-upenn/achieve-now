@@ -98,8 +98,12 @@ function CoachAttendancePage() {
       id: coach._id,
       name: coach.name,
       blocks: coach.blocks,
-      attendance: coach.progress_stats.attendance ?? {},
+      attendance:
+        coach.progress_stats && coach.progress_stats.attendance
+          ? coach.progress_stats.attendance
+          : {},
     }));
+    attendances.sort((a, b) => (a.name > b.name ? 1 : -1));
     const dates: number[] = [];
     attendances.forEach((coach: any) => {
       Object.keys(coach.attendance).forEach((date) => {
@@ -107,7 +111,7 @@ function CoachAttendancePage() {
       });
     });
 
-    dates.sort();
+    dates.sort((a, b) => b - a);
 
     setRawData({ dates, attendance: attendances });
     setData({
@@ -249,7 +253,7 @@ function CoachAttendancePage() {
       </Stack>
       <Box
         sx={{
-          padding: '2rem',
+          padding: '4rem',
           flexDirection: 'row',
           justifyContent: 'start',
           overflowX: 'scroll',
@@ -279,6 +283,7 @@ function CoachAttendancePage() {
                   (!endDate || date <= endDate?.unix()) && (
                     <TableCell>
                       <Select
+                        sx={{ width: '100%' }}
                         value={coach.attendance[date]}
                         onChange={(e) =>
                           handleChangeAttendance(coach.id, date, e.target.value)

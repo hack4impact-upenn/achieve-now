@@ -13,6 +13,7 @@ import {
   getStudentsByTeacherID,
   deleteResource,
   addResource,
+  getStudentsAndLessonsByTeacherEmail,
   getAllStudents,
   getStudentsFromTeacherId,
   getStudent,
@@ -24,11 +25,11 @@ import {
   updateProgress,
   deleteProgress,
   isTeacher,
-  inviteStudent,
   updateStudentInformation,
   updateStudentLessonLevel,
   getStudentFromUserId,
 } from '../controllers/student.controller';
+import { inviteUser } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
 
@@ -117,6 +118,16 @@ router.get('/student/:id', isAuthenticated, getStudent);
 router.get('/student-info/:id', getStudentFromUserId);
 
 /**
+ * A GET route to get all students by a teacher's email and all of their additional information (user and lesson)
+ * Checks first if the requestor is authenticated or an admin
+ */
+router.get(
+  '/students-lessons-by-teacher/:email',
+  isAuthenticated,
+  getStudentsAndLessonsByTeacherEmail,
+);
+
+/**
  * A GET route to get all students and all of their additional information (user and lesson)
  * Checks first if the requestor is authenticated or an admin
  */
@@ -156,6 +167,6 @@ router.delete('/progress/:id/:date', deleteProgress);
  * - userType (string) - The type of student to invite
  * - active (boolean) - Whether the student is active or not
  */
-router.post('/invite', isAuthenticated, isTeacher, inviteStudent);
+router.post('/invite', isAuthenticated, isTeacher, inviteUser);
 
 export default router;

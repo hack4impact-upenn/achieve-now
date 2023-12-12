@@ -356,19 +356,108 @@ const getStudentsByTeacherID = async (
           });
           getAllUsersFromDB()
             .then((studentUserList) => {
-              const newStudentUserList: any = studentUserList.filter(
-                (studentUser) => {
+              const newStudentUserList: any = studentUserList
+                .filter((studentUser) => {
                   if (!studentUser._id) {
                     return false;
                   }
                   return studentIdSet.has(studentUser._id.toString());
-                },
-              );
+                })
+                .sort((a, b) =>
+                  a.firstName.toLowerCase() > b.firstName.toLowerCase()
+                    ? 1
+                    : -1,
+                )
+                .map((studentUser) => {
+                  const student = studentList.find(
+                    (other) =>
+                      other.user_id.toString() === studentUser._id.toString(),
+                  );
+                  const temp: any = {
+                    ...studentUser,
+                  };
+                  return {
+                    ...temp._doc,
+                    lesson_level: student?.lesson_level,
+                  };
+                });
               res.status(StatusCode.OK).send(newStudentUserList);
             })
             .catch((e) => {
               console.log(e);
               next(ApiError.internal('Unable to retrieve student in User'));
+            });
+        })
+        .catch((e) => {
+          console.log(e);
+          next(ApiError.internal('Unable to retrieve students'));
+        });
+    })
+    .catch((e) => {
+      console.log(e);
+      next(ApiError.internal('Unable to retrieve specified teacher'));
+    });
+};
+
+const getStudentsAndLessonsByTeacherEmail = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email } = req.params;
+  if (!email) {
+    next(ApiError.internal('Request must include a valid teacher email param'));
+  }
+  return getUserByEmail(email)
+    .then((user) => {
+      getAllStudentsFromDB()
+        .then((studentList) => {
+          if (!user) {
+            next(ApiError.internal('Unable to retrieve specified teacher'));
+            return;
+          }
+          const teacherStudentList = studentList.filter((student) => {
+            if (!student.teacher_id) {
+              return false;
+            }
+            return student.teacher_id.includes(user._id);
+          });
+
+          const lessonPromises = teacherStudentList.map((student) =>
+            getLessonById(student.lesson_level),
+          );
+          const userPromises: any = teacherStudentList.map((student) =>
+            getUserById(student.user_id),
+          );
+          Promise.all(lessonPromises)
+            .then((lessons) => {
+              Promise.all(userPromises)
+                .then((users) => {
+                  const response = teacherStudentList.map((student, index) => {
+                    const user = users[index];
+                    const lesson = lessons[index];
+                    console.log('student', student);
+                    return {
+                      studentId: student._id,
+                      userId: student.user_id,
+                      firstName: user?.firstName,
+                      lastName: user?.lastName,
+                      progressFlag: student.progressFlag, 
+                      attendanceFlag: student.attendanceFlag,
+                      lessonNumber: lesson?.number,
+                    };
+                  });
+                  console.log(response);
+                  res.status(StatusCode.OK).send(response);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  next(ApiError.internal('Unable to retrieve users'));
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              next(ApiError.internal('Unable to retrieve lessons'));
             });
         })
         .catch((e) => {
@@ -454,16 +543,20 @@ const getAllStudentsWithUserLesson = async (
     .then((lessons) => {
       Promise.all(userPromises)
         .then((users) => {
-          const response = students.map((student, index) => {
-            const user = users[index];
-            const lesson = lessons[index];
-            return {
-              studentId: student._id,
-              firstName: user?.firstName,
-              lastName: user?.lastName,
-              lessonNumber: lesson?.number,
-            };
-          });
+          const response = students
+            .map((student, index) => {
+              const user = users[index];
+              const lesson = lessons[index];
+              return {
+                studentId: student._id,
+                firstName: user?.firstName || '',
+                lastName: user?.lastName || '',
+                lessonNumber: lesson?.number,
+              };
+            })
+            .sort((a, b) =>
+              a.firstName.toLowerCase() > b.firstName.toLowerCase() ? 1 : -1,
+            );
           res.status(StatusCode.OK).send(response);
         })
         .catch((err) => {
@@ -783,35 +876,6 @@ const getStudentInformation = async (
   res.status(StatusCode.OK).send(response);
 };
 
-const inviteStudent = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  const { email, role } = req.body;
-  const emailRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
-  if (!email.match(emailRegex)) {
-    next(ApiError.badRequest('Invalid email'));
-  }
-  const lowercaseEmail = email.toLowerCase();
-  const existingInvite: IInvite | null = await getInviteByEmail(lowercaseEmail);
-
-  try {
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    if (existingInvite) {
-      await updateInvite(existingInvite, verificationToken);
-    } else {
-      await createInvite(lowercaseEmail, verificationToken, role);
-    }
-
-    await emailInviteLink(lowercaseEmail, verificationToken);
-    res.sendStatus(StatusCode.CREATED);
-  } catch (err) {
-    next(ApiError.internal('Unable to invite user.'));
-  }
-};
-
 /**
  * Middleware to check if a user is an student using Passport Strategy
  * and creates an {@link ApiError} to pass on to error handlers if not
@@ -870,6 +934,7 @@ export {
   getAdditionalStudentResources,
   deleteResource,
   addResource,
+  getStudentsAndLessonsByTeacherEmail,
   getAllStudents,
   updateStudentAttendance,
   createStudentAttendanceByDate,
@@ -879,7 +944,6 @@ export {
   addCoach,
   updateProgress,
   deleteProgress,
-  inviteStudent,
   isTeacher,
   updateStudentLessonLevel,
 };

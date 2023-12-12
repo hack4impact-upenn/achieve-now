@@ -11,6 +11,9 @@ import {
   deleteResource,
   addResource,
   getAllLessonsFromDB,
+  addLesson,
+  editLessonByNumber,
+  deleteLessonById,
 } from '../services/lesson.service';
 import { getResourceByID } from '../services/student.service';
 import { ILesson } from '../models/lesson.model';
@@ -184,6 +187,92 @@ const addResourceHandler = async (
   res.sendStatus(StatusCode.NOT_FOUND);
 };
 
+const addLessonHandler = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { title } = req.body;
+
+  if (!title) {
+    next(ApiError.missingFields(['title']));
+    return;
+  }
+  addLesson(title)
+    .then((response) =>
+      res.status(StatusCode.OK).send(response)
+    )
+    .catch((e: any) => {
+      console.log(e);
+      next(ApiError.internal('Failed to add lesson.'));
+    });
+};
+
+const editLessonHandler = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { title, number } = req.body;
+
+  if (!title) {
+    next(ApiError.badRequest('Lesson Title cannot be empty'));
+    return;
+  }
+  if (!number) {
+    next(ApiError.badRequest('Lesson Number cannot be 0 or empty'));
+    return;
+  }
+  if (typeof(number) !== 'number') {
+    next(ApiError.badRequest('Lesson Number has to be a number'));
+    return;
+  }
+
+  const lessons = await getAllLessonsFromDB();
+  if (!lessons) {
+    next(ApiError.badRequest('No lessons found'));
+    return;
+  }
+
+  if (number < 1 || number > lessons.length) {
+    next(ApiError.badRequest(`Input Number must be within existing Lesson Number range (1 - ${lessons.length})`));
+    return;
+  }
+
+  editLessonByNumber(number, title)
+    .then((response) =>
+      res.status(StatusCode.OK).send(response)
+    )
+    .catch((e: any) => {
+      console.log(e);
+      next(ApiError.internal('Failed to edit lesson.'));
+    });
+};
+
+const deleteLastLessonHandler = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const lessons = await getAllLessonsFromDB();
+  if (!lessons) {
+    next(ApiError.badRequest('no lessons found'));
+    return;
+  }
+
+  const lastLessonId = lessons[lessons.length - 1].id;
+  deleteLessonById(lastLessonId)
+    .then((response) =>
+      response
+        ? res.status(StatusCode.OK).send(response)
+        : res.sendStatus(StatusCode.NOT_FOUND),
+    )
+    .catch((e: any) => {
+      console.log(e);
+      next(ApiError.internal('Failed to delete lesson.'));
+    });
+  };
+
 export {
   getAllLessonsHandler,
   getLessonResourcesHandler,
@@ -191,4 +280,7 @@ export {
   addResourceHandler,
   getLesson,
   getLessonFromLevel,
+  addLessonHandler,
+  editLessonHandler,
+  deleteLastLessonHandler,
 };

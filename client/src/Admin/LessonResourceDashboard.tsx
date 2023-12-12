@@ -8,6 +8,7 @@ import PageHeader from '../components/PageHeader';
 import SearchBar from './SearchBar';
 import ResourceTable from './ResourceTable';
 import LessonCardFromObj from './LessonCard';
+import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
 
 interface IResource {
   _id: string;
@@ -209,7 +210,7 @@ function LessonResourceDashboard() {
             <h1>
               {!lessonId || lessonNumber === ''
                 ? 'Select a Lesson'
-                : `Lesson ${lessonNumber}`}
+                : `${getLessonStringFromLessonLevel(Number(lessonNumber))}`}
             </h1>
             <h3>Parent Resources</h3>
             {!lessonId ? (

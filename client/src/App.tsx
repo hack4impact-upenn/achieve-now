@@ -29,7 +29,7 @@ import EmailResetPasswordPage from './Authentication/EmailResetPasswordPage';
 import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import AlertPopup from './components/AlertPopup';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
-import TeacherDashboard from './TeacherDashboard';
+import TeacherDashboard from './Teacher/TeacherDashboard';
 import OnboardingPage from './Authentication/OnboardingPage';
 import StudentResourceDashboard from './Admin/StudentResourceDashboard';
 import LessonResourceDashboard from './Admin/LessonResourceDashboard';
@@ -47,6 +47,7 @@ import AdminProfiles from './Admin/AdminProfiles';
 import AdminCurriculum from './Admin/AdminCurriculum';
 import AdminMenu from './Admin/AdminMenu';
 import StudentProgress from './StudentProgress/StudentProgress';
+import LessonDashboardPage from './Lessons/LessonsDashboard';
 
 function App() {
   return (
@@ -173,6 +174,10 @@ function App() {
                     <Route
                       path="/admin-curriculum"
                       element={<AdminCurriculum />}
+                    />
+                    <Route
+                      path="/lesson-dashboard"
+                      element={<LessonDashboardPage />}
                     />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>

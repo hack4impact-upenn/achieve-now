@@ -36,7 +36,7 @@ interface IStudent extends mongoose.Document {
   what_reading_strategies_worked: string;
   what_reading_strategies_didnt_work: string;
   progressFlag: boolean;
-  academicFlag: boolean;
+  attendanceFlag: boolean;
 }
 
 interface ProgressData {

@@ -5,20 +5,20 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import { SelectChangeEvent } from '@mui/material/Select';
-import AlertType from '../../util/types/alert';
-import useAlert from '../../util/hooks/useAlert';
-import { postData } from '../../util/api';
+import AlertType from '../util/types/alert';
+import useAlert from '../util/hooks/useAlert';
+import { postData, useData } from '../util/api';
 
-function InviteStudentButton() {
+function EditLessonButton() {
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
+  const [title, setTitle] = useState('');
+  const [number, setNumber] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { setAlert } = useAlert();
 
-  const handleClickOpen = () => {
+  const handleClickOpen = async () => {
     setOpen(true);
   };
 
@@ -27,46 +27,64 @@ function InviteStudentButton() {
     setError('');
   };
 
-  const handleInvite = async () => {
+  const handleAddLesson = async () => {
     setLoading(true);
-    const role = 'parent';
-    postData('student/invite', { email, role }).then((res) => {
+    postData('lesson/editLesson', { number, title }).then((res) => {
       if (res.error) {
         setError(res.error.message);
       } else {
-        setAlert(`${email} successfully invited!`, AlertType.SUCCESS);
+        setAlert(`Lesson: ${title} successfully edited!`, AlertType.SUCCESS);
         setOpen(false);
+        window.location.reload();
       }
       setLoading(false);
     });
   };
 
-  const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setEmail(event.target.value);
+    setTitle(event.target.value);
+  };
+
+  const updateNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
+    const returnNumber = parseInt(event.target.value, 10);
+    setNumber(returnNumber);
   };
 
   return (
     <div style={{ marginBottom: '10px' }}>
-      <Button variant="contained" onClick={handleClickOpen}>
-        Invite Student
+      <Button
+        style={{ width: '100px' }}
+        variant="outlined"
+        onClick={handleClickOpen}
+      >
+        Edit
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <DialogContentText>
-            Please enter one or more email addresses of the students separated
-            by commas and role of the user you would like to invite. (ex.
-            a@gmail.com, b@outlook.com)
+            Please enter the number of the lesson and title you want to edit.
           </DialogContentText>
           <TextField
             autoFocus
             sx={{ mt: 1 }}
             id="name"
-            label="Email Address"
-            type="email"
+            label="Lesson Number"
+            type="number"
             fullWidth
             variant="standard"
-            onChange={updateEmail}
+            onChange={updateNumber}
+          />
+          <TextField
+            autoFocus
+            sx={{ mt: 1 }}
+            id="name"
+            label="Edit Title"
+            type="title"
+            fullWidth
+            variant="standard"
+            onChange={updateTitle}
           />
           <DialogContentText sx={{ color: 'red' }}>{error}</DialogContentText>
         </DialogContent>
@@ -74,8 +92,8 @@ function InviteStudentButton() {
           <Button disabled={loading} onClick={handleClose}>
             Cancel
           </Button>
-          <Button disabled={loading} onClick={handleInvite}>
-            Invite
+          <Button disabled={loading} onClick={handleAddLesson}>
+            Submit
           </Button>
         </DialogActions>
       </Dialog>
@@ -83,4 +101,4 @@ function InviteStudentButton() {
   );
 }
 
-export default InviteStudentButton;
+export default EditLessonButton;

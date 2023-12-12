@@ -87,7 +87,16 @@ function AdminCurriculum() {
             size="large"
             href="/admin-resources"
           >
-            Edit/Add Resources
+            Manage Resources
+          </PrimaryButton>
+          <PrimaryButton
+            fullWidth
+            variant="contained"
+            sx={{ padding: `${theme.spacing(3)} ${theme.spacing(8)}` }}
+            size="large"
+            href="/lesson-dashboard"
+          >
+            Manage Lessons
           </PrimaryButton>
         </Box>
       </Box>

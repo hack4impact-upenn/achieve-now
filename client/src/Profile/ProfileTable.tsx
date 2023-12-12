@@ -3,7 +3,7 @@
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -94,6 +94,12 @@ function UserTable() {
 
   const [userList, setUserList] = useState<AddOnUser[]>([]);
   const users = useData('admin/all');
+
+  const sortedUsers = useMemo(
+    () =>
+      userList.sort((a, b) => (a.user.firstName > b.user.firstName ? 1 : -1)),
+    [userList],
+  );
   const self = useAppSelector(selectUser);
 
   const [role, setRole] = React.useState('all');
@@ -240,7 +246,7 @@ function UserTable() {
       </Box>
       <Box sx={{ pb: 30 }}>
         <PaginationTable
-          rows={userList.map((user: AddOnUser) => {
+          rows={sortedUsers.map((user: AddOnUser) => {
             return createAdminDashboardRow(user);
           })}
           columns={columns}

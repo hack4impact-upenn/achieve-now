@@ -119,13 +119,14 @@ function StudentAttendancePage() {
       blockName: student.blockName,
       attendance: student.progress_stats.attendance ?? {},
     }));
+    attendances.sort((a, b) => (a.name > b.name ? 1 : -1));
     const dates: number[] = [];
     attendances.forEach((student: any) => {
       Object.keys(student.attendance).forEach((date) => {
         if (!dates.includes(Number(date))) dates.push(Number(date));
       });
     });
-    dates.sort();
+    dates.sort((a, b) => b - a);
 
     setRawData({ dates, attendance: attendances });
     setData({
@@ -267,7 +268,7 @@ function StudentAttendancePage() {
       </Stack>
       <Box
         sx={{
-          padding: '2rem',
+          padding: '4rem',
           flexDirection: 'row',
           justifyContent: 'start',
           overflowX: 'scroll',
@@ -297,6 +298,7 @@ function StudentAttendancePage() {
                   (!endDate || date <= endDate?.unix()) && (
                     <TableCell>
                       <Select
+                        sx={{ width: '100%' }}
                         value={student.attendance[date]}
                         onChange={(e) =>
                           handleChangeAttendance(

@@ -9,6 +9,7 @@ import {
   Stack,
 } from '@mui/material';
 import React, { useState } from 'react';
+import Paper from '@mui/material/Paper';
 import ISchool from '../util/types/school';
 import useAlert from '../util/hooks/useAlert';
 import AlertType from '../util/types/alert';
@@ -40,22 +41,31 @@ function DeleteSchoolDialog({
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle sx={{ textAlign: 'center' }}>Delete School</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      sx={{
+        '.MuiPaper-root': {
+          padding: '1rem 3rem',
+          minWidth: '50vw',
+        },
+      }}
+    >
+      <DialogTitle sx={{ textAlign: 'center' }}>Delete Entry</DialogTitle>
       <DialogActions
         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
       >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{ width: '100%', justifyContent: 'space-between' }}
-        >
+        <Stack spacing={2} sx={{ paddingBottom: '2rem', width: '100%' }}>
           <Select
             value={schoolId}
-            sx={{
-              minWidth: 150,
-            }}
             onChange={(event) => setSchool(event.target.value as string)}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: 200, // Set your desired maxHeight here
+                },
+              },
+            }}
           >
             {/* eslint-disable-next-line */}
             {options &&
