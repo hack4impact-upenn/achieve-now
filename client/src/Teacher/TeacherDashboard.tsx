@@ -29,8 +29,9 @@ const ScrollableBox = styled(Box)({
 function createData(data: any) {
   return data.map((student: any) => (
     <StudentCardFromID
-      studentID={student._id}
-      lesson={getLessonStringFromLessonLevel(student.lesson)}
+      studentID={student.userId}
+      name={`${student.firstName} ${student.lastName}`}
+      lesson={getLessonStringFromLessonLevel(student.lessonNumber)}
     />
   ));
 }
@@ -86,23 +87,11 @@ function SplitGrid() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(
-        `http://localhost:4000/api/student/students-by-teacher/${self.email}`,
+      const { data } = await axios.get(
+        `http://localhost:4000/api/student/students-lessons-by-teacher/${self.email}`,
       );
-      const { data } = res;
-      const newData = await Promise.all(
-        data.map(async (student: any) => {
-          const res2 = await axios.get(
-            `http://localhost:4000/api/lesson/${student.lesson_level}`,
-          );
-          return {
-            ...student,
-            lesson: res2.data.number,
-          };
-        }),
-      );
-      console.log(newData);
-      setStudentData(newData);
+
+      setStudentData(data);
     };
     fetchData();
   }, [self.email]);
