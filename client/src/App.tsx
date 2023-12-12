@@ -170,7 +170,7 @@ function App() {
                   </Route>
                   <Route element={<StudentRoutesWrapper />}>
                     <Route
-                      path="/student-progress/:id"
+                      path="/student/progress/:id"
                       element={<StudentProgress />}
                     />
                     <Route path="/student/lessons" element={<LessonsPage />} />
@@ -182,7 +182,7 @@ function App() {
                   <Route element={<TeacherRoutesWrapper />}>
                     <Route path="/teacher" element={<TeacherDashboard />} />
                     <Route
-                      path="/student-progress/:id"
+                      path="/teacher/student-progress/:id"
                       element={<StudentProgress />}
                     />
                   </Route>
@@ -193,7 +193,7 @@ function App() {
                       element={<CoachLandingPage />}
                     />
                     <Route
-                      path="/student-progress/:id"
+                      path="/coach/student-progress/:id"
                       element={<StudentProgress />}
                     />
                   </Route>
