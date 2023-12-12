@@ -32,6 +32,7 @@ function EditLessonButton() {
     postData('lesson/editLesson', { number, title }).then((res) => {
       if (res.error) {
         setError(res.error.message);
+        setAlert(`Failed to Edit Lesson`, AlertType.ERROR);
       } else {
         setAlert(`Lesson: ${title} successfully edited!`, AlertType.SUCCESS);
         setOpen(false);
