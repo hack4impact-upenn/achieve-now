@@ -34,10 +34,10 @@ lessonRouter.get('/:id', getLesson);
 
 lessonRouter.get('/getLesson/:level', getLessonFromLevel);
 
-lessonRouter.post('/addLesson', addLessonHandler);
+lessonRouter.post('/addLesson', isAdmin, addLessonHandler);
 
-lessonRouter.post('/editLesson', editLessonHandler);
+lessonRouter.post('/editLesson', isAdmin, editLessonHandler);
 
-lessonRouter.post('/deleteLesson', deleteLastLessonHandler);
+lessonRouter.post('/deleteLesson', isAdmin, deleteLastLessonHandler);
 
 export default lessonRouter;
