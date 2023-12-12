@@ -60,6 +60,13 @@ function Row({ row, columns }: RowProps) {
         if (value === null || value === undefined) {
           return null;
         }
+        if (column.id === 'link' && value !== '') {
+          return (
+            <TableCell key={column.id + row.key} align={column.align || 'left'}>
+              <a href={value}>Link</a>
+            </TableCell>
+          );
+        }
         return (
           <TableCell key={column.id + row.key} align={column.align || 'left'}>
             {value}

@@ -11,6 +11,7 @@ import DeleteSchoolDialog from './DeleteSchoolDialog';
 import EditSchoolDialog from './EditSchoolDialog';
 import { useData, postData, putData } from '../util/api';
 import ISchool from '../util/types/school';
+import Header from '../components/PageHeader';
 
 function SchoolProfilePage() {
   const navigate = useNavigate();
@@ -128,6 +129,7 @@ function SchoolProfilePage() {
 
   return (
     <>
+      <Header />
       <AddSchoolDialog
         open={schoolDialogOpen}
         setOpen={() => setSchoolDialogOpen(false)}

@@ -21,7 +21,7 @@ function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
   }
 
   function handleClick() {
-    const s = `/resources/${studentID}`;
+    const s = `/student-progress/${studentID}`;
     navigate(s);
   }
 
@@ -58,7 +58,7 @@ function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
   const label = `${studentObj.firstName} ${studentObj.lastName}`;
 
   function handleClick() {
-    const s = `/resources/student/${studentID}`;
+    const s = `/student-progress/${studentID}`;
     navigate(s);
   }
 

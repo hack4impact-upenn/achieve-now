@@ -136,7 +136,18 @@ function LoginPage() {
             user._id,
           );
           if (isOnboarded) {
-            navigate('/home');
+            if (user.role === 'admin') {
+              navigate('/admin-menu');
+            }
+            if (user.role === 'coach') {
+              navigate('/coach-landing');
+            }
+            if (user.role === 'teacher') {
+              navigate('/teacher');
+            }
+            if (user.role === 'parent') {
+              navigate('/lessons');
+            }
           } else if (user.role === 'student') {
             navigate('/onboarding/student');
           }

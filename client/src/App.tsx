@@ -94,7 +94,6 @@ function App() {
                       path="/student-dashboard"
                       element={<StudentDashboardPage />}
                     />
-                    <Route path="/home" element={<HomePage />} />
                     <Route
                       path="/onboarding/student"
                       element={<OnboardingPage />}
