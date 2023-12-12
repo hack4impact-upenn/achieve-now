@@ -25,35 +25,23 @@ Chart.register(
   Tooltip,
 );
 
-function LessonLevels() {
-  const self = useAppSelector(selectUser);
-  const tempId = useData(`user/email/${self.email}`);
-  const id = tempId?.data ?? null;
+interface ILessonLevelsProps {
+  levels: {
+    [key: number]: number;
+  };
+}
 
-  const [labels, setLabels] = useState<number[]>([]);
-  const [data, setData] = useState<number[]>([]);
+function LessonLevels({ levels }: ILessonLevelsProps) {
+  let max = 0;
+  Object.keys(levels).forEach((level: string) => {
+    if (Number(level) > max) {
+      max = Number(level);
+    }
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await axios.get(
-        `http://localhost:4000/api/teacher/lesson-levels/${id}`,
-      );
-
-      let max = 0;
-      Object.keys(res.data).forEach((level: string) => {
-        if (Number(level) > max) {
-          max = Number(level);
-        }
-      });
-
-      const l = Array.from(Array(max + 1).keys());
-      setLabels(l);
-      const d = l.map((level) => Number(res.data[level] ?? 0));
-      setData(d);
-    };
-
-    fetchData();
-  }, [id]);
+  const labels = Array.from(Array(max + 1).keys());
+  const data = labels.map((level) => Number(levels[level] ?? 0));
+  console.log(levels);
 
   return (
     <Card sx={{ width: '100%', height: '400px' }}>

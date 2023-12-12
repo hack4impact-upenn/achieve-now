@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
-import { Grid } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import axios from 'axios';
 import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
@@ -83,7 +83,10 @@ function StudentConcernsCard(props: any) {
 
 function SplitGrid() {
   const self = useAppSelector(selectUser);
+
+  const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState<any[]>([]);
+  const [levels, setLevels] = useState<any>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +95,18 @@ function SplitGrid() {
       );
 
       setStudentData(data);
+
+      const l: { [key: number]: number } = {};
+      data.forEach((student: any) => {
+        if (student.lessonNumber in l) {
+          l[student.lessonNumber] += 1;
+        } else {
+          l[student.lessonNumber] = 1;
+        }
+      });
+      setLevels(l);
+
+      setLoading(false);
     };
     fetchData();
   }, [self.email]);
@@ -102,6 +117,21 @@ function SplitGrid() {
   const attendanceFlags = studentData.filter(
     (student: any) => student.attendanceFlag,
   );
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -142,7 +172,7 @@ function SplitGrid() {
 
             <Box display="flex" flexDirection="row" width="100%">
               <Box width="50%" paddingRight={2}>
-                <LessonLevels />
+                <LessonLevels levels={levels} />
                 <Box marginTop={2}>
                   <StudentConcernsCard
                     students={academicFlags}
