@@ -31,7 +31,7 @@ function Attendance({ studentId }: { studentId: string }) {
   return (
     <Stack
       sx={{
-        height: '100%',
+        height: '400px',
         border: 1,
         borderRadius: 3,
         padding: 3,

@@ -38,7 +38,7 @@ export default function StudentProgress() {
                   <Phonetics />
                 </Grid>
               </Grid>
-              <Grid item xs={9} sx={{ overflowY: 'auto' }}>
+              <Grid item xs={9}>
                 <ProgressSnapshot studentId={validId} />
               </Grid>
             </Grid>

@@ -83,6 +83,8 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
       sx={{
         border: 1,
         borderRadius: 3,
+        height: '700px',
+        overflowY: 'auto',
       }}
     >
       <Stack
