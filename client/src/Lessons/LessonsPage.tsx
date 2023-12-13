@@ -36,6 +36,7 @@ function LessonsPage() {
   const [cardsWithImages, setCardsWithImages] = useState<ICard[]>([]);
   const [addCardsWithImages, setAddCardsWithImages] = useState<ICard[]>([]);
   const [lessonNumber, setLessonNumber] = useState<string>('');
+  const [lessonTitle, setLessonTitle] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -65,6 +66,7 @@ function LessonsPage() {
       const addResources = resources?.data.additional_resources || [];
       const num = resources?.data.lesson_level || '';
       setLessonNumber(num);
+      setLessonTitle(resources?.data.lesson_title || '');
       const updatedCards = await Promise.all(
         lessonResources.map(async (card: ICard) => {
           if (card.link) {
@@ -163,7 +165,9 @@ function LessonsPage() {
             variant="h2"
             sx={{ fontWeight: theme.typography.fontWeightBold }}
           >
-            {getLessonStringFromLessonLevel(Number(lessonNumber))}
+            {`${getLessonStringFromLessonLevel(
+              Number(lessonNumber),
+            )} ${lessonTitle}`}
           </Typography>
           <Box sx={{ marginTop: theme.spacing(-3) }}>
             <hr />

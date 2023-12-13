@@ -22,7 +22,9 @@ function LessonCardFromObj({ lessonObj }: LessonCardFromObjProps) {
       <CardActionArea onClick={() => handleClick()}>
         <CardContent>
           <Typography variant="body1">
-            {getLessonStringFromLessonLevel(lessonObj.number)}
+            {`${getLessonStringFromLessonLevel(lessonObj.number)} ${
+              lessonObj.title
+            }`}
           </Typography>
         </CardContent>
       </CardActionArea>

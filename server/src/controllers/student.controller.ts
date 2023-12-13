@@ -442,9 +442,10 @@ const getStudentsAndLessonsByTeacherEmail = async (
                       userId: student.user_id,
                       firstName: user?.firstName,
                       lastName: user?.lastName,
-                      progressFlag: student.progressFlag, 
+                      progressFlag: student.progressFlag,
                       attendanceFlag: student.attendanceFlag,
                       lessonNumber: lesson?.number,
+                      lessonName: lesson?.title,
                     };
                   });
                   console.log(response);
@@ -678,6 +679,7 @@ const getAllStudentResources = async (
       Promise.all(addPromises)
         .then((addResources) => {
           const responseObj = {
+            lesson_title: lesson.title,
             lesson_level: lesson.number,
             resources,
             additional_resources: addResources,

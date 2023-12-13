@@ -31,7 +31,9 @@ function createData(data: any) {
     <StudentCardFromID
       studentID={student.userId}
       name={`${student.firstName} ${student.lastName}`}
-      lesson={getLessonStringFromLessonLevel(student.lessonNumber)}
+      lesson={`${getLessonStringFromLessonLevel(student.lessonNumber)} ${
+        student.lessonName
+      }`}
     />
   ));
 }

@@ -73,6 +73,7 @@ function AdminBlockPage() {
   const [tableData, setTableData] = useState<BlockInfo>();
   const [studentData, setStudentData] = useState<StudentInfo[]>([]);
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [lessons, setLessons] = useState<any[]>([]);
 
   const [openConfirmationModal, setOpenConfirmationModal] =
     React.useState(false);
@@ -142,6 +143,14 @@ function AdminBlockPage() {
         console.error('Error fetching block info:', error);
       });
   }, [blockID]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get('http://localhost:4000/api/lesson/all');
+      setLessons(res.data.sort((a: any, b: any) => a.number - b.number));
+    };
+    fetchData();
+  }, []);
 
   // for the button
   const handleEditBlock = () => {
@@ -329,9 +338,11 @@ function AdminBlockPage() {
                           },
                         }}
                       >
-                        {[...Array(62)].map((__, i) => (
-                          <MenuItem value={`${i + 1}`} id={student.id}>
-                            {getLessonStringFromLessonLevel(i + 1)}
+                        {lessons.map((lesson) => (
+                          <MenuItem value={`${lesson.number}`} id={student.id}>
+                            {`${getLessonStringFromLessonLevel(
+                              lesson.number,
+                            )} ${lesson.title}`}
                           </MenuItem>
                         ))}
                       </Select>
