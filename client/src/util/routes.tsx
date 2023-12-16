@@ -34,6 +34,33 @@ function AdminRoutesWrapper() {
 }
 
 /**
+ * A wrapper whose children routes can only be navigated to if the user is a coach
+ */
+function CoachRoutesWrapper() {
+  const data = useData('coach/coachstatus');
+  if (data === null) return null;
+  return !data.error ? <Outlet /> : <Navigate to="/" />;
+}
+
+/**
+ * A wrapper whose children routes can only be navigated to if the user is a student
+ */
+function StudentRoutesWrapper() {
+  const data = useData('student/studentstatus');
+  if (data === null) return null;
+  return !data.error ? <Outlet /> : <Navigate to="/" />;
+}
+
+/**
+ * A wrapper whose children routes can only be navigated to if the user is a teacher
+ */
+function TeacherRoutesWrapper() {
+  const data = useData('teacher/teacherstatus');
+  if (data === null) return null;
+  return !data.error ? <Outlet /> : <Navigate to="/" />;
+}
+
+/**
  * A wrapper which navigates to a different route depending on if the user is authenticated or not.
  * @param unAuthPath - The path to navigate to if the user is not authenticated. It should be of the form "/path".
  * @param authPath - The path to navigate to if the user is  authenticated. It should be of the form "/path".
@@ -53,4 +80,7 @@ export {
   ProtectedRoutesWrapper,
   AdminRoutesWrapper,
   DynamicRedirect,
+  CoachRoutesWrapper,
+  StudentRoutesWrapper,
+  TeacherRoutesWrapper,
 };

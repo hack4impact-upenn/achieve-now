@@ -96,7 +96,7 @@ function SchoolProfilePage() {
 
     // Fetch teacher details for all teacherIds
     const teacherPromises = teachers.map((teacherId) =>
-      axios.get(`http://localhost:4000/api/user/${teacherId}`),
+      axios.get(`http://localhost:4000/api/user/id/${teacherId}`),
     );
 
     // Use Promise.all to wait for all requests to complete

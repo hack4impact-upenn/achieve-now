@@ -31,6 +31,7 @@ function AddLessonButton() {
     postData('lesson/addLesson', { title }).then((res) => {
       if (res.error) {
         setError(res.error.message);
+        setAlert(`Failed to Add Lesson`, AlertType.ERROR);
       } else {
         setAlert(`Lesson: ${title} successfully added!`, AlertType.SUCCESS);
         setOpen(false);

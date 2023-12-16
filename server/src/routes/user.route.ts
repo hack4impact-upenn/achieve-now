@@ -3,7 +3,6 @@
  * relating to admin users.
  */
 import express from 'express';
-import { isAdmin } from '../controllers/admin.middleware';
 import {
   getUser,
   getAllTeachers,
@@ -23,16 +22,16 @@ userRouter.get('/allTeachers', isAuthenticated, getAllTeachers);
 /**
  * A GET route to get a user by their ID
  */
-userRouter.get('/:id', getUser);
+userRouter.get('/id/:id', isAuthenticated, getUser);
 
 /**
  * A GET route to get a user by their email
  */
-userRouter.get('/email/:email', getUserEmail);
+userRouter.get('/email/:email', isAuthenticated, getUserEmail);
 
 /**
  * A PUT route to put a user by their ID
  */
-userRouter.put('/:id', putUser);
+userRouter.put('/id/:id', isAuthenticated, putUser);
 
 export default userRouter;

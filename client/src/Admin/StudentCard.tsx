@@ -6,19 +6,12 @@ import { useData } from '../util/api';
 
 type StudentCardProps = {
   studentID: string;
+  name: string;
   lesson: string;
 };
 
-function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
+function StudentCardFromID({ studentID, name, lesson }: StudentCardProps) {
   const navigate = useNavigate();
-
-  const user = useData(`user/${studentID}`);
-  let label = 'Name';
-  if (user) {
-    const info = user.data;
-    const name = `${info?.firstName} ${info?.lastName}`;
-    label = name;
-  }
 
   function handleClick() {
     const s = `/student-progress/${studentID}`;
@@ -29,7 +22,7 @@ function StudentCardFromID({ studentID, lesson }: StudentCardProps) {
     <Card sx={{ p: 2, bgcolor: '#EDEDED', mb: 2, borderRadius: '8px' }}>
       <CardActionArea onClick={handleClick}>
         <CardContent>
-          <Typography variant="h5">{label}</Typography>
+          <Typography variant="h5">{name}</Typography>
           <Typography
             sx={{
               color: '#0175C0',

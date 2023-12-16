@@ -22,8 +22,11 @@ import {
 } from '../services/invite.service';
 import { IInvite } from '../models/invite.model';
 import { emailInviteLink } from '../services/mail.service';
-import { batchReturnList, batchReturnVoid, batchReturnMultiList } from '../services/batch.service';
-import { IBlock } from '../models/block.model';
+import {
+  batchReturnList,
+  batchReturnVoid,
+  batchReturnMultiList,
+} from '../services/batch.service';
 
 /**
  * Get all users from the database. Upon success, send the a list of all users in the res body with 200 OK status code.
@@ -148,25 +151,23 @@ const inviteUser = async (
     next(ApiError.missingFields(['email']));
     return;
   }
-  let emailList = email.replaceAll(" ", "").split(",");
+  const emailList = email.replaceAll(' ', '').split(',');
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
-  
+
   function validateEmail(email: string) {
     if (!email.match(emailRegex)) {
       throw new Error('Invalid email');
     }
-    return;
   }
 
   function validateNewUser(user: IUser) {
     if (user) {
       throw new Error(`An account with email ${user.email} already exists.`);
     }
-    return;
   }
 
-  function combineEmailToken(email: string, invite : IInvite | null) {
+  function combineEmailToken(email: string, invite: IInvite | null) {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     return [email, invite, verificationToken];
   }
@@ -181,8 +182,7 @@ const inviteUser = async (
       } else {
         await createInvite(email, verificationToken, role);
       }
-    }
-    catch (err : any) {
+    } catch (err: any) {
       throw new Error('Error creating invite');
     }
   }
@@ -194,30 +194,46 @@ const inviteUser = async (
 
       emailInviteLink(email, verificationToken);
       return;
-    }
-      catch (err : any) {
-        throw new Error('Error sending invite');
+    } catch (err: any) {
+      throw new Error('Error sending invite');
     }
   }
 
   try {
     await batchReturnVoid(validateEmail, 10, emailList);
-    const lowercaseEmailList: string[] | null = await batchReturnList(async (email: string) => {
-      return email.toLowerCase();
-    }, 10, emailList);
+    const lowercaseEmailList: string[] | null = await batchReturnList(
+      async (email: string) => {
+        return email.toLowerCase();
+      },
+      10,
+      emailList,
+    );
 
-    const existingUserList: any[] | null = await batchReturnList(getUserByEmail, 10, lowercaseEmailList);
+    const existingUserList: any[] | null = await batchReturnList(
+      getUserByEmail,
+      10,
+      lowercaseEmailList,
+    );
     await batchReturnVoid(validateNewUser, 10, existingUserList);
 
-    const existingInviteList: any[] | null = await batchReturnList(getInviteByEmail, 10, lowercaseEmailList);
-    const emailInviteList: any[] = await batchReturnMultiList(combineEmailToken, 10, lowercaseEmailList, existingInviteList);
+    const existingInviteList: any[] | null = await batchReturnList(
+      getInviteByEmail,
+      10,
+      lowercaseEmailList,
+    );
+    const emailInviteList: any[] = await batchReturnMultiList(
+      combineEmailToken,
+      10,
+      lowercaseEmailList,
+      existingInviteList,
+    );
 
     await batchReturnVoid(makeInvite, 10, emailInviteList);
     await batchReturnVoid(sendInvite, 10, emailInviteList);
 
     res.sendStatus(StatusCode.CREATED);
-  } catch (err : any) {
-    next(ApiError.internal('Unable to invite user: ' + err.message));
+  } catch (err: any) {
+    next(ApiError.internal(`Unable to invite user: ${err.message}`));
   }
 };
 

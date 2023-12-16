@@ -82,7 +82,7 @@ const addResource = async (
 const addLesson = async (title: string) => {
   try{
     const lessons = await getAllLessonsFromDB()
-    const number : Number = lessons[lessons.length - 1].number + 1;
+    const number : number = lessons[0] ? lessons[lessons.length - 1].number + 1 : 1;
     const lesson = new Lesson({
       number: number,
       title: title,
