@@ -18,8 +18,10 @@ interface IAdminNotesTable {
 interface IAdminNotesRow {
   key: string;
   date: string;
-  studentObservations: string;
-  studentNextSteps: string;
+  privateStudentObservations: string;
+  privateStudentNextSteps: string;
+  publicStudentObservations: string;
+  publicStudentNextSteps: string;
   coachObservations: string;
   coachNextSteps: string;
 }
@@ -45,10 +47,12 @@ function AdminSessionsPage() {
 
   const columns: TColumn[] = [
     { id: 'date', label: 'Date' },
-    { id: 'studentObservations', label: 'Student Observations' },
-    { id: 'studentNextSteps', label: 'Student Next Steps' },
-    { id: 'coachObservations', label: 'Coach Observations' },
-    { id: 'coachNextSteps', label: 'Coach Next Steps' },
+    { id: 'privateStudentObservations', label: 'Private Student Notes' },
+    { id: 'privateStudentNextSteps', label: 'Private Student Next Steps' },
+    { id: 'publicStudentObservations', label: 'Public Student Notes' },
+    { id: 'publicStudentNextSteps', label: 'Public Student Next Steps' },
+    { id: 'coachObservations', label: 'Private Coach Notes' },
+    { id: 'coachNextSteps', label: 'Private Coach Next Steps' },
   ];
 
   async function getCoach(id: string) {
@@ -72,9 +76,14 @@ function AdminSessionsPage() {
   useEffect(() => {
     const bigMap = new Map();
     if (student) {
-      console.log(student.progress_stats);
+      const goodKeys = [
+        'private_student_next_steps',
+        'private_student_observations',
+        'public_student_next_steps',
+        'public_student_observations',
+      ];
       Object.entries(student.progress_stats).forEach(([key, innerMap]) => {
-        if (key === 'student_next_steps' || key === 'student_observations') {
+        if (goodKeys.includes(key)) {
           Object.entries(innerMap).forEach(([date, comments]) => {
             if (!bigMap.has(date)) {
               bigMap.set(date, {});
@@ -103,8 +112,10 @@ function AdminSessionsPage() {
       bigTable.push({
         key: date.toString(),
         date: new Date(parseInt(date, 10)).toLocaleDateString(),
-        studentObservations: obj.student_observations || '',
-        studentNextSteps: obj.student_next_steps || '',
+        privateStudentObservations: obj.private_student_observations || '',
+        privateStudentNextSteps: obj.private_student_next_steps || '',
+        publicStudentObservations: obj.public_student_observations || '',
+        publicStudentNextSteps: obj.public_student_next_steps || '',
         coachObservations: obj.coach_observations || '',
         coachNextSteps: obj.coach_next_steps || '',
       });
@@ -116,16 +127,20 @@ function AdminSessionsPage() {
   function createAdminNotesRow(
     key: string,
     date: string,
-    studentObservations: string,
-    studentNextSteps: string,
+    privateStudentObservations: string,
+    privateStudentNextSteps: string,
+    publicStudentObservations: string,
+    publicStudentNextSteps: string,
     coachObservations: string,
     coachNextSteps: string,
   ): IAdminNotesRow {
     return {
       key,
       date,
-      studentObservations,
-      studentNextSteps,
+      privateStudentObservations,
+      privateStudentNextSteps,
+      publicStudentObservations,
+      publicStudentNextSteps,
       coachObservations,
       coachNextSteps,
     };
@@ -156,22 +171,25 @@ function AdminSessionsPage() {
 
   const addDate = async (
     date: number,
-    studentObservations: string,
-    studentNextSteps: string,
+    privateStudentObservations: string,
+    privateStudentNextSteps: string,
+    publicStudentObservations: string,
+    publicStudentNextSteps: string,
     coachObservations: string,
     coachNextSteps: string,
   ) => {
     try {
       const studentComments = {
         date,
-        observations: studentObservations,
-        next_steps: studentNextSteps,
+        private_observations: privateStudentObservations,
+        private_next_steps: privateStudentNextSteps,
+        public_observations: publicStudentObservations,
+        public_next_steps: publicStudentNextSteps,
       };
       putData(
         `student/progress/${student?._id}`,
         studentComments,
       ); /* eslint no-underscore-dangle: 0 */
-
       if (coach) {
         const coachComments = {
           date,
@@ -187,8 +205,10 @@ function AdminSessionsPage() {
       const newData = {
         key: date.toString(),
         date: new Date(date).toLocaleDateString('en-US'),
-        studentObservations,
-        studentNextSteps,
+        privateStudentObservations,
+        privateStudentNextSteps,
+        publicStudentObservations,
+        publicStudentNextSteps,
         coachObservations,
         coachNextSteps,
       };
@@ -328,8 +348,10 @@ function AdminSessionsPage() {
                 createAdminNotesRow(
                   rowData.key,
                   rowData.date,
-                  rowData.studentObservations,
-                  rowData.studentNextSteps,
+                  rowData.privateStudentObservations,
+                  rowData.privateStudentNextSteps,
+                  rowData.publicStudentObservations,
+                  rowData.publicStudentNextSteps,
                   rowData.coachObservations,
                   rowData.coachNextSteps,
                 ),

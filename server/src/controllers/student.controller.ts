@@ -54,11 +54,13 @@ const updateProgress = async (
   if (!date) {
     next(ApiError.missingFields(['date']));
   }
-  const { observations } = req.body || '';
-  const { next_steps } = req.body || '';
+  const { public_observations } = req.body || '';
+  const { public_next_steps } = req.body || '';
+  const { private_observations } = req.body || '';
+  const { private_next_steps } = req.body || '';
 
-  const coach = await updateProgressDate(id, date, observations, next_steps);
-  res.status(StatusCode.OK).send(coach);
+  const student = await updateProgressDate(id, date, public_observations, public_next_steps, private_observations, private_next_steps);
+  res.status(StatusCode.OK).send(student);
 };
 
 const deleteProgress = async (
