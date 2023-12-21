@@ -31,10 +31,11 @@ function Attendance({ studentId }: { studentId: string }) {
   return (
     <Stack
       sx={{
-        height: '100%',
+        height: '400px',
         border: 1,
         borderRadius: 3,
         padding: 3,
+        maxHeight: '400px',
       }}
     >
       <Typography variant="h5" sx={{ fontWeight: 'bold' }}>

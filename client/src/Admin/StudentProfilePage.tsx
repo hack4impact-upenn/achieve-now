@@ -57,6 +57,7 @@ function StudentProfilePage() {
     },
     progressFlag: false,
     attendanceFlag: false,
+    lessonsCompleted: [''],
   };
 
   const defaultShowErrors = {
@@ -87,6 +88,7 @@ function StudentProfilePage() {
     progressFlag: false,
     attendanceFlag: false,
     alert: false,
+    lessonsCompleted: false,
   };
 
   const defaultErrorMessages = {
@@ -112,12 +114,88 @@ function StudentProfilePage() {
     goodStrategies: '',
     badStrategies: '',
     badges: '',
+    lessonsCompleted: '',
     risingReaderScore: '',
     generalProgramScore: '',
     progressFlag: '',
     attendanceFlag: '',
     alert: '',
   };
+
+  const badgeArray = [
+    'RR Lesson 1',
+    'RR Lesson 2',
+    'RR Lesson 3',
+    'RR Lesson 4',
+    'RR Lesson 5',
+    'RR Lesson 6',
+    'RR Lesson 7',
+    'RR Lesson 8',
+    'RR Lesson 9',
+    'RR Lesson 10',
+    'RR Lesson 11',
+    'RR Lesson 12',
+    'RR Lesson 13',
+    'RR Lesson 14',
+    'RR Lesson 15',
+    'RR Lesson 16',
+    'RR Lesson 17',
+    'RR Lesson 18',
+    'RR Lesson 19',
+    'RR Lesson 20',
+    'GC Lesson 1',
+    'GC Lesson 2',
+    'GC Lesson 3',
+    'GC Lesson 4',
+    'GC Lesson 5',
+    'GC Lesson 6',
+    'GC Lesson 7',
+    'GC Lesson 8',
+    'GC Lesson 9',
+    'GC Lesson 10',
+    'GC Lesson 11',
+    'GC Lesson 12',
+    'GC Lesson 13',
+    'GC Lesson 14',
+    'GC Lesson 15',
+    'GC Lesson 16',
+    'GC Lesson 17',
+    'GC Lesson 18',
+    'GC Lesson 19',
+    'GC Lesson 20',
+    'GC Lesson 21',
+    'GC Lesson 22',
+    'GC Lesson 23',
+    'GC Lesson 24',
+    'GC Lesson 25',
+    'GC Lesson 26',
+    'GC Lesson 27',
+    'GC Lesson 28',
+    'GC Lesson 29',
+    'GC Lesson 30',
+    'GC Lesson 31',
+    'GC Lesson 32',
+    'GC Lesson 33',
+    'GC Lesson 34',
+    'GC Lesson 35',
+    'GC Lesson 36',
+    'GC Lesson 37',
+    'GC Lesson 38',
+    'WF Lesson 1',
+    'WF Lesson 2',
+    'WF Lesson 3',
+    'WF Lesson 4',
+  ];
+
+  const lessonsArray = Array.from({ length: 62 }, (_, i) => {
+    if (i >= 0 && i <= 19) {
+      return `RR Lesson ${i + 1}`; // RR Lessons 1 to 20
+    }
+    if (i >= 20 && i <= 23) {
+      return `WF Lesson ${i - 19}`; // WF Lessons 1 to 4 (indices 20-23)
+    }
+    return `GC Lesson ${i - 23}`; // GC Lessons 1 to 38 (indices 24-61)
+  });
 
   // Rest of your component code
 
@@ -278,6 +356,7 @@ function StudentProfilePage() {
       },
       progressFlag: student.progressFlag || false,
       attendanceFlag: student.attendanceFlag || false,
+      lessonsCompleted: student.lessonsCompleted || [],
     };
 
     const sortedLessonData = lessonData.sort((a: any, b: any) => {
@@ -635,7 +714,15 @@ function StudentProfilePage() {
           values={values.badges}
           setValues={(newValues) => setValue('badges', newValues)}
           label="Badges"
-          allValues={['Badge 1', 'Badge 2', 'Badge 3']}
+          allValues={badgeArray}
+        />
+      </Grid>
+      <Grid item width="1">
+        <MultipleSelectCheckmarks
+          values={values.lessonsCompleted}
+          setValues={(newValues) => setValue('lessonsCompleted', newValues)}
+          label="Lessons Completed"
+          allValues={lessonsArray}
         />
       </Grid>
       <Grid

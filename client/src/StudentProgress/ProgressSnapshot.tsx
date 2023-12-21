@@ -81,34 +81,49 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
   }, [student]);
 
   return (
-    <Stack
-      spacing={3}
-      px={5}
-      py={2}
+    <Box
       sx={{
-        width: '100%',
-        height: '100%',
+        border: 1,
+        borderRadius: 3,
+        height: '700px',
+        overflowY: 'auto',
       }}
     >
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-        Observations / Next Steps
-      </Typography>
+      <Stack
+        spacing={3}
+        px={5}
+        py={2}
+        sx={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+          Observations / Next Steps
+        </Typography>
 
-      {progressData.map((item) => (
-        <Box sx={{ borderRadius: 3, backgroundColor: '#EEEEEE', padding: 1 }}>
-          <Stack spacing={1}>
-            <Typography>
-              <b>{item.date}</b>
-            </Typography>
-            <Typography>
-              <u>Observations:</u> {item.observations}
-            </Typography>
-            <Typography>
-              <u>Next Steps:</u> {item.next_steps}
-            </Typography>
-          </Stack>
-        </Box>
-      ))}
-    </Stack>
+        {progressData.map(
+          (item) =>
+            item.observations &&
+            item.next_steps && (
+              <Box
+                sx={{ borderRadius: 3, backgroundColor: '#EEEEEE', padding: 1 }}
+              >
+                <Stack spacing={1}>
+                  <Typography>
+                    <b>{item.date}</b>
+                  </Typography>
+                  <Typography>
+                    <u>Observations:</u> {item.observations}
+                  </Typography>
+                  <Typography>
+                    <u>Next Steps:</u> {item.next_steps}
+                  </Typography>
+                </Stack>
+              </Box>
+            ),
+        )}
+      </Stack>
+    </Box>
   );
 }

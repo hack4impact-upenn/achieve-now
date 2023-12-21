@@ -161,6 +161,11 @@ const StudentSchema = new mongoose.Schema({
     required: false,
     default: [],
   },
+  lessonsCompleted: {
+    type: [String],
+    required: false,
+    default: [],
+  },
   risingReadersScore: {
     type: [Number],
     required: false,
@@ -211,6 +216,7 @@ interface IStudent extends mongoose.Document {
   good_strategies: string;
   bad_strategies: string;
   badges: [string];
+  lessonsCompleted: [string];
   risingReadersScore: [number];
   generalProgramScore: [number];
 }
