@@ -264,22 +264,26 @@ const addCoachToStudent = async (student_id: string, coach_id: string) => {
 const updateProgressDate = async (
   id: string,
   date: string,
-  observations: string,
-  next_steps: string,
+  public_observations: string,
+  public_next_steps: string,
+  private_observations: string,
+  private_next_steps: string
 ) => {
-  const coach = await Student.findOneAndUpdate(
+  const student = await Student.findOneAndUpdate(
     {
       _id: id,
     },
     {
       $set: {
-        [`progress_stats.student_observations.${date}`]: observations,
-        [`progress_stats.student_next_steps.${date}`]: next_steps,
+        [`progress_stats.public_student_observations.${date}`]: public_observations,
+        [`progress_stats.public_student_next_steps.${date}`]: public_next_steps,
+        [`progress_stats.private_student_observations.${date}`]: private_observations,
+        [`progress_stats.private_student_next_steps.${date}`]: private_next_steps,
       },
     },
     { new: true },
   ).exec();
-  return coach;
+  return student;
 };
 
 const deleteProgressDate = async (id: string, date: string) => {
@@ -289,8 +293,10 @@ const deleteProgressDate = async (id: string, date: string) => {
     },
     {
       $unset: {
-        [`progress_stats.student_observations.${date}`]: '',
-        [`progress_stats.student_next_steps.${date}`]: '',
+        [`progress_stats.public_student_observations.${date}`]: '',
+        [`progress_stats.public_student_next_steps.${date}`]: '',
+        [`progress_stats.private_student_observations.${date}`]: '',
+        [`progress_stats.private_student_next_steps.${date}`]: '',
       },
     },
     { new: true },

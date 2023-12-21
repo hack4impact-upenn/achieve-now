@@ -59,10 +59,9 @@ coachRouter.get(
 coachRouter.delete(
   '/progress/:id/:date',
   isAuthenticated,
-  isCoach,
   deleteProgress,
 );
-coachRouter.put('/progress/:id', isAuthenticated, isCoach, updateProgress);
+coachRouter.put('/progress/:id', isAuthenticated, updateProgress);
 coachRouter.get('/resources/:id', isAuthenticated, getAllCoachResources);
 
 coachRouter.get('/user/:id', isAuthenticated, getCoachByUserId);
