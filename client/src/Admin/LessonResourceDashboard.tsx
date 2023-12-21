@@ -1,5 +1,5 @@
 /* eslint no-underscore-dangle: 0 */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
@@ -26,6 +26,7 @@ function LessonResourceDashboard() {
   const { lessonId } = useParams();
   const lessonsRes = useData(`lesson/all`);
   const [lessonNumber, setLessonNumber] = React.useState<string>('');
+  const [lessonTitle, setLessonTitle] = useState<string>('');
   const [allLessons, setAllLessons] = React.useState<any[]>([]);
   const [currLessons, setCurrLessons] = React.useState<any[]>([]);
 
@@ -55,6 +56,7 @@ function LessonResourceDashboard() {
       }
       const num = lessonData.number || '';
       setLessonNumber(num);
+      setLessonTitle(lessonData.title);
       const parentData = lessonData.parent_resources || [];
       const coachData = lessonData.coach_resources || [];
 
@@ -210,7 +212,9 @@ function LessonResourceDashboard() {
             <h1>
               {!lessonId || lessonNumber === ''
                 ? 'Select a Lesson'
-                : `${getLessonStringFromLessonLevel(Number(lessonNumber))}`}
+                : `${getLessonStringFromLessonLevel(
+                    Number(lessonNumber),
+                  )} ${lessonTitle}`}
             </h1>
             <h3>Parent Resources</h3>
             {!lessonId ? (
