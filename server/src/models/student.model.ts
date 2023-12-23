@@ -45,13 +45,25 @@ const StudentSchema = new mongoose.Schema({
       required: false,
       default: {},
     },
-    student_next_steps: {
+    private_student_observations: {
       type: Map,
       of: String,
       required: false,
       default: {},
     },
-    student_observations: {
+    private_student_next_steps: {
+      type: Map,
+      of: String,
+      required: false,
+      default: {},
+    },
+    public_student_observations: {
+      type: Map,
+      of: String,
+      required: false,
+      default: {},
+    },
+    public_student_next_steps: {
       type: Map,
       of: String,
       required: false,
@@ -149,6 +161,11 @@ const StudentSchema = new mongoose.Schema({
     required: false,
     default: [],
   },
+  lessonsCompleted: {
+    type: [String],
+    required: false,
+    default: [],
+  },
   risingReadersScore: {
     type: [Number],
     required: false,
@@ -173,8 +190,10 @@ interface IStudent extends mongoose.Document {
   coach_additional_resources: string[];
   progress_stats: {
     attendance: Map<number, string>;
-    student_next_steps: Map<number, string>;
-    student_observations: Map<number, string>;
+    private_student_next_steps: Map<number, string>;
+    private_student_observations: Map<number, string>;
+    public_student_next_steps: Map<number, string>;
+    public_student_observations: Map<number, string>;
   };
   parent_name: string;
   parent_communication_days: string;
@@ -197,6 +216,7 @@ interface IStudent extends mongoose.Document {
   good_strategies: string;
   bad_strategies: string;
   badges: [string];
+  lessonsCompleted: [string];
   risingReadersScore: [number];
   generalProgramScore: [number];
 }

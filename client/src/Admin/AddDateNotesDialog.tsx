@@ -20,8 +20,10 @@ import AlertType from '../util/types/alert';
 interface IAdminNotesRow {
   key: string;
   date: string;
-  studentObservations: string;
-  studentNextSteps: string;
+  privateStudentObservations: string;
+  privateStudentNextSteps: string;
+  publicStudentObservations: string;
+  publicStudentNextSteps: string;
   coachObservations: string;
   coachNextSteps: string;
 }
@@ -31,8 +33,10 @@ interface AddDateProps {
   setOpen: (newOpen: boolean) => void;
   addDate: (
     date: number,
-    studentObservations: string,
-    studentNextSteps: string,
+    privateStudentObservations: string,
+    privateStudentNextSteps: string,
+    publicStudentObservations: string,
+    publicStudentNextSteps: string,
     coachObservations: string,
     coachNextSteps: string,
   ) => void;
@@ -41,8 +45,12 @@ interface AddDateProps {
 
 function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
   const [date, setDate] = useState<Dayjs | null>(null);
-  const [studentObservations, setStudentObservations] = useState('');
-  const [studentNextSteps, setStudentNextSteps] = useState('');
+  const [privateStudentObservations, setPrivateStudentObservations] =
+    useState('');
+  const [privateStudentNextSteps, setPrivateStudentNextSteps] = useState('');
+  const [publicStudentObservations, setPublicStudentObservations] =
+    useState('');
+  const [publicStudentNextSteps, setPublicStudentNextSteps] = useState('');
   const [coachObservations, setCoachObservations] = useState('');
   const [coachNextSteps, setCoachNextSteps] = useState('');
   const [error, setError] = useState<boolean>(false);
@@ -73,14 +81,18 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
 
     addDate(
       Number(date),
-      studentObservations,
-      studentNextSteps,
+      privateStudentObservations,
+      privateStudentNextSteps,
+      publicStudentObservations,
+      publicStudentNextSteps,
       coachObservations,
       coachNextSteps,
     );
     setDate(null);
-    setStudentObservations('');
-    setStudentNextSteps('');
+    setPrivateStudentObservations('');
+    setPrivateStudentNextSteps('');
+    setPublicStudentObservations('');
+    setPublicStudentNextSteps('');
     setCoachObservations('');
     setCoachNextSteps('');
     setOpen(false);
@@ -121,18 +133,44 @@ function AddDateNotesDialog({ open, setOpen, addDate, table }: AddDateProps) {
             <TextField
               fullWidth
               multiline
-              label="Student Observations"
-              value={studentObservations}
-              onChange={(event) => setStudentObservations(event.target.value)}
+              label="Private Student Observations"
+              value={privateStudentObservations}
+              onChange={(event) =>
+                setPrivateStudentObservations(event.target.value)
+              }
             />
           </Grid>
           <Grid item width="1">
             <TextField
               fullWidth
               multiline
-              label="Student Next Steps"
-              value={studentNextSteps}
-              onChange={(event) => setStudentNextSteps(event.target.value)}
+              label="Private Student Next Steps"
+              value={privateStudentNextSteps}
+              onChange={(event) =>
+                setPrivateStudentNextSteps(event.target.value)
+              }
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              multiline
+              label="Public Student Observations"
+              value={publicStudentObservations}
+              onChange={(event) =>
+                setPublicStudentObservations(event.target.value)
+              }
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              multiline
+              label="Public Student Next Steps"
+              value={publicStudentNextSteps}
+              onChange={(event) =>
+                setPublicStudentNextSteps(event.target.value)
+              }
             />
           </Grid>
           <Grid item width="1">

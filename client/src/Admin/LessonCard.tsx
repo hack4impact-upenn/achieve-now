@@ -1,6 +1,7 @@
 import { Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
 
 interface LessonCardFromObjProps {
   lessonObj: any;
@@ -20,7 +21,11 @@ function LessonCardFromObj({ lessonObj }: LessonCardFromObjProps) {
     <Card sx={{ p: 0.1, bgcolor: '#EDEDED', mb: 1, borderRadius: '8px' }}>
       <CardActionArea onClick={() => handleClick()}>
         <CardContent>
-          <Typography variant="body1">Lesson {lessonObj.number}</Typography>
+          <Typography variant="body1">
+            {`${getLessonStringFromLessonLevel(lessonObj.number)} ${
+              lessonObj.title
+            }`}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>

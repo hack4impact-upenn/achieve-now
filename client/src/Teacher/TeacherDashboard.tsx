@@ -31,16 +31,17 @@ function createData(data: any) {
     <StudentCardFromID
       studentID={student.userId}
       name={`${student.firstName} ${student.lastName}`}
-      lesson={getLessonStringFromLessonLevel(student.lessonNumber)}
+      lesson={`${getLessonStringFromLessonLevel(student.lessonNumber)} ${
+        student.lessonName
+      }`}
     />
   ));
 }
 function StudentName(props: any) {
-  const { id } = props;
-  const user = useData(`user/${id}`);
+  const { name } = props;
   return (
     <Typography color="text-primary" sx={{ fontSize: 20, color: 'black' }}>
-      {user?.data?.firstName} {user?.data?.lastName}
+      {name}
     </Typography>
   );
 }
@@ -63,7 +64,11 @@ function StudentConcernsCard(props: any) {
           {students
             .slice(0, showMore ? students.length : 3)
             .map((student: any) => {
-              return <StudentName id={student.userId} />;
+              return (
+                <StudentName
+                  name={`${student.firstName} ${student.lastName}`}
+                />
+              );
             })}
         </div>
         {students.length > 3 && (
@@ -87,6 +92,8 @@ function SplitGrid() {
   const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState<any[]>([]);
   const [levels, setLevels] = useState<any>([]);
+  const [academicFlags, setAcademicFlags] = useState<any[]>([]);
+  const [attendanceFlags, setAttendanceFlags] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,17 +113,14 @@ function SplitGrid() {
       });
       setLevels(l);
 
+      setAcademicFlags(data.filter((student: any) => student.progressFlag));
+
+      setAttendanceFlags(data.filter((student: any) => student.attendanceFlag));
+
       setLoading(false);
     };
     fetchData();
   }, [self.email]);
-
-  const academicFlags = studentData.filter(
-    (student: any) => student.progressFlag,
-  );
-  const attendanceFlags = studentData.filter(
-    (student: any) => student.attendanceFlag,
-  );
 
   if (loading) {
     return (

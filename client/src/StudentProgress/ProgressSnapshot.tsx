@@ -17,8 +17,10 @@ interface IStudent extends mongoose.Document {
   coach_additional_resources: [string];
   progress_stats: {
     attendance: Map<number, string>;
-    student_next_steps: Map<number, string>;
-    student_observations: Map<number, string>;
+    private_student_next_steps: Map<number, string>;
+    private_student_observations: Map<number, string>;
+    public_student_next_steps: Map<number, string>;
+    public_student_observations: Map<number, string>;
   };
   parent_name: string;
   parent_communication_days: string;
@@ -54,12 +56,12 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
   useEffect(() => {
     if (student && student.progress_stats) {
       const observationsMap = new Map(
-        Object.entries(student.progress_stats.student_observations).map(
+        Object.entries(student.progress_stats.public_student_observations).map(
           ([key, value]) => [Number(key), value],
         ),
       );
       const nextStepsMap = new Map(
-        Object.entries(student.progress_stats.student_next_steps).map(
+        Object.entries(student.progress_stats.public_student_next_steps).map(
           ([key, value]) => [Number(key), value],
         ),
       );
@@ -79,34 +81,49 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
   }, [student]);
 
   return (
-    <Stack
-      spacing={3}
-      px={5}
-      py={2}
+    <Box
       sx={{
-        width: '100%',
-        height: '100%',
+        border: 1,
+        borderRadius: 3,
+        height: '700px',
+        overflowY: 'auto',
       }}
     >
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-        Observations / Next Steps
-      </Typography>
+      <Stack
+        spacing={3}
+        px={5}
+        py={2}
+        sx={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+          Observations / Next Steps
+        </Typography>
 
-      {progressData.map((item) => (
-        <Box sx={{ borderRadius: 3, backgroundColor: '#EEEEEE', padding: 1 }}>
-          <Stack spacing={1}>
-            <Typography>
-              <b>{item.date}</b>
-            </Typography>
-            <Typography>
-              <u>Observations:</u> {item.observations}
-            </Typography>
-            <Typography>
-              <u>Next Steps:</u> {item.next_steps}
-            </Typography>
-          </Stack>
-        </Box>
-      ))}
-    </Stack>
+        {progressData.map(
+          (item) =>
+            item.observations &&
+            item.next_steps && (
+              <Box
+                sx={{ borderRadius: 3, backgroundColor: '#EEEEEE', padding: 1 }}
+              >
+                <Stack spacing={1}>
+                  <Typography>
+                    <b>{item.date}</b>
+                  </Typography>
+                  <Typography>
+                    <u>Observations:</u> {item.observations}
+                  </Typography>
+                  <Typography>
+                    <u>Next Steps:</u> {item.next_steps}
+                  </Typography>
+                </Stack>
+              </Box>
+            ),
+        )}
+      </Stack>
+    </Box>
   );
 }

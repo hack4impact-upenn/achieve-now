@@ -17,8 +17,10 @@ import AlertType from '../util/types/alert';
 interface IAdminNotesRow {
   key: string;
   date: string;
-  studentObservations: string;
-  studentNextSteps: string;
+  privateStudentObservations: string;
+  privateStudentNextSteps: string;
+  publicStudentObservations: string;
+  publicStudentNextSteps: string;
   coachObservations: string;
   coachNextSteps: string;
 }
@@ -29,8 +31,10 @@ interface EditDateDialogProps {
   options: number[];
   editDate: (
     date: number,
-    studentObservations: string,
-    studentNextSteps: string,
+    privateStudentObservations: string,
+    privateStudentNextSteps: string,
+    publicStudentObservations: string,
+    publicStudentNextSteps: string,
     coachObservations: string,
     coachNextSteps: string,
   ) => void;
@@ -45,8 +49,12 @@ function EditDateDialog({
   table,
 }: EditDateDialogProps) {
   const [date, setDate] = useState<number | null>(null);
-  const [studentObservations, setStudentObservations] = useState('');
-  const [studentNextSteps, setStudentNextSteps] = useState('');
+  const [privateStudentObservations, setPrivateStudentObservations] =
+    useState('');
+  const [privateStudentNextSteps, setPrivateStudentNextSteps] = useState('');
+  const [publicStudentObservations, setPublicStudentObservations] =
+    useState('');
+  const [publicStudentNextSteps, setPublicStudentNextSteps] = useState('');
   const [coachObservations, setCoachObservations] = useState('');
   const [coachNextSteps, setCoachNextSteps] = useState('');
   const { setAlert } = useAlert();
@@ -56,8 +64,10 @@ function EditDateDialog({
       const numberDate = Number(date).toString();
       const row = table.find((r: IAdminNotesRow) => r.key === numberDate);
       if (row) {
-        setStudentObservations(row.studentObservations);
-        setStudentNextSteps(row.studentNextSteps);
+        setPrivateStudentObservations(row.privateStudentObservations);
+        setPrivateStudentNextSteps(row.privateStudentNextSteps);
+        setPublicStudentObservations(row.publicStudentObservations);
+        setPublicStudentNextSteps(row.publicStudentNextSteps);
         setCoachObservations(row.coachObservations);
         setCoachNextSteps(row.coachNextSteps);
       }
@@ -70,14 +80,18 @@ function EditDateDialog({
     }
     editDate(
       date,
-      studentObservations,
-      studentNextSteps,
+      privateStudentObservations,
+      privateStudentNextSteps,
+      publicStudentObservations,
+      publicStudentNextSteps,
       coachObservations,
       coachNextSteps,
     );
     setDate(null);
-    setStudentObservations('');
-    setStudentNextSteps('');
+    setPrivateStudentObservations('');
+    setPrivateStudentNextSteps('');
+    setPublicStudentObservations('');
+    setPublicStudentNextSteps('');
     setCoachObservations('');
     setCoachNextSteps('');
     setOpen(false);
@@ -120,18 +134,44 @@ function EditDateDialog({
             <TextField
               fullWidth
               multiline
-              label="Student Observations"
-              value={studentObservations}
-              onChange={(event) => setStudentObservations(event.target.value)}
+              label="Private Student Observations"
+              value={privateStudentObservations}
+              onChange={(event) =>
+                setPrivateStudentObservations(event.target.value)
+              }
             />
           </Grid>
           <Grid item width="1">
             <TextField
               fullWidth
               multiline
-              label="Student Next Steps"
-              value={studentNextSteps}
-              onChange={(event) => setStudentNextSteps(event.target.value)}
+              label="Private Student Next Steps"
+              value={privateStudentNextSteps}
+              onChange={(event) =>
+                setPrivateStudentNextSteps(event.target.value)
+              }
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              multiline
+              label="Public Student Observations"
+              value={publicStudentObservations}
+              onChange={(event) =>
+                setPublicStudentObservations(event.target.value)
+              }
+            />
+          </Grid>
+          <Grid item width="1">
+            <TextField
+              fullWidth
+              multiline
+              label="Public Student Next Steps"
+              value={publicStudentNextSteps}
+              onChange={(event) =>
+                setPublicStudentNextSteps(event.target.value)
+              }
             />
           </Grid>
           <Grid item width="1">

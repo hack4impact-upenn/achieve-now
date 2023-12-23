@@ -16,8 +16,10 @@ interface IStudent extends mongoose.Document {
   coach_additional_resources: [string];
   progress_stats: {
     attendance: Map<number, string>;
-    student_next_steps: Map<number, string>;
-    student_observations: Map<number, string>;
+    private_student_next_steps: Map<number, string>;
+    private_student_observations: Map<number, string>;
+    public_student_next_steps: Map<number, string>;
+    public_student_observations: Map<number, string>;
   };
   parent_name: string;
   parent_communication_days: string;
@@ -47,7 +49,7 @@ export default function Updates({ studentId }: { studentId: string }) {
     <Box
       sx={{
         width: '100%',
-        height: '100%',
+        height: '100px',
         border: '1px solid black',
         borderRadius: '10px',
         padding: '16px',
