@@ -22,8 +22,8 @@ function AdminCurriculum() {
     const assignStudent = async () => {
       const res = await axios.get('http://localhost:4000/api/admin/all');
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < res.data.length; i++) {
-        if (res.data[i].role === 'student') {
+      for (let i = res.data.length - 1; i >= 0; i--) {
+        if (res.data[i].role === 'parent') {
           // eslint-disable-next-line no-underscore-dangle
           setStudent(res.data[i]._id);
           break;

@@ -42,7 +42,7 @@ function LinkButton(props: LinkButtonProps): JSX.Element {
   }
   if (props.role === 'parent') {
     return (
-      <Button href="/lessons" variant="text">
+      <Button href="/student/lessons" variant="text">
         Go to parent landing page
       </Button>
     );

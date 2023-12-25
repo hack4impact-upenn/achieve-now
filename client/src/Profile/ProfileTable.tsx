@@ -52,7 +52,7 @@ function UserTable() {
   function createAdminDashboardRow(userInput: AddOnUser): AdminDashboardRow {
     const { user, studentId } = userInput;
     if (user) {
-      if (user.role === 'student' && studentId) {
+      if (user.role === 'parent' && studentId) {
         return {
           // eslint-disable-next-line no-underscore-dangle
           key: user._id,
@@ -118,7 +118,7 @@ function UserTable() {
     }));
     for (let i = 0; i < resList.length; i += 1) {
       const user = resList[i];
-      if (user.user.role === 'student') {
+      if (user.user.role === 'parent') {
         try {
           // eslint-disable-next-line no-await-in-loop
           await axios

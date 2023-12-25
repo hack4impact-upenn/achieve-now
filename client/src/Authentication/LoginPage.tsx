@@ -146,7 +146,7 @@ function LoginPage() {
               navigate('/teacher');
             }
             if (user.role === 'parent') {
-              navigate('/lessons');
+              navigate('/student/lessons');
             }
           } else if (user.role === 'student') {
             navigate('/onboarding/student');
