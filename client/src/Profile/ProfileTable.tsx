@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /**
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
@@ -10,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 import IUser from '../util/types/user';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
@@ -22,8 +24,12 @@ interface AdminDashboardRow {
   last: string;
   email: string;
   role: string;
+  link: string;
 }
-
+interface AddOnUser {
+  user: IUser;
+  studentId?: string;
+}
 /**
  * The standalone table component for holding information about the users in
  * the database and allowing admins to remove users and promote users to admins.
@@ -35,6 +41,7 @@ function UserTable() {
     { id: 'last', label: 'Last Name' },
     { id: 'email', label: 'Email' },
     { id: 'role', label: 'Role' },
+    { id: 'link', label: 'Profile Link' },
   ];
 
   function capitalizeFirstLetter(str: any) {
@@ -42,22 +49,55 @@ function UserTable() {
   }
 
   // Used to create the data type to create a row in the table
-  function createAdminDashboardRow(user: IUser): AdminDashboardRow {
-    const { _id, firstName, lastName, email, role } = user;
+  function createAdminDashboardRow(userInput: AddOnUser): AdminDashboardRow {
+    const { user, studentId } = userInput;
+    if (user) {
+      if (user.role === 'parent' && studentId) {
+        return {
+          // eslint-disable-next-line no-underscore-dangle
+          key: user._id,
+          first: user.firstName,
+          last: user.lastName,
+          email: user.email,
+          role: capitalizeFirstLetter(user.role),
+          link: `http://localhost:3000/admin/student/profile/${studentId}`,
+        };
+      }
+      if (user.role === 'coach' && studentId) {
+        return {
+          key: user._id,
+          first: user.firstName,
+          last: user.lastName,
+          email: user.email,
+          role: capitalizeFirstLetter(user.role),
+          link: `http://localhost:3000/admin/coach/profile/${studentId}`,
+        };
+      }
+      return {
+        key: user._id,
+        first: user.firstName,
+        last: user.lastName,
+        email: user.email,
+        role: capitalizeFirstLetter(user.role),
+        link: ``,
+      };
+    }
     return {
-      key: _id,
-      first: firstName,
-      last: lastName,
-      email,
-      role: capitalizeFirstLetter(role),
+      key: '',
+      first: '',
+      last: '',
+      email: '',
+      role: '',
+      link: '',
     };
   }
 
-  const [userList, setUserList] = useState<IUser[]>([]);
+  const [userList, setUserList] = useState<AddOnUser[]>([]);
   const users = useData('admin/all');
 
   const sortedUsers = useMemo(
-    () => userList.sort((a, b) => (a.firstName > b.firstName ? 1 : -1)),
+    () =>
+      userList.sort((a, b) => (a.user.firstName > b.user.firstName ? 1 : -1)),
     [userList],
   );
   const self = useAppSelector(selectUser);
@@ -65,29 +105,66 @@ function UserTable() {
   const [role, setRole] = React.useState('all');
 
   const handleChange = (event: SelectChangeEvent) => {
-    setUserList(users?.data.filter((entry: IUser) => entry.role === role));
+    setUserList(
+      users?.data.filter((entry: AddOnUser) => entry.user.role === role),
+    );
     setRole(event.target.value as string);
   };
-
+  async function convertStudentData(filteredList: IUser[]) {
+    // eslint-disable-next-line prefer-const
+    let resList = filteredList.map((userEntry: IUser) => ({
+      user: userEntry,
+      studentId: '',
+    }));
+    for (let i = 0; i < resList.length; i += 1) {
+      const user = resList[i];
+      if (user.user.role === 'parent') {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await axios
+            .get(
+              `http://localhost:4000/api/student/student-info/${user.user._id}`,
+            )
+            .then((res) => {
+              user.studentId = res.data._id;
+            });
+        } catch {
+          user.studentId = '';
+        }
+        resList[i] = user;
+      } else if (user.user.role === 'coach') {
+        // eslint-disable-next-line no-await-in-loop
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const res1 = await axios.get(
+            `http://localhost:4000/api/coach/user/${user.user._id}`,
+          );
+          user.studentId = res1?.data._id;
+        } catch {
+          resList[i].studentId = '';
+        }
+      } else {
+        user.studentId = '';
+      }
+      resList[i] = user;
+    }
+    setUserList(resList);
+  }
   // Upon getting the list of users for the database, set the state of the userList to contain all users except for logged in user
   useEffect(() => {
-    if (role === '') {
-      setUserList(
-        users?.data.filter(
-          (entry: IUser) => entry && entry.email && entry.email !== self.email,
-        ),
-      );
-    } else {
-      setUserList(
-        users?.data.filter(
-          (entry: IUser) =>
-            entry &&
-            entry.email &&
-            entry.email !== self.email &&
-            entry.role === self.role,
-        ),
+    let filteredList = users?.data.filter(
+      (entry: IUser) => entry && entry.email && entry.email !== self.email,
+    );
+    if (role !== 'all' && role !== '') {
+      filteredList = users?.data.filter(
+        (entry: IUser) =>
+          entry &&
+          entry.email &&
+          entry.email !== self.email &&
+          entry.role === self.role,
       );
     }
+    convertStudentData(filteredList || []);
   }, [users, role, self]);
 
   // Search bar
@@ -115,8 +192,9 @@ function UserTable() {
 
     if (searchInput) {
       const searchQuery = searchInput.toLowerCase();
-      filteredUsers = filteredUsers.filter((user: IUser) => {
-        const name = `${user.firstName} ${user.lastName}`.toLowerCase();
+      filteredUsers = filteredUsers.filter((user: AddOnUser) => {
+        const name =
+          `${user.user.firstName} ${user.user.lastName}`.toLowerCase();
         return name.includes(searchQuery);
       });
     }
@@ -124,9 +202,11 @@ function UserTable() {
     if (role === 'all') {
       const i = 1;
     } else if (role) {
-      filteredUsers = filteredUsers.filter((user: IUser) => user.role === role);
+      filteredUsers = filteredUsers.filter(
+        (user: AddOnUser) => user.user.role === role,
+      );
     }
-    setUserList(filteredUsers);
+    convertStudentData(filteredUsers);
   }, [searchInput, role, users, self]);
 
   // if the userlist is not yet populated, display a loading spinner
@@ -166,7 +246,9 @@ function UserTable() {
       </Box>
       <Box sx={{ pb: 30 }}>
         <PaginationTable
-          rows={sortedUsers.map((user: IUser) => createAdminDashboardRow(user))}
+          rows={sortedUsers.map((user: AddOnUser) => {
+            return createAdminDashboardRow(user);
+          })}
           columns={columns}
         />
       </Box>

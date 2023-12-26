@@ -94,7 +94,11 @@ function App() {
                       path="/student-dashboard"
                       element={<StudentDashboardPage />}
                     />
-                    <Route path="/home" element={<HomePage />} />
+                    <Route
+                      path="/onboarding/student"
+                      element={<OnboardingPage />}
+                    />
+                    <Route path="/teacher" element={<TeacherDashboard />} />
                   </Route>
                   {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>

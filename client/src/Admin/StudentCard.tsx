@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-no-bind */
 import { CardActionArea, CardContent, Typography, Card } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useData } from '../util/api';
 
 type StudentCardProps = {
@@ -12,9 +13,19 @@ type StudentCardProps = {
 
 function StudentCardFromID({ studentID, name, lesson }: StudentCardProps) {
   const navigate = useNavigate();
-
+  let id = studentID;
+  useEffect(() => {
+    async function getStudent() {
+      const res1 = await axios.get(
+        `http://localhost:4000/api/student/student-info/${id}`,
+      );
+      // eslint-disable-next-line react-hooks/exhaustive-deps, no-underscore-dangle
+      id = res1.data._id;
+    }
+    getStudent();
+  }, [id]);
   function handleClick() {
-    const s = `/resources/${studentID}`;
+    const s = `/teacher/student-progress/${id}`;
     navigate(s);
   }
 
@@ -49,9 +60,8 @@ function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
   const navigate = useNavigate();
   const studentID = studentObj.studentId;
   const label = `${studentObj.firstName} ${studentObj.lastName}`;
-
   function handleClick() {
-    const s = `/resources/student/${studentID}`;
+    const s = `/student-progress/${studentID}`;
     navigate(s);
   }
 

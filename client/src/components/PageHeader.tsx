@@ -73,17 +73,17 @@ export default function Header() {
 
   // Family Onclick Functions
   const handleFamilyProgress = () => {
-    navigator(`/student-progress/${studentId}`);
+    navigator(`/student/progress/${studentId}`);
   };
   const handleFamilyLesson = () => {
     navigator('/lessons');
   };
   // Coach Onclick Functions
   const handleCoachProgress = () => {
-    navigator(`/student-progress/${studentId}`);
+    navigator(`/coach/student-progress/${studentId}`);
   };
   const handleCoachLesson = () => {
-    navigator(`/lessons`);
+    navigator(`/coach/lessons`);
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -242,7 +242,7 @@ export default function Header() {
           )}
           {user && user.role === 'coach' ? (
             <div>
-              {!location.pathname.includes('/progress') ? (
+              {!location.pathname.includes('/student-progress') ? (
                 <Button
                   sx={{
                     color: 'white',

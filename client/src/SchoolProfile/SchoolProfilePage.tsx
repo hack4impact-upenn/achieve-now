@@ -14,6 +14,7 @@ import DeleteSchoolDialog from './DeleteSchoolDialog';
 import EditSchoolDialog from './EditSchoolDialog';
 import { useData, postData, putData } from '../util/api';
 import ISchool from '../util/types/school';
+import Header from '../components/PageHeader';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
@@ -324,6 +325,7 @@ function SchoolProfilePage() {
 
   return (
     <>
+      <Header />
       <AddSchoolDialog
         open={schoolDialogOpen}
         setOpen={() => setSchoolDialogOpen(false)}
