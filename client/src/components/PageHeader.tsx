@@ -76,7 +76,7 @@ export default function Header() {
     navigator(`/student/progress/${studentId}`);
   };
   const handleFamilyLesson = () => {
-    navigator('/lessons');
+    navigator('/student/lessons');
   };
   // Coach Onclick Functions
   const handleCoachProgress = () => {
@@ -204,7 +204,7 @@ export default function Header() {
           )}
           {user && user.role === 'parent' ? (
             <div>
-              {!location.pathname.includes('/student-progress') ? (
+              {!location.pathname.includes('/student/progress/') ? (
                 <Button
                   sx={{
                     color: 'white',
@@ -217,10 +217,8 @@ export default function Header() {
                 >
                   Progress
                 </Button>
-              ) : (
-                false
-              )}
-              {!location.pathname.includes('/lessons') ? (
+              ) : null}
+              {!location.pathname.includes('lessons') ? (
                 <Button
                   sx={{
                     color: 'white',
@@ -233,9 +231,7 @@ export default function Header() {
                 >
                   Lessons
                 </Button>
-              ) : (
-                false
-              )}
+              ) : null}
             </div>
           ) : (
             false

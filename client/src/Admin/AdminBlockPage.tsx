@@ -311,8 +311,7 @@ function AdminBlockPage() {
                     student.name,
                     student.coach,
                     <a
-                      href={`/admin/notes/${student.studentId}`}
-                      target="_blank"
+                      href={`/admin-notes/${student.studentId}`}
                       rel="noopener noreferrer"
                     >
                       Notes
