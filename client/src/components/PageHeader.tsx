@@ -54,6 +54,7 @@ export default function Header() {
       getStudentFromCoach();
     }
   });
+
   // Admin Onclick Functions
   const handleAdminHome = () => {
     navigator('/admin-menu');
@@ -78,6 +79,7 @@ export default function Header() {
   const handleFamilyLesson = () => {
     navigator('/student/lessons');
   };
+
   // Coach Onclick Functions
   const handleCoachProgress = () => {
     navigator(`/coach/student-progress/${studentId}`);
@@ -85,6 +87,15 @@ export default function Header() {
   const handleCoachLesson = () => {
     navigator(`/coach/lessons`);
   };
+
+  // Teacher Onclick Functions
+  const handleTeacherProgress = () => {
+    navigator(`/teacher`);
+  };
+  const handleTeacherInvite = () => {
+    navigator(`/student-dashboard`);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -266,6 +277,44 @@ export default function Header() {
                   onClick={handleCoachLesson}
                 >
                   Lessons
+                </Button>
+              ) : (
+                false
+              )}
+            </div>
+          ) : (
+            false
+          )}
+          {user && user.role === 'teacher' ? (
+            <div>
+              {!location.pathname.includes('/teacher') ? (
+                <Button
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    marginRight: '10px',
+                  }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleTeacherProgress}
+                >
+                  Progress
+                </Button>
+              ) : (
+                false
+              )}
+              {!location.pathname.includes('/student-dashboard') ? (
+                <Button
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    marginRight: '10px',
+                  }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleTeacherInvite}
+                >
+                  Students
                 </Button>
               ) : (
                 false
