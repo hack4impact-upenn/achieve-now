@@ -54,6 +54,7 @@ const getLessonResourcesHandler = async (
   const newLessonObj = {
     _id: lesson._id,
     number: lesson.number,
+    title: lesson.title,
     parent_resources: parentResources,
     coach_resources: coachResources,
   };
