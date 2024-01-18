@@ -61,7 +61,7 @@ function StudentCardFromObj({ studentObj }: StudentCardFromObjProps) {
   const studentID = studentObj.studentId;
   const label = `${studentObj.firstName} ${studentObj.lastName}`;
   function handleClick() {
-    const s = `/student-progress/${studentID}`;
+    const s = `/resources/student/${studentID}`;
     navigate(s);
   }
 
