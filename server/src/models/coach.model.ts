@@ -8,11 +8,11 @@ const CoachSchema = new mongoose.Schema({
   },
   partner_site: {
     type: String,
-    required: true,
+    required: false,
   },
   mailing_address: {
     type: String,
-    required: true,
+    required: false,
   },
   media_waiver: {
     type: Boolean,

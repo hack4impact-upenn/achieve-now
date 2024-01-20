@@ -51,15 +51,23 @@ function CoachLandingPage() {
         `${URLPREFIX}/coach/student/${res.data._id}`,
       );
 
-      res2 = await axios.get(`${URLPREFIX}/user/id/${res.data.user_id}`);
+      if (res.data != null && res.data.user_id != null) {
+        res2 = await axios.get(`${URLPREFIX}/user/id/${res.data.user_id}`);
+      }
 
-      const teacherRes = await axios.get(
-        `${URLPREFIX}/user/id/${res.data.teacher_id}`,
-      );
+      let teacherRes = null;
+      if (res.data != null && res.data.user_id != null) {
+        teacherRes = await axios.get(
+          `${URLPREFIX}/user/id/${res.data.teacher_id}`,
+        );
+      }
 
-      const schoolRes = await axios.get(
-        `${URLPREFIX}/school/${res.data.school_id}`,
-      );
+      let schoolRes = null;
+      if (res.data != null && res.data.user_id != null) {
+        schoolRes = await axios.get(
+          `${URLPREFIX}/school/${res.data.school_id}`,
+        );
+      }
 
       const blockRes = await axios.get(
         `${URLPREFIX}/block/student/${res.data.user_id}`,
@@ -68,9 +76,19 @@ function CoachLandingPage() {
       setStudent({
         ...res.data,
         ...res2.data,
-        school_name: schoolRes.data.name,
-        school_info: schoolRes.data.info,
-        teacher: `${teacherRes.data.firstName} ${teacherRes.data.lastName}`,
+        school_name:
+          schoolRes != null && schoolRes.data != null
+            ? schoolRes.data.name
+            : '',
+        school_info:
+          schoolRes != null && schoolRes.data != null
+            ? schoolRes.data.info
+            : ' ',
+        teacher: `${
+          teacherRes != null
+            ? `${teacherRes.data.firstName} ${teacherRes.data.lastName}`
+            : ''
+        }`,
         zoom_link: blockRes.data.zoom,
       });
     };
