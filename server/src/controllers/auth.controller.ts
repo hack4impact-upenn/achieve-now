@@ -466,7 +466,7 @@ const onboardStudent = async (
       return;
     }
     console.log(userId);
-    if (userId.role !== 'student') {
+    if (userId.role !== 'parent') {
       next(ApiError.badRequest('Invalid role.'));
       return;
     }

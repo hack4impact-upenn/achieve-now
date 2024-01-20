@@ -32,11 +32,9 @@ const theme = createTheme({
     fontFamily: ['Poppins', 'sans-serif'].join(','),
     h1: {
       fontWeight: 500,
-      color: 'black',
     },
     h2: {
       fontWeight: 500,
-      color: 'black',
     },
   },
   components: {
@@ -46,19 +44,12 @@ const theme = createTheme({
           letterSpacing: '0.3px',
           lineHeight: '1.5',
         },
-        h1: {
-          fontWeight: 'bold !important',
-        },
         h2: {
           fontSize: '38px !important',
           marginBottom: '32px !important',
         },
         h3: {
-          fontWeight: 'bold !important',
           marginBottom: '10px',
-        },
-        h4: {
-          fontWeight: 'bold !important',
         },
       },
     },

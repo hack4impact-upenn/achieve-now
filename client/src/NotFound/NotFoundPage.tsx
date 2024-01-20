@@ -15,14 +15,14 @@ function LinkButton(props: LinkButtonProps): JSX.Element {
   if (props.role === 'admin') {
     return (
       <Button href="/admin-menu" variant="text">
-        Go to admin menu
+        Go to Admin Menu
       </Button>
     );
   }
   if (props.role === 'coach') {
     return (
       <Button href="/coach-landing" variant="text">
-        Go to coach landing page
+        Go to Coach Landing Page
       </Button>
     );
   }
@@ -33,23 +33,23 @@ function LinkButton(props: LinkButtonProps): JSX.Element {
       </Button>
     );
   }
-  if (props.role === 'student') {
+  if (props.role === 'parent') {
     return (
       <Button href="/student-dashboard" variant="text">
-        Go to student dashboard
+        Go to Student Dashboard
       </Button>
     );
   }
   if (props.role === 'parent') {
     return (
       <Button href="/student/lessons" variant="text">
-        Go to parent landing page
+        Go to Parent Home
       </Button>
     );
   }
   return (
     <Button href="/home" variant="text">
-      Go to home page
+      Go to Home Page
     </Button>
   );
 }

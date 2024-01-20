@@ -4,7 +4,6 @@
  * student users.
  */
 import express from 'express';
-import crypto from 'crypto';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import { IStudent } from '../models/student.model';
@@ -30,14 +29,7 @@ import {
   getUserById,
   updateUserInfo,
 } from '../services/user.service';
-import { IInvite } from '../models/invite.model';
 import { IUser } from '../models/user.model';
-import {
-  getInviteByEmail,
-  updateInvite,
-  createInvite,
-} from '../services/invite.service';
-import { emailInviteLink } from '../services/mail.service';
 import { getLessonById } from '../services/lesson.service';
 
 const updateProgress = async (
@@ -59,7 +51,14 @@ const updateProgress = async (
   const { private_observations } = req.body || '';
   const { private_next_steps } = req.body || '';
 
-  const student = await updateProgressDate(id, date, public_observations, public_next_steps, private_observations, private_next_steps);
+  const student = await updateProgressDate(
+    id,
+    date,
+    public_observations,
+    public_next_steps,
+    private_observations,
+    private_next_steps,
+  );
   res.status(StatusCode.OK).send(student);
 };
 
@@ -305,6 +304,7 @@ const getStudentFromUserId = async (
       res.status(StatusCode.OK).send(user);
     })
     .catch((e) => {
+      console.log(e);
       next(ApiError.internal('Unable to retrieve specified student - 3'));
     });
 };
@@ -438,14 +438,13 @@ const getStudentsAndLessonsByTeacherEmail = async (
               Promise.all(userPromises)
                 .then((users) => {
                   const response = teacherStudentList.map((student, index) => {
-                    const user = users[index];
+                    const currUser = users[index];
                     const lesson = lessons[index];
-                    console.log('student', student);
                     return {
                       studentId: student._id,
                       userId: student.user_id,
-                      firstName: user?.firstName,
-                      lastName: user?.lastName,
+                      firstName: currUser?.firstName,
+                      lastName: currUser?.lastName,
                       progressFlag: student.progressFlag,
                       attendanceFlag: student.attendanceFlag,
                       lessonNumber: lesson?.number,
@@ -655,6 +654,10 @@ const getAllStudentResources = async (
     return;
   }
 
+  if (student.lesson_level === undefined) {
+    next(ApiError.notFound(`Student has not been assigned to a lesson`));
+    return;
+  }
   const lesson = await getLessonById(student.lesson_level);
   if (!lesson) {
     next(

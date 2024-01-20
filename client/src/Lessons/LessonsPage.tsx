@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
 import LessonCard from './LessonCard';
-import { getData, postData, useData } from '../util/api';
+import { getData, postData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import { getLessonStringFromLessonLevel } from '../util/lessonLevels';
+import useAlert from '../util/hooks/useAlert';
+import AlertType from '../util/types/alert';
 
 interface IResource {
   id: string;
@@ -29,6 +30,7 @@ interface ICard extends IResource {
  */
 function LessonsPage() {
   const user = useAppSelector(selectUser);
+  const { setAlert } = useAlert();
   // const user = {
   //   role: 'parent',
   // };
@@ -55,10 +57,12 @@ function LessonsPage() {
         if (
           resources.error.data.message.includes('connected to any students')
         ) {
-          setErrorMessage('Coach is not connected to any students.');
+          setAlert('Coach is not connected to any students', AlertType.ERROR);
+          setLoading(false);
           return;
         }
-        setErrorMessage(resources.error.data.message);
+        setAlert(resources.error.data.message, AlertType.ERROR);
+        setLoading(false);
         return;
       }
 
@@ -106,30 +110,7 @@ function LessonsPage() {
       setLoading(false);
     };
     fetchResources();
-  }, [role, id]);
-
-  if (errorMessage) {
-    return (
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <Typography
-          variant="h2"
-          sx={{
-            textAlign: 'center',
-          }}
-        >
-          {errorMessage}
-        </Typography>
-      </Box>
-    );
-  }
+  }, [role, id, setAlert]);
 
   if (loading) {
     return (

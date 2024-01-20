@@ -15,6 +15,8 @@ import ScreenGrid from '../components/ScreenGrid';
 import FormRow from '../components/form/FormRow';
 import FormGrid from '../components/form/FormGrid';
 import { useData } from '../util/api';
+import { useAppDispatch } from '../util/redux/hooks';
+import { login as loginRedux } from '../util/redux/userSlice';
 
 /**
  * A page users visit to be able to register for a new account by inputting
@@ -23,6 +25,24 @@ import { useData } from '../util/api';
 function InviteRegisterPage() {
   const { token } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  function dispatchUser(
+    userEmail: string,
+    firstName: string,
+    lastName: string,
+    role: string,
+    id: string,
+  ) {
+    dispatch(
+      loginRedux({
+        email: userEmail,
+        firstName,
+        lastName,
+        role,
+        id,
+      }),
+    );
+  }
 
   // Default values for state
   const defaultValues = {
@@ -153,6 +173,14 @@ function InviteRegisterPage() {
         token,
       )
         .then((data) => {
+          dispatchUser(
+            data.email,
+            data.firstName,
+            data.lastName,
+            data.role,
+            // eslint-disable-next-line no-underscore-dangle
+            data._id,
+          );
           if (data.role === 'parent') {
             navigate('/onboarding/student');
           } else {
@@ -174,6 +202,9 @@ function InviteRegisterPage() {
     return (
       <ScreenGrid>
         <Typography variant="h2">Invalid Invite Token</Typography>
+        <Typography variant="body1">
+          Please contact your administrator to be invited to create an account.
+        </Typography>
       </ScreenGrid>
     );
   }
@@ -262,13 +293,6 @@ function InviteRegisterPage() {
               Register
             </PrimaryButton>
           </Grid>
-          <FormRow>
-            <Grid container justifyContent="center">
-              <Link component={RouterLink} to="../">
-                Back to Login
-              </Link>
-            </Grid>
-          </FormRow>
         </FormCol>
         {/* The alert that pops up */}
         <Grid item>

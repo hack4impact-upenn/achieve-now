@@ -62,16 +62,11 @@ function AdminSessionsPage() {
             Sessions
           </Typography>
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={handleAddBlock}
             sx={{
               position: 'absolute',
               right: '0%',
-              backgroundColor: 'white',
-              borderColor: 'black',
-              '&:hover': {
-                backgroundColor: 'grey.200',
-              },
               width: theme.spacing(20),
             }}
           >

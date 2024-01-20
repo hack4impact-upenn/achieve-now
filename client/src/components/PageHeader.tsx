@@ -143,188 +143,123 @@ export default function Header() {
         >
           {user && user.role === 'admin' ? (
             <div>
-              {path !== '/admin/sessions' ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleAdminSessions}
-                >
-                  Sessions
-                </Button>
-              ) : (
-                false
-              )}
-              {path !== '/admin-attendance' ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleAdminAttendance}
-                >
-                  Attendance
-                </Button>
-              ) : (
-                false
-              )}
-              {path !== '/admin-profiles' ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleAdminProfiles}
-                >
-                  Profiles
-                </Button>
-              ) : (
-                false
-              )}
-              {path !== '/admin-curriculum' ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleAdminCurriculum}
-                >
-                  Curriculum
-                </Button>
-              ) : (
-                false
-              )}
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleAdminSessions}
+              >
+                Sessions
+              </Button>
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleAdminAttendance}
+              >
+                Attendance
+              </Button>
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleAdminProfiles}
+              >
+                Profiles
+              </Button>
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleAdminCurriculum}
+              >
+                Curriculum
+              </Button>
             </div>
           ) : (
             false
           )}
           {user && user.role === 'parent' ? (
             <div>
-              {!location.pathname.includes('/student/progress/') ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleFamilyProgress}
-                >
-                  Progress
-                </Button>
-              ) : null}
-              {!location.pathname.includes('lessons') ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleFamilyLesson}
-                >
-                  Lessons
-                </Button>
-              ) : null}
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleFamilyProgress}
+              >
+                Progress
+              </Button>
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleFamilyLesson}
+              >
+                Lessons
+              </Button>
             </div>
           ) : (
             false
           )}
           {user && user.role === 'coach' ? (
             <div>
-              {!location.pathname.includes('/student-progress') ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleCoachProgress}
-                >
-                  Progress
-                </Button>
-              ) : (
-                false
-              )}
-              {!location.pathname.includes('/lessons') ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleCoachLesson}
-                >
-                  Lessons
-                </Button>
-              ) : (
-                false
-              )}
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleCoachProgress}
+              >
+                Progress
+              </Button>
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleCoachLesson}
+              >
+                Lessons
+              </Button>
             </div>
           ) : (
             false
           )}
           {user && user.role === 'teacher' ? (
             <div>
-              {!location.pathname.includes('/teacher') ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleTeacherProgress}
-                >
-                  Progress
-                </Button>
-              ) : (
-                false
-              )}
-              {!location.pathname.includes('/student-dashboard') ? (
-                <Button
-                  sx={{
-                    color: 'white',
-                    borderColor: 'white',
-                    marginRight: '10px',
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleTeacherInvite}
-                >
-                  Students
-                </Button>
-              ) : (
-                false
-              )}
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleTeacherProgress}
+              >
+                Progress
+              </Button>
+              <Button
+                sx={{
+                  marginRight: '10px',
+                }}
+                variant="contained"
+                onClick={handleTeacherInvite}
+              >
+                Students
+              </Button>
             </div>
           ) : (
             false
           )}
           <Button
-            sx={{ color: 'white', borderColor: 'white', marginRight: '10px' }}
-            variant="outlined"
-            color="primary"
+            sx={{
+              marginRight: '10px',
+            }}
+            variant="contained"
             onClick={handleLogout}
           >
             Log Out
