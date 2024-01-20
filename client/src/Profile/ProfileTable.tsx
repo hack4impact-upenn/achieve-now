@@ -33,6 +33,8 @@ interface AdminDashboardRow {
 interface AddOnUser {
   user: IUser;
   studentId?: string;
+  firstName?: string;
+  lastName?: string;
 }
 /**
  * The standalone table component for holding information about the users in
@@ -195,8 +197,7 @@ function UserTable() {
     if (searchInput) {
       const searchQuery = searchInput.toLowerCase();
       filteredUsers = filteredUsers.filter((user: AddOnUser) => {
-        const name =
-          `${user.user.firstName} ${user.user.lastName}`.toLowerCase();
+        const name = `${user.firstName} ${user.lastName}`.toLowerCase();
         return name.includes(searchQuery);
       });
     }
