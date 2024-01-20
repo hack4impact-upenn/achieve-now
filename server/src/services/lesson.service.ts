@@ -7,8 +7,12 @@ import { ILesson, Lesson } from '../models/lesson.model';
  * @returns The {@link User} or null if the user was not found.
  */
 const getLessonById = async (id: string) => {
-  const lesson = await Lesson.findById(id).exec();
-  return lesson;
+  try {
+    const lesson = await Lesson.findById(id).exec();
+    return lesson;
+  } catch (err) {
+    return null;
+  }
 };
 
 const getLessonByLevel = async (level: string) => {
@@ -80,12 +84,14 @@ const addResource = async (
 };
 
 const addLesson = async (title: string) => {
-  try{
-    const lessons = await getAllLessonsFromDB()
-    const number : number = lessons[0] ? lessons[lessons.length - 1].number + 1 : 1;
+  try {
+    const lessons = await getAllLessonsFromDB();
+    const number: number = lessons[0]
+      ? lessons[lessons.length - 1].number + 1
+      : 1;
     const lesson = new Lesson({
-      number: number,
-      title: title,
+      number,
+      title,
     });
     await lesson.save();
     return lesson;
@@ -95,11 +101,11 @@ const addLesson = async (title: string) => {
   }
 };
 
-const editLessonByNumber = async (number: Number, title: string) => {
+const editLessonByNumber = async (number: number, title: string) => {
   try {
-    console.log(number)
-    console.log(typeof(number))
-    const lesson = await Lesson.updateOne({ number: number }, { title: title }).exec();
+    console.log(number);
+    console.log(typeof number);
+    const lesson = await Lesson.updateOne({ number }, { title }).exec();
     return lesson;
   } catch (error) {
     console.log('Error updating lesson:', error);

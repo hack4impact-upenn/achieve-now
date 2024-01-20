@@ -25,7 +25,7 @@ interface ResourceRow {
   title: string;
   description: string;
   type: string;
-  link: React.ReactElement;
+  link: string;
 }
 
 interface ResourceTableProps {
@@ -83,7 +83,7 @@ function ResourceTable({
   function createResourceRow(
     resource: IResource,
     checkBox: React.ReactElement,
-    linkButton: React.ReactElement,
+    link: string,
   ): ResourceRow {
     const { _id, title, description, type } = resource;
     return {
@@ -92,7 +92,7 @@ function ResourceTable({
       title,
       description,
       type,
-      link: linkButton,
+      link,
     };
   }
 
@@ -133,7 +133,7 @@ function ResourceTable({
             // eslint-disable-next-line no-underscore-dangle
             handleChange={() => handleCheckboxChange(resource._id)}
           />,
-          <ResourceButton link={resource.link} />,
+          resource.link,
         );
       })}
       columns={columns}
