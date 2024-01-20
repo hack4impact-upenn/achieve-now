@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import Header from '../components/PageHeader';
 import theme from '../assets/theme';
-import { useData } from '../util/api';
+import { useData, URLPREFIX } from '../util/api';
 
 interface IResource {
   id: string;

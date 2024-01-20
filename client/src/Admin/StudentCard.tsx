@@ -3,7 +3,7 @@ import { CardActionArea, CardContent, Typography, Card } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useData } from '../util/api';
+import { useData, URLPREFIX } from '../util/api';
 
 type StudentCardProps = {
   studentID: string;
@@ -16,9 +16,7 @@ function StudentCardFromID({ studentID, name, lesson }: StudentCardProps) {
   let id = studentID;
   useEffect(() => {
     async function getStudent() {
-      const res1 = await axios.get(
-        `http://localhost:4000/api/student/student-info/${id}`,
-      );
+      const res1 = await axios.get(`${URLPREFIX}/student/student-info/${id}`);
       // eslint-disable-next-line react-hooks/exhaustive-deps, no-underscore-dangle
       id = res1.data._id;
     }

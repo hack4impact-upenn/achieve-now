@@ -12,7 +12,7 @@ import SchoolProfileTable from './SchoolProfileTable';
 import AddSchoolDialog from './AddSchoolDialog';
 import DeleteSchoolDialog from './DeleteSchoolDialog';
 import EditSchoolDialog from './EditSchoolDialog';
-import { useData, postData, putData } from '../util/api';
+import { useData, postData, putData, URLPREFIX } from '../util/api';
 import ISchool from '../util/types/school';
 import Header from '../components/PageHeader';
 import { selectUser } from '../util/redux/userSlice';
@@ -96,7 +96,7 @@ function SchoolProfilePage() {
 
     // Fetch teacher details for all teacherIds
     const teacherPromises = teachers.map((teacherId) =>
-      axios.get(`http://localhost:4000/api/user/id/${teacherId}`),
+      axios.get(`${URLPREFIX}/user/id/${teacherId}`),
     );
 
     // Use Promise.all to wait for all requests to complete
@@ -241,7 +241,7 @@ function SchoolProfilePage() {
 
   const fetchUpdatedSchoolData = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/school/all');
+      const response = await axios.get(`${URLPREFIX}/school/all`);
       const updatedSchools = response.data;
 
       if (updatedSchools) {

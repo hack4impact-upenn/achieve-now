@@ -11,7 +11,7 @@ import axios from 'axios';
 import ISchool from '../util/types/school';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
-import { useData } from '../util/api';
+import { useData, URLPREFIX } from '../util/api';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 
 interface SchoolDashboardRow {
@@ -95,7 +95,7 @@ function SchoolProfileTable() {
 
     // Fetch teacher details for all teacherIds
     const teacherPromises = teachers.map((teacherId) =>
-      axios.get(`http://localhost:4000/api/user/id/${teacherId}`),
+      axios.get(`${URLPREFIX}/user/id/${teacherId}`),
     );
 
     // Use Promise.all to wait for all requests to complete

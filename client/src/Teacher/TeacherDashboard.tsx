@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // eslint-disable-next-line
 import { CircularProgress, Grid } from '@mui/material';
 import axios from 'axios';
-import { useData } from '../util/api';
+import { useData, URLPREFIX } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import { StudentCardFromID } from '../Admin/StudentCard';
@@ -98,7 +98,7 @@ function SplitGrid() {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get(
-        `http://localhost:4000/api/student/students-lessons-by-teacher/${self.email}`,
+        `${URLPREFIX}/student/students-lessons-by-teacher/${self.email}`,
       );
 
       setStudentData(data);

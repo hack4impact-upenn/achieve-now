@@ -111,4 +111,4 @@ async function deleteData(url: string, data = {}) {
   return response;
 }
 
-export { getData, putData, deleteData, postData, useData };
+export { getData, putData, deleteData, postData, useData, URLPREFIX };

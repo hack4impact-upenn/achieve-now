@@ -7,6 +7,7 @@ import theme from '../assets/theme';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
 import { selectUser, logout as logoutAction } from '../util/redux/userSlice';
+import { URLPREFIX } from '../util/api';
 
 function AdminCurriculum() {
   const [firstStudent, setStudent] = useState('');
@@ -14,13 +15,13 @@ function AdminCurriculum() {
   const user = useAppSelector(selectUser);
   useEffect(() => {
     const assignLesson = async () => {
-      const res = await axios.get('http://localhost:4000/api/lesson/all');
+      const res = await axios.get(`${URLPREFIX}/lesson/all`);
       console.log(res.data);
       // eslint-disable-next-line no-underscore-dangle
       setLesson(res.data[0]._id);
     };
     const assignStudent = async () => {
-      const res = await axios.get('http://localhost:4000/api/admin/all');
+      const res = await axios.get(`${URLPREFIX}/admin/all`);
       // eslint-disable-next-line no-plusplus
       for (let i = res.data.length - 1; i >= 0; i--) {
         if (res.data[i].role === 'parent') {

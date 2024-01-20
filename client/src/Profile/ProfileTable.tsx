@@ -15,7 +15,7 @@ import axios from 'axios';
 import IUser from '../util/types/user';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
-import { useData } from '../util/api';
+import { useData, URLPREFIX } from '../util/api';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 
 interface AdminDashboardRow {
@@ -122,9 +122,7 @@ function UserTable() {
         try {
           // eslint-disable-next-line no-await-in-loop
           await axios
-            .get(
-              `http://localhost:4000/api/student/student-info/${user.user._id}`,
-            )
+            .get(`${URLPREFIX}/student/student-info/${user.user._id}`)
             .then((res) => {
               user.studentId = res.data._id;
             });
@@ -137,7 +135,7 @@ function UserTable() {
         try {
           // eslint-disable-next-line no-await-in-loop
           const res1 = await axios.get(
-            `http://localhost:4000/api/coach/user/${user.user._id}`,
+            `${URLPREFIX}/coach/user/${user.user._id}`,
           );
           user.studentId = res1?.data._id;
         } catch {

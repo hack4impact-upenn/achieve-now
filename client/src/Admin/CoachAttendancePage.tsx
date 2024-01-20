@@ -20,6 +20,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
+import { URLPREFIX } from '../util/api';
 
 const coachStatusOptions = [
   'Planned Absence',
@@ -66,21 +67,19 @@ function CoachAttendancePage() {
     useState<boolean>(false);
 
   const fetchData = async (curSearch: string, curBlock: string) => {
-    const result = await axios.get('http://localhost:4000/api/coach/all');
+    const result = await axios.get(`${URLPREFIX}/coach/all`);
     const coaches = result.data as any[];
     const blockList: string[] = [];
     await Promise.all(
       coaches.map(async (coach: any, index: number) => {
-        let res = await axios.get(
-          `http://localhost:4000/api/user/id/${coach.user_id}`,
-        );
+        let res = await axios.get(`${URLPREFIX}/user/id/${coach.user_id}`);
         coaches[index] = {
           ...coach,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
         res = await axios.get(
           // eslint-disable-next-line no-underscore-dangle
-          `http://localhost:4000/api/coach/blocks/${coach._id}`,
+          `${URLPREFIX}/coach/blocks/${coach._id}`,
         );
         coaches[index] = {
           ...coaches[index],
@@ -156,14 +155,14 @@ function CoachAttendancePage() {
       return;
     }
 
-    await axios.put('http://localhost:4000/api/coach/attendance/create', {
+    await axios.put(`${URLPREFIX}/coach/attendance/create`, {
       date,
     });
     fetchData(search, filterBlock);
   };
 
   const deleteDate = async (date: number) => {
-    await axios.put('http://localhost:4000/api/coach/attendance/delete', {
+    await axios.put(`${URLPREFIX}/coach/attendance/delete`, {
       date,
     });
     fetchData(search, filterBlock);
@@ -178,7 +177,7 @@ function CoachAttendancePage() {
       return;
     }
 
-    await axios.put('http://localhost:4000/api/coach/attendance', {
+    await axios.put(`${URLPREFIX}/coach/attendance`, {
       id,
       date,
       attendance,

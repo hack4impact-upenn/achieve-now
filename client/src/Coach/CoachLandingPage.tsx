@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../components/PageHeader';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
+import { URLPREFIX } from '../util/api';
 
 const fieldsMapping = {
   teacher: 'Teacher',
@@ -37,11 +38,9 @@ function CoachLandingPage() {
 
   useEffect(() => {
     const fetchInfo = async () => {
-      let res = await axios.get(`http://localhost:4000/api/coach/user/${id}`);
+      let res = await axios.get(`${URLPREFIX}/coach/user/${id}`);
 
-      let res2 = await axios.get(
-        `http://localhost:4000/api/user/id/${res.data.user_id}`,
-      );
+      let res2 = await axios.get(`${URLPREFIX}/user/id/${res.data.user_id}`);
       setCoach({
         ...res.data,
         ...res2.data,
@@ -49,23 +48,21 @@ function CoachLandingPage() {
 
       res = await axios.get(
         // eslint-disable-next-line no-underscore-dangle
-        `http://localhost:4000/api/coach/student/${res.data._id}`,
+        `${URLPREFIX}/coach/student/${res.data._id}`,
       );
 
-      res2 = await axios.get(
-        `http://localhost:4000/api/user/id/${res.data.user_id}`,
-      );
+      res2 = await axios.get(`${URLPREFIX}/user/id/${res.data.user_id}`);
 
       const teacherRes = await axios.get(
-        `http://localhost:4000/api/user/id/${res.data.teacher_id}`,
+        `${URLPREFIX}/user/id/${res.data.teacher_id}`,
       );
 
       const schoolRes = await axios.get(
-        `http://localhost:4000/api/school/${res.data.school_id}`,
+        `${URLPREFIX}/school/${res.data.school_id}`,
       );
 
       const blockRes = await axios.get(
-        `http://localhost:4000/api/block/student/${res.data.user_id}`,
+        `${URLPREFIX}/block/student/${res.data.user_id}`,
       );
 
       setStudent({

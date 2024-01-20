@@ -10,7 +10,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Modal from '@mui/material/Modal';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import Header from '../components/PageHeader';
-import { useData, putData, getData } from '../util/api';
+import { useData, putData, getData, URLPREFIX } from '../util/api';
 import theme from '../assets/theme';
 import ScreenGrid from '../components/ScreenGrid';
 import LessonLevels from '../components/LessonLevels';
@@ -86,20 +86,16 @@ function AdminBlockPage() {
   const getStudentAndCoach = (studentID: string) => {
     try {
       axios
-        .get(`http://localhost:4000/api/student/student/${studentID}`)
+        .get(`${URLPREFIX}/student/student/${studentID}`)
         .then((res) => {
           // eslint-disable-next-line no-underscore-dangle
           if (!res.data._id) {
             throw new Error('No Student Found');
           }
           return axios.all([
-            axios.get(
-              `http://localhost:4000/api/lesson/${res.data.lesson_level}`,
-            ),
-            axios.get(
-              `http://localhost:4000/api/user/id/${res.data.coach_id[0]}`,
-            ),
-            axios.get(`http://localhost:4000/api/user/id/${res.data.user_id}`),
+            axios.get(`${URLPREFIX}/lesson/${res.data.lesson_level}`),
+            axios.get(`${URLPREFIX}/user/id/${res.data.coach_id[0]}`),
+            axios.get(`${URLPREFIX}/user/id/${res.data.user_id}`),
           ]);
         })
         .then(
@@ -132,7 +128,7 @@ function AdminBlockPage() {
     // assumming the block id is known / fetched from elsewhere
     setStudentData([]);
     axios
-      .get(`http://localhost:4000/api/block/block-info-id/${blockID}`)
+      .get(`${URLPREFIX}/block/block-info-id/${blockID}`)
       .then((response) => {
         setTableData(response.data);
         response.data.students.forEach((student: string) => {
@@ -146,7 +142,7 @@ function AdminBlockPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get('http://localhost:4000/api/lesson/all');
+      const res = await axios.get(`${URLPREFIX}/lesson/all`);
       setLessons(res.data.sort((a: any, b: any) => a.number - b.number));
     };
     fetchData();

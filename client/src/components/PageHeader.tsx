@@ -9,7 +9,7 @@ import { Box } from '@mui/system';
 import { ArrowBack } from '@mui/icons-material';
 import COLORS from '../assets/colors';
 import Logo from '../assets/achieve-now-logo.png';
-import { getData } from '../util/api';
+import { getData, URLPREFIX } from '../util/api';
 import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
 import { selectUser, logout as logoutAction } from '../util/redux/userSlice';
 import { logout, logout as logoutApi } from '../Home/api';
@@ -31,12 +31,10 @@ export default function Header() {
   useEffect(() => {
     const getStudentFromCoach = async () => {
       console.log(user.id);
-      const res1 = await axios.get(
-        `http://localhost:4000/api/coach/user/${user.id}`,
-      );
+      const res1 = await axios.get(`${URLPREFIX}/coach/user/${user.id}`);
       const res2 = await axios.get(
         // eslint-disable-next-line no-underscore-dangle
-        `http://localhost:4000/api/coach/student/${res1.data._id}`,
+        `${URLPREFIX}/coach/student/${res1.data._id}`,
       );
       // eslint-disable-next-line no-underscore-dangle
       setStudentId(res2?.data._id);

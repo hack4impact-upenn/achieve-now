@@ -20,6 +20,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import AddDateDialog from './AddDateDialog';
 import Header from '../components/PageHeader';
 import DeleteDateDialog from './DeleteDateDialog';
+import { URLPREFIX } from '../util/api';
 
 const studentStatusOptions = [
   'No Session',
@@ -81,21 +82,19 @@ function StudentAttendancePage() {
     useState<boolean>(false);
 
   const fetchData = async (curSearch: string, curBlock: string) => {
-    const result = await axios.get('http://localhost:4000/api/student/all');
+    const result = await axios.get(`${URLPREFIX}/student/all`);
     const students = result.data as any[];
     const studentBlocks: string[] = [];
     await Promise.all(
       students.map(async (student: any, index: number) => {
-        let res = await axios.get(
-          `http://localhost:4000/api/user/id/${student.user_id}`,
-        );
+        let res = await axios.get(`${URLPREFIX}/user/id/${student.user_id}`);
         students[index] = {
           ...student,
           name: `${res.data.firstName} ${res.data.lastName}`,
         };
         res = await axios.get(
           // eslint-disable-next-line no-underscore-dangle
-          `http://localhost:4000/api/block/student/${student._id}`,
+          `${URLPREFIX}/block/student/${student._id}`,
         );
         if (!res.data) {
           return;
@@ -169,14 +168,14 @@ function StudentAttendancePage() {
       return;
     }
 
-    await axios.put('http://localhost:4000/api/student/attendance/create', {
+    await axios.put(`${URLPREFIX}/student/attendance/create`, {
       date,
     });
     fetchData(search, block);
   };
 
   const deleteDate = async (date: number) => {
-    await axios.put('http://localhost:4000/api/student/attendance/delete', {
+    await axios.put(`${URLPREFIX}/student/attendance/delete`, {
       date,
     });
     fetchData(search, block);
@@ -191,7 +190,7 @@ function StudentAttendancePage() {
       return;
     }
 
-    await axios.put('http://localhost:4000/api/student/attendance', {
+    await axios.put(`${URLPREFIX}/student/attendance`, {
       id,
       date,
       attendance,
