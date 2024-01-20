@@ -35,6 +35,7 @@ interface AddOnUser {
   studentId?: string;
   firstName?: string;
   lastName?: string;
+  role?: string;
 }
 /**
  * The standalone table component for holding information about the users in
@@ -111,9 +112,7 @@ function UserTable() {
   const [role, setRole] = React.useState('all');
 
   const handleChange = (event: SelectChangeEvent) => {
-    setUserList(
-      users?.data.filter((entry: AddOnUser) => entry.user.role === role),
-    );
+    setUserList(users?.data.filter((entry: AddOnUser) => entry.role === role));
     setRole(event.target.value as string);
   };
   async function convertStudentData(filteredList: IUser[]) {
@@ -206,7 +205,7 @@ function UserTable() {
       const i = 1;
     } else if (role) {
       filteredUsers = filteredUsers.filter(
-        (user: AddOnUser) => user.user.role === role,
+        (user: AddOnUser) => user.role === role,
       );
     }
     convertStudentData(filteredUsers);
@@ -240,7 +239,7 @@ function UserTable() {
             defaultValue="all"
           >
             <MenuItem value="all">All</MenuItem>
-            <MenuItem value="student">Student</MenuItem>
+            <MenuItem value="parent">Student</MenuItem>
             <MenuItem value="coach">Coach</MenuItem>
             <MenuItem value="teacher">Teacher</MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
