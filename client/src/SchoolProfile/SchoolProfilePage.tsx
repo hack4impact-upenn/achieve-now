@@ -347,23 +347,37 @@ function SchoolProfilePage() {
         <Grid item>
           <Typography variant="h2">School Profiles</Typography>
         </Grid>
-        <Grid item container width="60vw" justifyContent="flex-end">
+        <Grid
+          item
+          container
+          width="60vw"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
+          <TextField
+            sx={{ my: 2 }}
+            size="small"
+            label="Search"
+            defaultValue="School Name"
+            onChange={handleSearch}
+            value={searchInput}
+          />
           <Button
-            sx={{ m: 2 }}
+            sx={{ my: 2 }}
             variant="outlined"
             onClick={() => setDeleteSchoolDialogOpen(true)}
           >
             Delete School
           </Button>
           <Button
-            sx={{ m: 2 }}
+            sx={{ my: 2 }}
             variant="outlined"
             onClick={() => setSchoolDialogOpen(true)}
           >
             Add School
           </Button>
           <Button
-            sx={{ m: 2 }}
+            sx={{ my: 2 }}
             variant="outlined"
             onClick={() => setEditSchoolDialogOpen(true)}
           >
@@ -372,16 +386,7 @@ function SchoolProfilePage() {
         </Grid>
         <Grid item>
           <div style={{ height: '60vh', width: '60vw' }}>
-            <Box>
-              <TextField
-                sx={{ mb: 2 }}
-                label="Search"
-                defaultValue="School Name"
-                onChange={handleSearch}
-                value={searchInput}
-              />
-              <PaginationTable rows={schoolRows} columns={columns} />
-            </Box>
+            <PaginationTable rows={schoolRows} columns={columns} />
           </div>
         </Grid>
       </ScreenGrid>
