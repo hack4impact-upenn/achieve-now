@@ -293,8 +293,8 @@ const updateStudentInfo = async (
     ).exec();
     return student;
   } catch (error) {
-    console.log(error);
-    throw error;
+    const result = await Student.findById(id);
+    return result;
   }
 };
 
