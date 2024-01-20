@@ -19,13 +19,23 @@ const getAllStudentsFromDB = async () => {
  * @returns The {@link Student} or null if the student was not found.
  */
 const getStudentByID = async (id: string) => {
-  const student = await Student.findById(id).exec();
-  return student;
+  try {
+    const student = await Student.findById(id).exec();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 const getStudentByUserId = async (user_id: string) => {
-  const student = await Student.findOne({ user_id }).exec();
-  return student;
+  try {
+    const student = await Student.findOne({ user_id }).exec();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 /**
@@ -34,8 +44,13 @@ const getStudentByUserId = async (user_id: string) => {
  * @returns The {@link Resource} or null if the user was not found.
  */
 const getResourceByID = async (id: string) => {
-  const resource = await Resource.findById(id).exec();
-  return resource;
+  try {
+    const resource = await Resource.findById(id).exec();
+    return resource;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 const deleteResourceByID = async (
@@ -104,16 +119,21 @@ const createStudent = async (
   bestCommunicationMethod: string,
   personality: string,
 ) => {
-  const newStudent = new Student({
-    user_id: userId,
-    parent_name: parentName,
-    parent_communication_times: parentCommunicationTimes,
-    parent_communication_days: parentCommunicationDays,
-    best_communication_method: bestCommunicationMethod,
-    personality,
-  });
-  const student = await newStudent.save();
-  return student;
+  try {
+    const newStudent = new Student({
+      user_id: userId,
+      parent_name: parentName,
+      parent_communication_times: parentCommunicationTimes,
+      parent_communication_days: parentCommunicationDays,
+      best_communication_method: bestCommunicationMethod,
+      personality,
+    });
+    const student = await newStudent.save();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 /**
@@ -128,15 +148,20 @@ const updateAttendance = async (
   date: number,
   attendance: string,
 ) => {
-  const student = await Student.findOneAndUpdate(
-    {
-      _id: id,
-    },
-    {
-      $set: { [`progress_stats.attendance.${date}`]: attendance },
-    },
-  ).exec();
-  return student;
+  try {
+    const student = await Student.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: { [`progress_stats.attendance.${date}`]: attendance },
+      },
+    ).exec();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 /**
@@ -146,15 +171,20 @@ const updateAttendance = async (
  * @returns The updated {@link Student}
  */
 const updateLessonLevel = async (id: string, lessonLevel: string) => {
-  const student = await Student.findOneAndUpdate(
-    {
-      _id: id,
-    },
-    {
-      $set: { lesson_level: lessonLevel },
-    },
-  ).exec();
-  return student;
+  try {
+    const student = await Student.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: { lesson_level: lessonLevel },
+      },
+    ).exec();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 /**
@@ -162,14 +192,20 @@ const updateLessonLevel = async (id: string, lessonLevel: string) => {
  * @param date: The timestamp of the date to create attendance for
  */
 const createAttendanceOnDate = async (date: number) => {
-  await Student.updateMany(
-    {},
-    {
-      $set: {
-        [`progress_stats.attendance.${date}`]: '',
+  try {
+    const students = await Student.updateMany(
+      {},
+      {
+        $set: {
+          [`progress_stats.attendance.${date}`]: '',
+        },
       },
-    },
-  );
+    );
+    return students;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 /**
@@ -220,47 +256,60 @@ const updateStudentInfo = async (
   progressFlag: boolean,
   attendanceFlag: boolean,
 ) => {
-  const student = await Student.findByIdAndUpdate(
-    id,
-    {
-      school_id: school,
-      teacher_id: teacher,
-      lesson_level: lessonLevel === '' ? undefined : lessonLevel,
-      grade,
-      parent_name: parentName,
-      parent_communication_days: bestDay,
-      parent_communication_times: bestTime,
-      best_communication_method: contactMethod,
-      media_waiver: mediaWaiver,
-      admin_updates: adminUpdates,
-      work_habits: workHabits,
-      personality,
-      family,
-      fav_food: favFood,
-      likes,
-      dislikes,
-      motivation,
-      good_strategies: goodStrategies,
-      bad_strategies: badStrategies,
-      badges,
-      lessonsCompleted,
-      risingReadersScore: [risingReadersScore.start, risingReadersScore.mid],
-      generalProgramScore: [generalProgramScore.start, generalProgramScore.mid],
-      progressFlag,
-      attendanceFlag,
-    },
-    { new: true },
-  ).exec();
-  return student;
+  try {
+    const student = await Student.findByIdAndUpdate(
+      id,
+      {
+        school_id: school,
+        teacher_id: teacher,
+        lesson_level: lessonLevel === '' ? undefined : lessonLevel,
+        grade,
+        parent_name: parentName,
+        parent_communication_days: bestDay,
+        parent_communication_times: bestTime,
+        best_communication_method: contactMethod,
+        media_waiver: mediaWaiver,
+        admin_updates: adminUpdates,
+        work_habits: workHabits,
+        personality,
+        family,
+        fav_food: favFood,
+        likes,
+        dislikes,
+        motivation,
+        good_strategies: goodStrategies,
+        bad_strategies: badStrategies,
+        badges,
+        lessonsCompleted,
+        risingReadersScore: [risingReadersScore.start, risingReadersScore.mid],
+        generalProgramScore: [
+          generalProgramScore.start,
+          generalProgramScore.mid,
+        ],
+        progressFlag,
+        attendanceFlag,
+      },
+      { new: true },
+    ).exec();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 const addCoachToStudent = async (student_id: string, coach_id: string) => {
-  const student = await Student.findByIdAndUpdate(
-    student_id,
-    { $set: { coach_id: [coach_id] } },
-    { new: true },
-  );
-  return student;
+  try {
+    const student = await Student.findByIdAndUpdate(
+      student_id,
+      { $set: { coach_id: [coach_id] } },
+      { new: true },
+    );
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 const updateProgressDate = async (
@@ -269,41 +318,55 @@ const updateProgressDate = async (
   public_observations: string,
   public_next_steps: string,
   private_observations: string,
-  private_next_steps: string
+  private_next_steps: string,
 ) => {
-  const student = await Student.findOneAndUpdate(
-    {
-      _id: id,
-    },
-    {
-      $set: {
-        [`progress_stats.public_student_observations.${date}`]: public_observations,
-        [`progress_stats.public_student_next_steps.${date}`]: public_next_steps,
-        [`progress_stats.private_student_observations.${date}`]: private_observations,
-        [`progress_stats.private_student_next_steps.${date}`]: private_next_steps,
+  try {
+    const student = await Student.findOneAndUpdate(
+      {
+        _id: id,
       },
-    },
-    { new: true },
-  ).exec();
-  return student;
+      {
+        $set: {
+          [`progress_stats.public_student_observations.${date}`]:
+            public_observations,
+          [`progress_stats.public_student_next_steps.${date}`]:
+            public_next_steps,
+          [`progress_stats.private_student_observations.${date}`]:
+            private_observations,
+          [`progress_stats.private_student_next_steps.${date}`]:
+            private_next_steps,
+        },
+      },
+      { new: true },
+    ).exec();
+    return student;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 const deleteProgressDate = async (id: string, date: string) => {
-  const coach = await Student.findOneAndUpdate(
-    {
-      _id: id,
-    },
-    {
-      $unset: {
-        [`progress_stats.public_student_observations.${date}`]: '',
-        [`progress_stats.public_student_next_steps.${date}`]: '',
-        [`progress_stats.private_student_observations.${date}`]: '',
-        [`progress_stats.private_student_next_steps.${date}`]: '',
+  try {
+    const coach = await Student.findOneAndUpdate(
+      {
+        _id: id,
       },
-    },
-    { new: true },
-  ).exec();
-  return coach;
+      {
+        $unset: {
+          [`progress_stats.public_student_observations.${date}`]: '',
+          [`progress_stats.public_student_next_steps.${date}`]: '',
+          [`progress_stats.private_student_observations.${date}`]: '',
+          [`progress_stats.private_student_next_steps.${date}`]: '',
+        },
+      },
+      { new: true },
+    ).exec();
+    return coach;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export {
