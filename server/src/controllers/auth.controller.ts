@@ -499,6 +499,24 @@ const onboardStudent = async (
   }
 };
 
+const getRole = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  if (!req.isAuthenticated()) {
+    next(ApiError.unauthorized('Not logged in.'));
+    return;
+  }
+  const user: IUser | null = req.user as IUser;
+  // Check is user exists and is valid
+  if (!user) {
+    next(ApiError.unauthorized('Not a valid user.')); // TODO: see if this is the correct message
+    return;
+  }
+  res.send(user.role);
+};
+
 export {
   login,
   logout,
@@ -509,4 +527,5 @@ export {
   resetPassword,
   registerInvite,
   onboardStudent,
+  getRole,
 };

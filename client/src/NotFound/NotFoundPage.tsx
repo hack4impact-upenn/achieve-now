@@ -35,20 +35,13 @@ function LinkButton(props: LinkButtonProps): JSX.Element {
   }
   if (props.role === 'parent') {
     return (
-      <Button href="/student-dashboard" variant="text">
-        Go to Student Dashboard
-      </Button>
-    );
-  }
-  if (props.role === 'parent') {
-    return (
       <Button href="/student/lessons" variant="text">
         Go to Parent Home
       </Button>
     );
   }
   return (
-    <Button href="/home" variant="text">
+    <Button href="/" variant="text">
       Go to Home Page
     </Button>
   );
@@ -73,8 +66,8 @@ function NotFoundPage() {
         {role !== '' ? (
           <LinkButton role={role} />
         ) : (
-          <Button href="/home" variant="text">
-            Go to home page
+          <Button href="/login" variant="text">
+            Login
           </Button>
         )}
       </Grid>

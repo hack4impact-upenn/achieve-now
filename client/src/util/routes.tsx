@@ -4,7 +4,10 @@ import { useData } from './api';
 
 interface IDynamicElementProps {
   unAuthPath: string;
-  authPath: string;
+  adminPath: string;
+  teacherPath: string;
+  coachPath: string;
+  familyPath: string;
 }
 
 /**
@@ -65,14 +68,31 @@ function TeacherRoutesWrapper() {
  * @param unAuthPath - The path to navigate to if the user is not authenticated. It should be of the form "/path".
  * @param authPath - The path to navigate to if the user is  authenticated. It should be of the form "/path".
  */
-function DynamicRedirect({ unAuthPath, authPath }: IDynamicElementProps) {
-  const data = useData('auth/authstatus');
+function DynamicRedirect({
+  unAuthPath,
+  adminPath,
+  teacherPath,
+  coachPath,
+  familyPath,
+}: IDynamicElementProps) {
+  const data = useData('auth/role');
   if (data === null) return null;
-  return !data.error ? (
-    <Navigate to={authPath} />
-  ) : (
-    <Navigate to={unAuthPath} />
-  );
+  if (data.error) {
+    return <Navigate to={unAuthPath} />;
+  }
+  if (data.data === 'admin') {
+    return <Navigate to={adminPath} />;
+  }
+  if (data.data === 'teacher') {
+    return <Navigate to={teacherPath} />;
+  }
+  if (data.data === 'coach') {
+    return <Navigate to={coachPath} />;
+  }
+  if (data.data === 'parent') {
+    return <Navigate to={familyPath} />;
+  }
+  return <Navigate to="/*" />;
 }
 
 export {

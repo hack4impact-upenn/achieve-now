@@ -87,19 +87,6 @@ function App() {
                     path="/onboarding/student"
                     element={<OnboardingPage />}
                   />
-                  {/* Routes accessed only if user is authenticated */}
-                  <Route element={<ProtectedRoutesWrapper />}>
-                    <Route
-                      path="/family-progress"
-                      element={<FamilyProgressSnapshotPage />}
-                    />
-
-                    <Route
-                      path="/student-dashboard"
-                      element={<StudentDashboardPage />}
-                    />
-                    <Route path="/teacher" element={<TeacherDashboard />} />
-                  </Route>
                   {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
@@ -185,6 +172,10 @@ function App() {
                       path="/teacher/student-progress/:id"
                       element={<StudentProgress />}
                     />
+                    <Route
+                      path="/student-dashboard"
+                      element={<StudentDashboardPage />}
+                    />
                   </Route>
                   <Route element={<CoachRoutesWrapper />}>
                     <Route path="/coach/lessons" element={<LessonsPage />} />
@@ -201,7 +192,13 @@ function App() {
                   <Route
                     path="/"
                     element={
-                      <DynamicRedirect unAuthPath="/login" authPath="/home" />
+                      <DynamicRedirect
+                        unAuthPath="/login"
+                        adminPath="/admin-menu"
+                        teacherPath="/teacher"
+                        coachPath="/coach-landing"
+                        familyPath="/student/lessons"
+                      />
                     }
                   />
                   {/* Route which is accessed if no other route is matched */}

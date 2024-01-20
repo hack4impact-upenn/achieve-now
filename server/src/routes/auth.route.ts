@@ -13,6 +13,7 @@ import {
   verifyAccount,
   registerInvite,
   onboardStudent,
+  getRole,
 } from '../controllers/auth.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -68,6 +69,8 @@ router.post('/reset-password', resetPassword);
  * and 401 unauthorized if the user is not authenticated.
  */
 router.get('/authstatus', isAuthenticated, approve);
+
+router.get('/role', isAuthenticated, getRole);
 
 /**
  * A POST register a user from an invite. If the information and invite are valid
