@@ -45,6 +45,9 @@ const BACKENDURL = process.env.PUBLIC_URL
   ? process.env.PUBLIC_URL
   : 'http://localhost:4000';
 
+console.log(process.env.PUBLIC_URL);
+console.log(process.env);
+
 const URLPREFIX = `${BACKENDURL}/api`;
 
 /**
