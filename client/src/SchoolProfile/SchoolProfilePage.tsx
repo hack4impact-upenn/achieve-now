@@ -2,13 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Grid } from '@mui/material';
 import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
+import Link from '@mui/material/Link';
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import ScreenGrid from '../components/ScreenGrid';
-import SchoolProfileTable from './SchoolProfileTable';
 import AddSchoolDialog from './AddSchoolDialog';
 import DeleteSchoolDialog from './DeleteSchoolDialog';
 import EditSchoolDialog from './EditSchoolDialog';
@@ -26,7 +24,7 @@ interface SchoolDashboardRow {
   info: string;
   admin_name: string;
   admin_content: string;
-  calendar_link: string;
+  calendar_link: React.ReactElement;
   school_start_time: string;
   school_end_time: string;
   first_grade_lunch_start_time: string;
@@ -116,7 +114,7 @@ function SchoolProfilePage() {
       info,
       admin_name,
       admin_content,
-      calendar_link,
+      calendar_link: <Link href={calendar_link}>Calendar Link</Link>,
       school_start_time: formatTime(school_start_time),
       school_end_time: formatTime(school_end_time),
       first_grade_lunch_start_time: formatTime(first_grade_lunch_start_time),
