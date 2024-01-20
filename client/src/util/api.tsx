@@ -41,11 +41,9 @@ async function resolve(promise: Promise<any>) {
 /**
  * To UPDATE DURING DEPLOYMENT USING ENVIRONMENT VARIABLES
  */
-// const BACKENDURL = process.env.PUBLIC_URL
-//   ? process.env.PUBLIC_URL
-//   : 'http://localhost:4000';
-
-const BACKENDURL = 'https://achieve-now-512a40f886c1.herokuapp.com';
+const BACKENDURL = process.env.PUBLIC_URL
+  ? process.env.PUBLIC_URL
+  : 'http://localhost:4000';
 
 const URLPREFIX = `${BACKENDURL}/api`;
 

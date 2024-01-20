@@ -17,7 +17,7 @@ function UpdatesComponent(props: any) {
   useEffect(() => {
     const fetchUpdate = async () => {
       const response = await axios.get(
-        `http://localhost:4000/api/student/student/${studentID}`,
+        `${URLPREFIX}/student/student/${studentID}`,
       );
       setUpdateText(response?.data.updates);
     };

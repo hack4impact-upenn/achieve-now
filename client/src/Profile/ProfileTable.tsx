@@ -18,6 +18,10 @@ import { useAppSelector } from '../util/redux/hooks';
 import { useData, URLPREFIX } from '../util/api';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 
+const baseUrl = process.env.PUBLIC_URL
+  ? process.env.PUBLIC_URL
+  : 'http://localhost:3000';
+
 interface AdminDashboardRow {
   key: string;
   first: string;
@@ -60,7 +64,7 @@ function UserTable() {
           last: user.lastName,
           email: user.email,
           role: capitalizeFirstLetter(user.role),
-          link: `http://localhost:3000/admin/student/profile/${studentId}`,
+          link: `${baseUrl}/admin/student/profile/${studentId}`,
         };
       }
       if (user.role === 'coach' && studentId) {
@@ -70,7 +74,7 @@ function UserTable() {
           last: user.lastName,
           email: user.email,
           role: capitalizeFirstLetter(user.role),
-          link: `http://localhost:3000/admin/coach/profile/${studentId}`,
+          link: `${baseUrl}/admin/coach/profile/${studentId}`,
         };
       }
       return {
