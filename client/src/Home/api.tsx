@@ -43,7 +43,7 @@ async function addBlock(values: any) {
   const coachPromises: Promise<ResolvedReq>[] = [];
 
   pairs.forEach((pair: [IUser, IStudent]) => {
-    students.add(pair[1].user_id);
+    students.add(pair[1]._id);
 
     coachPromises.push(
       putData('student/add-coach', {
@@ -52,7 +52,6 @@ async function addBlock(values: any) {
       }),
     );
   });
-  console.log(students);
 
   await Promise.all(coachPromises);
 
