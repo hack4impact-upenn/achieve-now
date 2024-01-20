@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   TextField,
-  Link,
   Grid,
   Typography,
   Select,
@@ -9,9 +8,9 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
-import { onboardUserStore, selectUser } from '../util/redux/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../util/redux/hooks';
+import { selectUser } from '../util/redux/userSlice';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import AlertDialog from '../components/AlertDialog';
 import { onboardStudent } from './api';
@@ -86,11 +85,6 @@ function OnboardingPage() {
     setShowError('alert', false);
   };
 
-  const dispatch = useAppDispatch();
-  function dispatchUser(firstName: string, lastName: string) {
-    dispatch(onboardUserStore({ firstName, lastName }));
-  }
-
   const clearErrorMessages = () => {
     setShowErrorState(defaultShowErrors);
     setErrorMessageState(defaultErrorMessages);
@@ -122,8 +116,7 @@ function OnboardingPage() {
       }
       onboardStudent(values, user.email)
         .then(() => {
-          dispatchUser(values.studentFirst, values.studentLast);
-          navigate('/home');
+          navigate('/login');
         })
         .catch((e: any) => {
           setShowError('alert', true);

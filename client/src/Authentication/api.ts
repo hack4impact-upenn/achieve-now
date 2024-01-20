@@ -123,6 +123,7 @@ async function registerInvite(
   if (res.error) {
     throw Error(res.error.message);
   }
+  return res.data;
 }
 
 async function onboardStudent(values: any, email: string) {

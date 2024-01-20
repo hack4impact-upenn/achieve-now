@@ -73,7 +73,6 @@ function LoginPage() {
     firstName: string,
     lastName: string,
     role: string,
-    isOnboarded: boolean,
     id: string,
   ) {
     dispatch(
@@ -82,7 +81,6 @@ function LoginPage() {
         firstName,
         lastName,
         role,
-        isOnboarded,
         id,
       }),
     );
@@ -125,31 +123,25 @@ function LoginPage() {
     if (validateInputs()) {
       loginUser(values.email, values.password)
         .then((user) => {
-          const isOnboarded = user.firstName !== '' && user.lastName !== '';
           dispatchUser(
             user.email || null,
             user.firstName || null,
             user.lastName || null,
             user.role || null,
-            isOnboarded,
             // eslint-disable-next-line no-underscore-dangle
             user._id,
           );
-          if (isOnboarded) {
-            if (user.role === 'admin') {
-              navigate('/admin-menu');
-            }
-            if (user.role === 'coach') {
-              navigate('/coach-landing');
-            }
-            if (user.role === 'teacher') {
-              navigate('/teacher');
-            }
-            if (user.role === 'parent') {
-              navigate('/student/lessons');
-            }
-          } else if (user.role === 'student') {
-            navigate('/onboarding/student');
+          if (user.role === 'admin') {
+            navigate('/admin-menu');
+          }
+          if (user.role === 'coach') {
+            navigate('/coach-landing');
+          }
+          if (user.role === 'teacher') {
+            navigate('/teacher');
+          }
+          if (user.role === 'parent') {
+            navigate('/student/lessons');
           }
         })
         .catch((e) => {

@@ -83,6 +83,10 @@ function App() {
                     path="/invite/:token"
                     element={<InviteRegisterPage />}
                   />
+                  <Route
+                    path="/onboarding/student"
+                    element={<OnboardingPage />}
+                  />
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route
@@ -93,10 +97,6 @@ function App() {
                     <Route
                       path="/student-dashboard"
                       element={<StudentDashboardPage />}
-                    />
-                    <Route
-                      path="/onboarding/student"
-                      element={<OnboardingPage />}
                     />
                     <Route path="/teacher" element={<TeacherDashboard />} />
                   </Route>
@@ -178,10 +178,6 @@ function App() {
                       element={<StudentProgress />}
                     />
                     <Route path="/student/lessons" element={<LessonsPage />} />
-                    <Route
-                      path="/onboarding/student"
-                      element={<OnboardingPage />}
-                    />
                   </Route>
                   <Route element={<TeacherRoutesWrapper />}>
                     <Route path="/teacher" element={<TeacherDashboard />} />

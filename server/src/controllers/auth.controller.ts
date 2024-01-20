@@ -378,7 +378,8 @@ const registerInvite = async (
     user.verified = true;
     await user?.save();
     await removeInviteByToken(inviteToken);
-    res.sendStatus(StatusCode.CREATED);
+    res.send(user);
+    return;
   } catch (err) {
     next(ApiError.internal('Unable to register user.'));
   }

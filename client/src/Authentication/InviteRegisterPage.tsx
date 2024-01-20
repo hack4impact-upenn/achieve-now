@@ -152,11 +152,15 @@ function InviteRegisterPage() {
         values.password,
         token,
       )
-        .then(() => {
-          setShowError('alert', true);
-          setAlertTitle('');
-          setRegistered(true);
-          setErrorMessage('alert', 'Account created, please log in');
+        .then((data) => {
+          if (data.role === 'parent') {
+            navigate('/onboarding/student');
+          } else {
+            setShowError('alert', true);
+            setAlertTitle('');
+            setRegistered(true);
+            setErrorMessage('alert', 'Account created, please log in');
+          }
         })
         .catch((e) => {
           setShowError('alert', true);
