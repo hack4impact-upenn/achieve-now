@@ -34,7 +34,7 @@ function Attendance({ studentId }: { studentId: string }) {
         height: '400px',
         border: 1,
         borderRadius: 3,
-        padding: 3,
+        padding: '16px',
         maxHeight: '400px',
       }}
     >

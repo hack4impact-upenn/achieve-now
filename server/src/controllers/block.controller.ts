@@ -131,11 +131,7 @@ const getBlockInfoByStudentId = async (
   res.status(StatusCode.OK).send(block);
 };
 
-const getBlocks = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
+const getBlocks = async (req: express.Request, res: express.Response) => {
   const blocks = await getAllBlocksfromDB();
   res.status(StatusCode.OK).send(blocks);
 };

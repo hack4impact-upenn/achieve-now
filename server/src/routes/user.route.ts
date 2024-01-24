@@ -8,6 +8,8 @@ import {
   getAllTeachers,
   putUser,
   getUserEmail,
+  getStudent,
+  getCoach,
 } from '../controllers/user.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import 'dotenv/config';
@@ -33,5 +35,15 @@ userRouter.get('/email/:email', isAuthenticated, getUserEmail);
  * A PUT route to put a user by their ID
  */
 userRouter.put('/id/:id', isAuthenticated, putUser);
+
+/**
+ * A GET route to get a student by their user ID
+ */
+userRouter.get('/student/:id', isAuthenticated, getStudent);
+
+/**
+ * A GET route to get a coach's student by their user ID
+ */
+userRouter.get('/coach/:id', isAuthenticated, getCoach);
 
 export default userRouter;

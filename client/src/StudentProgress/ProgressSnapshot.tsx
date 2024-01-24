@@ -91,8 +91,7 @@ export default function ProgressSnapshot({ studentId }: { studentId: string }) {
     >
       <Stack
         spacing={3}
-        px={5}
-        py={2}
+        p="16px"
         sx={{
           width: '100%',
           height: '100%',

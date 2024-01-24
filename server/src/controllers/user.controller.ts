@@ -9,9 +9,11 @@ import {
   getUserById,
   getAllTeachersFromDB,
   updateUser,
-  getUserByEmail,
   getUserIdByEmail,
 } from '../services/user.service';
+import { getStudentByUserId } from '../services/student.service';
+import { getCoachByUser, getStudentFromCoach } from '../services/coach.service';
+import { IStudent } from '../models/student.model';
 
 // get a specific user by id
 const getUser = async (
@@ -62,12 +64,10 @@ const putUser = async (
   if (!id || !user) {
     next(ApiError.internal('Request must include a valid userID param'));
   }
-  console.log(id);
-  console.log(user);
   return (
     updateUser(id, user)
-      .then((user) => {
-        res.status(StatusCode.OK).send(user);
+      .then((newUser) => {
+        res.status(StatusCode.OK).send(newUser);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
@@ -98,4 +98,59 @@ const getUserEmail = async (
   );
 };
 
-export { getUser, getAllTeachers, putUser, getUserEmail };
+const getStudent = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.internal('Request must include a valid userID param'));
+  }
+
+  return (
+    getStudentByUserId(id)
+      .then((student) => {
+        res.status(StatusCode.OK).send(student);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified user'));
+      })
+  );
+};
+
+const getCoach = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.internal('Request must include a valid userID parameter'));
+  }
+
+  return (
+    getCoachByUser(id)
+      .then((coach) => {
+        if (!coach) {
+          next(ApiError.internal('Unable to retrieve specified Coach'));
+          return;
+        }
+        getStudentFromCoach(coach._id)
+          .then((student: IStudent) => {
+            res.status(StatusCode.OK).send(student);
+          })
+          .catch((e) => {
+            console.log(e);
+            next(ApiError.internal('Unable to retrieve specified Student'));
+          });
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve specified user'));
+      })
+  );
+};
+
+export { getUser, getAllTeachers, putUser, getUserEmail, getStudent, getCoach };

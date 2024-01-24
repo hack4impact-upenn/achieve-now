@@ -103,12 +103,9 @@ const addLesson = async (title: string) => {
 
 const editLessonByNumber = async (number: number, title: string) => {
   try {
-    console.log(number);
-    console.log(typeof number);
     const lesson = await Lesson.updateOne({ number }, { title }).exec();
     return lesson;
   } catch (error) {
-    console.log('Error updating lesson:', error);
     throw new Error('Error updating lesson');
   }
 };
@@ -118,7 +115,6 @@ const deleteLessonById = async (id: string) => {
     const lesson = await Lesson.findByIdAndDelete(id).exec();
     return lesson;
   } catch (error) {
-    console.log('Error deleting lesson:', error);
     throw new Error('Error deleting lesson');
   }
 };

@@ -28,7 +28,6 @@ const schoolFieldsMapping = {
 
 function CoachLandingPage() {
   const { id } = useAppSelector(selectUser);
-  console.log(id);
   const [coach, setCoach] = useState<any>({});
   const [student, setStudent] = useState<any>({});
 

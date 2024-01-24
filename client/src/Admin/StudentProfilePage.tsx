@@ -218,10 +218,6 @@ function StudentProfilePage() {
     }));
   };
 
-  useEffect(() => {
-    console.log(values);
-  }, [values]);
-
   const setShowError = (field: string, show: boolean) => {
     setShowErrorState((prevState) => ({
       ...prevState,

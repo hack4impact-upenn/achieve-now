@@ -465,7 +465,6 @@ const onboardStudent = async (
       next(ApiError.badRequest('Invalid email.'));
       return;
     }
-    console.log(userId);
     if (userId.role !== 'parent') {
       next(ApiError.badRequest('Invalid role.'));
       return;

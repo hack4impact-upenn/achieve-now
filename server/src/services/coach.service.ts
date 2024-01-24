@@ -123,9 +123,7 @@ const getStudentFromCoach = async (coach_id: string) => {
   const students = await Student.find({});
   const filteredStudents = students.filter(
     (student: IStudent) =>
-      student.coach_id &&
-      student.coach_id.includes &&
-      student.coach_id.includes(coach_id),
+      student.coach_id && student.coach_id.includes(coach_id),
   );
   return filteredStudents[0];
 };

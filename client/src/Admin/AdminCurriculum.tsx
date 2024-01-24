@@ -16,7 +16,6 @@ function AdminCurriculum() {
   useEffect(() => {
     const assignLesson = async () => {
       const res = await axios.get(`${URLPREFIX}/lesson/all`);
-      console.log(res.data);
       // eslint-disable-next-line no-underscore-dangle
       setLesson(res.data[0]._id);
     };

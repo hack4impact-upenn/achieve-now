@@ -160,11 +160,9 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
   };
 
   const handleSubmit = () => {
-    console.log('submitted');
     const desc = submitError(state);
     if (desc) {
       setError(desc);
-      console.log('error');
       return;
     }
 
@@ -266,8 +264,6 @@ function AddSchoolDialog({ open, setOpen, addSchool }: AddSchoolProps) {
     event: SelectChangeEvent<typeof teacherName>,
   ) => {
     const selectedTeacherIds = event.target.value as string[];
-
-    console.log(selectedTeacherIds);
 
     setState((prevState) => ({
       ...prevState,

@@ -89,7 +89,6 @@ function App() {
                   />
                   {/* Routes accessed only if user is an admin */}
                   <Route element={<AdminRoutesWrapper />}>
-                    <Route path="/users" element={<AdminDashboardPage />} />
                     <Route path="/admin-menu" element={<AdminMenu />} />
                     <Route path="/resources">
                       <Route path="student">

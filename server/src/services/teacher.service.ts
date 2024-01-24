@@ -13,7 +13,6 @@ const getLessonLevelsByTeacherId = async (teacher_id: string) => {
       continue;
     }
     const lesson = await Lesson.findOne({ _id: student.lesson_level });
-    console.log(lesson);
     if (!lesson) {
       continue;
     }
@@ -23,8 +22,6 @@ const getLessonLevelsByTeacherId = async (teacher_id: string) => {
       levels[lesson.number] = 1;
     }
   }
-
-  console.log(levels);
 
   return levels;
 };

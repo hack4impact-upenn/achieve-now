@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/system';
-
-import { ArrowBack } from '@mui/icons-material';
 import COLORS from '../assets/colors';
 import Logo from '../assets/achieve-now-logo.png';
-import { getData, URLPREFIX } from '../util/api';
-import { useAppDispatch, useAppSelector } from '../util/redux/hooks';
+import { URLPREFIX } from '../util/api';
+import { useAppSelector } from '../util/redux/hooks';
 import { selectUser, logout as logoutAction } from '../util/redux/userSlice';
 import { logout, logout as logoutApi } from '../Home/api';
+import AlertType from '../util/types/alert';
+import useAlert from '../util/hooks/useAlert';
 
 export default function Header() {
   const navigator = useNavigate();
-  const dispatch = useAppDispatch();
-  const location = useLocation();
-  const [studentId, setStudentId] = useState('');
+  const { setAlert } = useAlert();
   const handleLogout = async () => {
     if (await logoutApi()) {
       logout();
@@ -26,32 +23,6 @@ export default function Header() {
     }
   };
   const user = useAppSelector(selectUser);
-  const { role } = user;
-  const path = location.pathname;
-  useEffect(() => {
-    const getStudentFromCoach = async () => {
-      console.log(user.id);
-      const res1 = await axios.get(`${URLPREFIX}/coach/user/${user.id}`);
-      const res2 = await axios.get(
-        // eslint-disable-next-line no-underscore-dangle
-        `${URLPREFIX}/coach/student/${res1.data._id}`,
-      );
-      // eslint-disable-next-line no-underscore-dangle
-      setStudentId(res2?.data._id);
-    };
-    const getStudentFromParent = async () => {
-      await getData(`student/student-info/${user.id}`).then((res) => {
-        // eslint-disable-next-line no-underscore-dangle
-        setStudentId(res.data._id);
-      });
-    };
-    if (user.role === 'parent') {
-      getStudentFromParent();
-    }
-    if (user.role === 'coach') {
-      getStudentFromCoach();
-    }
-  });
 
   // Admin Onclick Functions
   const handleAdminHome = () => {
@@ -71,16 +42,32 @@ export default function Header() {
   };
 
   // Family Onclick Functions
-  const handleFamilyProgress = () => {
-    navigator(`/student/progress/${studentId}`);
+  const handleFamilyProgress = async () => {
+    const student = await axios.get(`${URLPREFIX}/user/student/${user.id}`);
+    console.log(`${URLPREFIX}/user/student/${user.id}`);
+    console.log(student);
+    if (!student || !student.data) {
+      setAlert('Error getting student', AlertType.ERROR);
+    } else {
+      // eslint-disable-next-line no-underscore-dangle
+      const studentId = student.data._id;
+      navigator(`/student/progress/${studentId}`);
+    }
   };
   const handleFamilyLesson = () => {
     navigator('/student/lessons');
   };
 
   // Coach Onclick Functions
-  const handleCoachProgress = () => {
-    navigator(`/coach/student-progress/${studentId}`);
+  const handleCoachProgress = async () => {
+    const coachStudent = await axios.get(`${URLPREFIX}/user/coach/${user.id}`);
+    if (!coachStudent || !coachStudent.data) {
+      setAlert('Error getting student', AlertType.ERROR);
+    } else {
+      // eslint-disable-next-line no-underscore-dangle
+      const studentId = coachStudent.data._id;
+      navigator(`/coach/student-progress/${studentId}`);
+    }
   };
   const handleCoachLesson = () => {
     navigator(`/coach/lessons`);

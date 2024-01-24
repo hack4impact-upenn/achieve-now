@@ -271,12 +271,9 @@ const getStudentsFromTeacherId = async (
   return (
     getAllStudentsFromDB()
       .then((studentList) => {
-        console.log('made it');
-        // console.log(studentList.filter((student) => hasTeacher(student)));
         return studentList;
       })
       .then((filteredList) => {
-        console.log('made it to filtered');
         res.status(StatusCode.OK).send(filteredList);
       })
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -451,7 +448,6 @@ const getStudentsAndLessonsByTeacherEmail = async (
                       lessonName: lesson?.title,
                     };
                   });
-                  console.log(response);
                   res.status(StatusCode.OK).send(response);
                 })
                 .catch((err) => {

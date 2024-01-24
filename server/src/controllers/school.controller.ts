@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * All the controller functions containing the logic for routes relating to
  * school.
@@ -127,8 +128,6 @@ const createSchool = async (
     second_grade_lunch_start_time,
     second_grade_lunch_end_time,
   );
-  console.log('logged here');
-  console.log(school);
 
   res.status(StatusCode.OK).send(school);
 };
@@ -201,7 +200,6 @@ const updateSchool = async (
     second_grade_lunch_start_time,
     second_grade_lunch_end_time,
   );
-  console.log(school);
   res.status(StatusCode.OK).send(school);
 };
 

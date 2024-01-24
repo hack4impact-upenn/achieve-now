@@ -289,7 +289,6 @@ function SchoolProfilePage() {
         second_grade_lunch_start_time,
         second_grade_lunch_end_time,
       };
-      console.log('edit here');
       await putData(`school/update`, newSchool);
       fetchUpdatedSchoolData();
     } catch (error) {
@@ -360,27 +359,29 @@ function SchoolProfilePage() {
             onChange={handleSearch}
             value={searchInput}
           />
-          <Button
-            sx={{ my: 2 }}
-            variant="outlined"
-            onClick={() => setDeleteSchoolDialogOpen(true)}
-          >
-            Delete School
-          </Button>
-          <Button
-            sx={{ my: 2 }}
-            variant="outlined"
-            onClick={() => setSchoolDialogOpen(true)}
-          >
-            Add School
-          </Button>
-          <Button
-            sx={{ my: 2 }}
-            variant="outlined"
-            onClick={() => setEditSchoolDialogOpen(true)}
-          >
-            Edit School
-          </Button>
+          <Grid justifyContent="flex-end">
+            <Button
+              sx={{ my: 2 }}
+              variant="outlined"
+              onClick={() => setDeleteSchoolDialogOpen(true)}
+            >
+              Delete School
+            </Button>
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              onClick={() => setSchoolDialogOpen(true)}
+            >
+              Add School
+            </Button>
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              onClick={() => setEditSchoolDialogOpen(true)}
+            >
+              Edit School
+            </Button>
+          </Grid>
         </Grid>
         <Grid item>
           <div style={{ height: '60vh', width: '60vw' }}>

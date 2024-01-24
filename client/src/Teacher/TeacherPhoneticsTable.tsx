@@ -160,8 +160,6 @@ function TeacherPhoneticsTable() {
     `student/students-lessons-by-teacher/${self.email}`,
   );
 
-  console.log('phonetics table', studentsData);
-
   useEffect(() => {
     if (studentsData?.data) {
       const phoneticsRows: PhoneticsTableRow[] = phonicPatterns.map(

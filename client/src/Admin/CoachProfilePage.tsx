@@ -65,7 +65,6 @@ function CoachProfilePage() {
   const [user, setUser] = useState<IUser | null>(null);
 
   const coachData = useData(`coach/${id}`);
-  console.log(coachData);
   async function getUser(userId: string) {
     const res = await getData(`user/id/${userId}`);
     if (!res.error) {

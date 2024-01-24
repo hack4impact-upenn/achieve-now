@@ -17,6 +17,8 @@ import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
 import { useData, URLPREFIX } from '../util/api';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
+import DeleteUserButton from '../AdminDashboard/DeleteUserButton';
+import InviteUserButton from '../components/buttons/InviteUserButton';
 
 const baseUrl = process.env.PUBLIC_URL
   ? process.env.PUBLIC_URL
@@ -29,6 +31,7 @@ interface AdminDashboardRow {
   email: string;
   role: string;
   link: string;
+  remove: React.ReactElement;
 }
 interface AddOnUser {
   user: IUser;
@@ -49,6 +52,7 @@ function UserTable() {
     { id: 'email', label: 'Email' },
     { id: 'role', label: 'Role' },
     { id: 'link', label: 'Profile Link' },
+    { id: 'remove', label: 'Remove User' },
   ];
 
   function capitalizeFirstLetter(str: any) {
@@ -56,7 +60,10 @@ function UserTable() {
   }
 
   // Used to create the data type to create a row in the table
-  function createAdminDashboardRow(userInput: AddOnUser): AdminDashboardRow {
+  function createAdminDashboardRow(
+    userInput: AddOnUser,
+    remove: React.ReactElement,
+  ): AdminDashboardRow {
     const { user, studentId } = userInput;
     if (user) {
       if (user.role === 'parent' && studentId) {
@@ -68,6 +75,7 @@ function UserTable() {
           email: user.email,
           role: capitalizeFirstLetter(user.role),
           link: `${baseUrl}/admin/student/profile/${studentId}`,
+          remove,
         };
       }
       if (user.role === 'coach' && studentId) {
@@ -78,6 +86,7 @@ function UserTable() {
           email: user.email,
           role: capitalizeFirstLetter(user.role),
           link: `${baseUrl}/admin/coach/profile/${studentId}`,
+          remove,
         };
       }
       return {
@@ -87,6 +96,7 @@ function UserTable() {
         email: user.email,
         role: capitalizeFirstLetter(user.role),
         link: ``,
+        remove,
       };
     }
     return {
@@ -96,6 +106,8 @@ function UserTable() {
       email: '',
       role: '',
       link: '',
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      remove: (<></>) as React.ReactElement,
     };
   }
 
@@ -172,13 +184,6 @@ function UserTable() {
 
   // Search bar
   const userData = users?.data ?? [];
-  const idNameMapping = new Map<string, string>(
-    userData.map((user: any) => [
-      // eslint-disable-next-line
-      user._id,
-      `${user.firstName} ${user.lastName}`,
-    ]),
-  );
 
   const [searchInput, setSearchInput] = React.useState('');
 
@@ -188,6 +193,19 @@ function UserTable() {
   }) => {
     e.preventDefault();
     setSearchInput(e.target.value);
+  };
+
+  // update state of userlist to remove a user from  the frontend representation of the data
+  const removeUser = (user: IUser) => {
+    setUserList(
+      userList.filter(
+        (entry: AddOnUser) =>
+          entry &&
+          entry.user &&
+          entry.user.email &&
+          entry.user.email !== user.email,
+      ),
+    );
   };
 
   useEffect(() => {
@@ -221,35 +239,47 @@ function UserTable() {
   }
   return (
     <Box>
-      <Box display="flex">
-        <TextField
-          sx={{ m: 1 }}
-          label="Search"
-          defaultValue="Name"
-          onChange={handleSearch}
-          value={searchInput}
-        />
-        <FormControl>
-          <InputLabel>Attribute</InputLabel>
-          <Select
-            value={role}
-            sx={{ m: 1, minWidth: 120 }}
-            label="Role"
-            onChange={handleChange}
-            defaultValue="all"
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="parent">Student</MenuItem>
-            <MenuItem value="coach">Coach</MenuItem>
-            <MenuItem value="teacher">Teacher</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-          </Select>
-        </FormControl>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <div style={{ marginBottom: '10px' }}>
+          <TextField
+            sx={{ m: 1 }}
+            label="Search"
+            defaultValue="Name"
+            size="small"
+            onChange={handleSearch}
+            value={searchInput}
+          />
+          <FormControl>
+            <InputLabel>Attribute</InputLabel>
+            <Select
+              value={role}
+              sx={{ m: 1, minWidth: 120 }}
+              label="Role"
+              onChange={handleChange}
+              defaultValue="all"
+              size="small"
+            >
+              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="parent">Family</MenuItem>
+              <MenuItem value="coach">Coach</MenuItem>
+              <MenuItem value="teacher">Teacher</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <InviteUserButton />
       </Box>
       <Box sx={{ pb: 30 }}>
         <PaginationTable
           rows={sortedUsers.map((user: AddOnUser) => {
-            return createAdminDashboardRow(user);
+            return createAdminDashboardRow(
+              user,
+              <DeleteUserButton
+                role={user.user.role}
+                email={user.user.email}
+                removeRow={() => removeUser(user.user)}
+              />,
+            );
           })}
           columns={columns}
         />

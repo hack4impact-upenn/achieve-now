@@ -41,7 +41,6 @@ function LessonLevels({ levels }: ILessonLevelsProps) {
 
   const labels = Array.from(Array(max + 1).keys());
   const data = labels.map((level) => Number(levels[level] ?? 0));
-  console.log(levels);
 
   return (
     <Card sx={{ width: '100%', height: '400px' }}>
