@@ -28,7 +28,7 @@ interface AdminResourceRow {
   title: string;
   description: string;
   type: string;
-  link: React.ReactElement;
+  linkButton: React.ReactElement;
 }
 
 interface Resource {
@@ -42,16 +42,16 @@ interface Resource {
 function ResourceButton({ link }: { link: string }) {
   return (
     <Button
-      variant="contained"
+      variant="outlined"
       endIcon={<CallMade />}
       onClick={() => {
-        const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+        const newWindow = window.open(link, '_blank');
         if (newWindow) {
           newWindow.opener = null;
         }
       }}
     >
-      View Resource
+      View
     </Button>
   );
 }
@@ -82,7 +82,7 @@ function AdminResourcesPage() {
     { id: 'title', label: 'Title' },
     { id: 'description', label: 'Description' },
     { id: 'type', label: 'Type' },
-    { id: 'link', label: 'Link' },
+    { id: 'linkButton', label: 'View Resource' },
   ];
 
   // for the buttons
@@ -162,7 +162,7 @@ function AdminResourcesPage() {
       title,
       description,
       type,
-      link: linkButton,
+      linkButton,
     };
   }
 
@@ -277,7 +277,6 @@ function AdminResourcesPage() {
                   label="Search"
                 />
               </FormControl>
-
               <FormControl>
                 <InputLabel id="resource-type-label">Type</InputLabel>
                 <Select
@@ -308,11 +307,6 @@ function AdminResourcesPage() {
                 variant="outlined"
                 onClick={() => setAddResourceDialogOpen(true)}
                 sx={{
-                  backgroundColor: 'white',
-                  borderColor: 'black',
-                  '&:hover': {
-                    backgroundColor: 'grey.200',
-                  },
                   marginRight: theme.spacing(2),
                 }}
               >
@@ -323,11 +317,6 @@ function AdminResourcesPage() {
                 // onClick={handleDeleteEntry}
                 onClick={() => setDeleteDateDialogOpen(true)}
                 sx={{
-                  backgroundColor: 'white',
-                  borderColor: 'black',
-                  '&:hover': {
-                    backgroundColor: 'grey.200',
-                  },
                   marginRight: theme.spacing(2),
                 }}
               >
@@ -336,13 +325,6 @@ function AdminResourcesPage() {
               <Button
                 variant="outlined"
                 onClick={() => setEditResourceDialogOpen(true)}
-                sx={{
-                  backgroundColor: 'white',
-                  borderColor: 'black',
-                  '&:hover': {
-                    backgroundColor: 'grey.200',
-                  },
-                }}
               >
                 Edit Entry
               </Button>
