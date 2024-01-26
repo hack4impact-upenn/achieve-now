@@ -4,8 +4,8 @@
 import 'dotenv/config';
 import SGmail, { MailDataRequired } from '@sendgrid/mail';
 
-const appName = 'Boilerplate'; // Replace with a relevant project name
-const senderName = 'Hack4Impact UPenn'; // Replace with a relevant project sender
+const appName = 'Achieve Now'; // Replace with a relevant project name
+const senderName = 'Achieve Now'; // Replace with a relevant project sender
 // const baseUrl = 'http://localhost:3000'; // TODO: figure out better place to put this
 const baseUrl = process.env.PUBLIC_URL
   ? process.env.PUBLIC_URL
